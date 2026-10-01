@@ -20,12 +20,47 @@ public sealed record RibbonSearchEntry(
     IReadOnlyList<string>? Keywords = null,
     string? Shortcut = null,
     object? Target = null,
-    bool IsEnabled = true);
+    bool IsEnabled = true)
+{
+    // Get-only (not init) properties: the WinUI XAML compiler generates setters for public settable properties of
+    // types reachable from XAML metadata, which do not compile against init accessors (CS8852).
+
+    /// <summary>Unique id.</summary>
+    public string Id { get; } = Id;
+
+    /// <summary>Label.</summary>
+    public string Label { get; } = Label;
+
+    /// <summary>Location, e.g. "Home › Font".</summary>
+    public string? Path { get; } = Path;
+
+    /// <summary>Description.</summary>
+    public string? Description { get; } = Description;
+
+    /// <summary>Keywords and synonyms.</summary>
+    public IReadOnlyList<string>? Keywords { get; } = Keywords;
+
+    /// <summary>Shortcut text.</summary>
+    public string? Shortcut { get; } = Shortcut;
+
+    /// <summary>Payload (UI element, model or delegate).</summary>
+    public object? Target { get; } = Target;
+
+    /// <summary>Disabled entries are ranked last.</summary>
+    public bool IsEnabled { get; } = IsEnabled;
+}
 
 /// <summary>A ranked search result.</summary>
 /// <param name="Entry">Entry.</param>
 /// <param name="Score">Score (higher is better).</param>
-public sealed record RibbonSearchResult(RibbonSearchEntry Entry, double Score);
+public sealed record RibbonSearchResult(RibbonSearchEntry Entry, double Score)
+{
+    /// <summary>Entry.</summary>
+    public RibbonSearchEntry Entry { get; } = Entry;
+
+    /// <summary>Score (higher is better).</summary>
+    public double Score { get; } = Score;
+}
 
 /// <summary>
 /// Ranked, diacritic- and case-insensitive command search. Every query term must match the label, keywords, path

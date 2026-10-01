@@ -1,0 +1,33 @@
+<UserControl x:Class="RibbonSpace.Uno.RuntimeTests.Xaml.GlobalXmlnsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:rs="using:RibbonSpace.Controls">
+  <!--
+    No prefix and no declaration: RibbonSpace registers its namespaces in Uno's global XAML namespace. Type names
+    inside attribute values (Style TargetType) only resolve through `using:` namespaces, hence xmlns:rs above.
+  -->
+  <UserControl.Resources>
+    <Style x:Key="WideButton" TargetType="rs:RibbonButton">
+      <Setter Property="MinWidth" Value="80" />
+    </Style>
+  </UserControl.Resources>
+  <StackPanel>
+    <RibbonTitleBar x:Name="TitleBarElement" x:FieldModifier="public" Title="Document" />
+    <Ribbon x:Name="RibbonElement" x:FieldModifier="public">
+      <Ribbon.QuickAccessToolBar>
+        <RibbonQuickAccessToolBar>
+          <RibbonButton Id="save" Label="Save" Icon="&#xE74E;" />
+        </RibbonQuickAccessToolBar>
+      </Ribbon.QuickAccessToolBar>
+      <RibbonTab Id="home" Header="Home">
+        <RibbonGroup Id="editing" Header="Editing">
+          <RibbonButton Id="find" Label="Find" Icon="&#xE721;" Style="{StaticResource WideButton}" RibbonKeyTip.KeyTip="FD" />
+        </RibbonGroup>
+      </RibbonTab>
+    </Ribbon>
+    <RibbonToolBar>
+      <RibbonButton Id="pen" Label="Pen" Icon="&#xED63;" RibbonContextualToolBar.Context="pen" />
+    </RibbonToolBar>
+    <RibbonIconPresenter x:Name="IconElement" x:FieldModifier="public" Icon="&#xE8C6;" />
+  </StackPanel>
+</UserControl>

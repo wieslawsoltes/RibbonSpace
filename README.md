@@ -44,7 +44,7 @@ of them and modern Word, Excel and PowerPoint ([research](https://github.com/wie
 | **MVVM** | Bind a `RibbonModel`. Everything is generated and **two-way synchronized**; string-id routing via `ItemInvoked`, `ICommand`, or a command catalog. |
 | **Customization and state** | Office "Customize the Ribbon / QAT" dialog, hide / rename / reorder, custom tabs and groups, import / export, versioned AOT-safe JSON state, plugin merging. |
 | **Theming** | Lookless templates; Light / Dark / HighContrast; 11 application palettes plus custom accents, applied live; Colorful or Neutral chrome; Compact / Comfortable / Touch density; fully custom metrics. |
-| **Quality** | Accessibility peers and stable automation ids, localization (en, de, fr, es, pl), RTL, 91 unit tests and 64 runtime UI tests, trimming / AOT friendly. |
+| **Quality** | Accessibility peers and stable automation ids, localization (en, de, fr, es, pl), RTL, 91 unit tests and 67 runtime UI tests, trimming / AOT friendly. |
 
 <table>
 <tr>
@@ -86,33 +86,39 @@ dotnet add package RibbonSpace.Uno
 
 ## Quick start (XAML)
 
+No namespace declaration or prefix is needed: RibbonSpace registers its types in Uno.Sdk's global XAML namespace
+(implicit XAML namespaces are on by default), so `<Ribbon>` works like any built-in control. The prefixed forms
+(`rs:` without declaration, `xmlns:rs="https://github.com/wieslawsoltes/RibbonSpace"` or
+`xmlns:rs="using:RibbonSpace.Controls"`) remain available, and XAML compiled by a Windows App SDK head needs the
+`using:` form (see [XAML namespaces](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/xaml.md#xaml-namespaces)).
+
 ```xml
-<Grid xmlns:rs="using:RibbonSpace.Controls" RowDefinitions="Auto,Auto,*">
-  <rs:RibbonTitleBar Title="Report" AppIcon="&#xE8A5;" Ribbon="{x:Bind Ribbon}" />
-  <rs:Ribbon x:Name="Ribbon" Grid.Row="1" ItemInvoked="OnItemInvoked">
-    <rs:RibbonTab Id="home" Header="Home">
-      <rs:RibbonGroup Id="clipboard" Header="Clipboard" IsDialogLauncherVisible="True">
-        <rs:RibbonSplitButton Id="paste" Label="Paste" Icon="&#xE77F;" SizeDefinition="Large" Shortcut="Ctrl+V">
+<Grid RowDefinitions="Auto,Auto,*">
+  <RibbonTitleBar Title="Report" AppIcon="&#xE8A5;" Ribbon="{x:Bind Ribbon}" />
+  <Ribbon x:Name="Ribbon" Grid.Row="1" ItemInvoked="OnItemInvoked">
+    <RibbonTab Id="home" Header="Home">
+      <RibbonGroup Id="clipboard" Header="Clipboard" IsDialogLauncherVisible="True">
+        <RibbonSplitButton Id="paste" Label="Paste" Icon="&#xE77F;" SizeDefinition="Large" Shortcut="Ctrl+V">
           <MenuFlyout><MenuFlyoutItem Text="Keep Text Only" /></MenuFlyout>
-        </rs:RibbonSplitButton>
-        <rs:RibbonButton Id="cut" Label="Cut" Icon="&#xE8C6;" Command="{x:Bind ViewModel.CutCommand}" />
-        <rs:RibbonButton Id="copy" Label="Copy" Icon="&#xE8C8;" />
-      </rs:RibbonGroup>
-      <rs:RibbonGroup Id="font" Header="Font" ItemsLayout="Rows" RowCount="2">
-        <rs:RibbonStackPanel>
-          <rs:RibbonFontComboBox Text="Aptos" />
-          <rs:RibbonFontSizeComboBox Text="11" />
-        </rs:RibbonStackPanel>
-        <rs:RibbonStackPanel>
-          <rs:RibbonButtonGroup>
-            <rs:RibbonToggleButton Id="bold" Label="Bold" Icon="&#xE8DD;" Shortcut="Ctrl+B" IsChecked="{x:Bind ViewModel.IsBold, Mode=TwoWay}" />
-            <rs:RibbonToggleButton Id="italic" Label="Italic" Icon="&#xE8DB;" Shortcut="Ctrl+I" />
-          </rs:RibbonButtonGroup>
-          <rs:RibbonColorPicker Id="fontColor" Label="Font Color" />
-        </rs:RibbonStackPanel>
-      </rs:RibbonGroup>
-    </rs:RibbonTab>
-  </rs:Ribbon>
+        </RibbonSplitButton>
+        <RibbonButton Id="cut" Label="Cut" Icon="&#xE8C6;" Command="{x:Bind ViewModel.CutCommand}" />
+        <RibbonButton Id="copy" Label="Copy" Icon="&#xE8C8;" />
+      </RibbonGroup>
+      <RibbonGroup Id="font" Header="Font" ItemsLayout="Rows" RowCount="2">
+        <RibbonStackPanel>
+          <RibbonFontComboBox Text="Aptos" />
+          <RibbonFontSizeComboBox Text="11" />
+        </RibbonStackPanel>
+        <RibbonStackPanel>
+          <RibbonButtonGroup>
+            <RibbonToggleButton Id="bold" Label="Bold" Icon="&#xE8DD;" Shortcut="Ctrl+B" IsChecked="{x:Bind ViewModel.IsBold, Mode=TwoWay}" />
+            <RibbonToggleButton Id="italic" Label="Italic" Icon="&#xE8DB;" Shortcut="Ctrl+I" />
+          </RibbonButtonGroup>
+          <RibbonColorPicker Id="fontColor" Label="Font Color" />
+        </RibbonStackPanel>
+      </RibbonGroup>
+    </RibbonTab>
+  </Ribbon>
 </Grid>
 ```
 
@@ -138,7 +144,7 @@ ribbon.Tabs.Add(new RibbonTabModel("home", "Home")
 ```
 
 ```xml
-<rs:Ribbon Model="{x:Bind ViewModel.Ribbon}" />
+<Ribbon Model="{x:Bind ViewModel.Ribbon}" />
 ```
 
 Checked states, values, selection, display modes, contextual groups, the QAT and the backstage stay in two-way sync.

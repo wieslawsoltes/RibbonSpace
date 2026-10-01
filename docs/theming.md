@@ -73,6 +73,17 @@ Every control is lookless. Copy a style from `src/RibbonSpace.Uno/Themes/*.xaml`
 Keep the `PART_*` names. Item content is drawn by `RibbonItemContent`; set its properties from the template to change
 icon or label placement.
 
+Type names inside `TargetType` need a `using:` namespace (unprefixed RibbonSpace types work for elements, not for
+attribute values). An app style adds to the built-in default style, so the template is kept unless you set one:
+
+```xml
+<ResourceDictionary xmlns:rs="using:RibbonSpace.Controls">
+  <Style TargetType="rs:RibbonButton">
+    <Setter Property="MinWidth" Value="48" />
+  </Style>
+</ResourceDictionary>
+```
+
 ## Density and metrics
 
 See [Layout](layout.md#density-and-metrics).

@@ -1,14 +1,14 @@
 # Quick Access Toolbar
 
 ```xml
-<rs:Ribbon QuickAccessPosition="AboveRibbon" IsQuickAccessVisible="True" ShowQuickAccessLabels="False">
-  <rs:Ribbon.QuickAccessToolBar>
-    <rs:RibbonQuickAccessToolBar>
-      <rs:RibbonButton Id="save" Label="Save" Icon="&#xE74E;" Shortcut="Ctrl+S" />
-      <rs:RibbonButton Id="undo" Label="Undo" Icon="&#xE7A7;" />
-    </rs:RibbonQuickAccessToolBar>
-  </rs:Ribbon.QuickAccessToolBar>
-</rs:Ribbon>
+<Ribbon QuickAccessPosition="AboveRibbon" IsQuickAccessVisible="True" ShowQuickAccessLabels="False">
+  <Ribbon.QuickAccessToolBar>
+    <RibbonQuickAccessToolBar>
+      <RibbonButton Id="save" Label="Save" Icon="&#xE74E;" Shortcut="Ctrl+S" />
+      <RibbonButton Id="undo" Label="Undo" Icon="&#xE7A7;" />
+    </RibbonQuickAccessToolBar>
+  </Ribbon.QuickAccessToolBar>
+</Ribbon>
 ```
 
 - **Add to QAT:** right-click any item → *Add to Quick Access Toolbar*, or call `ribbon.AddToQuickAccess(item)` /

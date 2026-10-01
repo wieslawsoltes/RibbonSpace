@@ -48,6 +48,9 @@ All notable changes to this project are documented here. The format follows
   - `RibbonCustomizeDialog`
 - Theming: Light / Dark / HighContrast (system colours) theme resources with live palette and chrome switching;
   `RibbonTheme.GetBrush` / `SetThemeBrush` for theme-aware code-built visuals.
+- XAML without namespace boilerplate: RibbonSpace types are registered in Uno's global XAML namespace (`<Ribbon>`,
+  no prefix or declaration in Uno.Sdk projects) and in the XML namespace `https://github.com/wieslawsoltes/RibbonSpace`
+  (`RibbonXmlns`) with the implicit `rs` prefix; `using:` remains for Windows App SDK heads.
 - Persistence of recent searches, QAT defaults and reset (`DefaultQuickAccessItemIds`, `ResetQuickAccess`).
 - Tooling and samples:
   - automation peers

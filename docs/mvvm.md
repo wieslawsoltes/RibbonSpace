@@ -3,7 +3,7 @@
 Build the ribbon in a view model with `RibbonSpace.Core` and bind it:
 
 ```xml
-<rs:Ribbon Model="{x:Bind ViewModel.Ribbon}" />
+<Ribbon Model="{x:Bind ViewModel.Ribbon}" />
 ```
 
 ```csharp

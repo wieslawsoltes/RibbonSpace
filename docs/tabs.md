@@ -1,7 +1,7 @@
 # Tabs and contextual tabs
 
 ```xml
-<rs:RibbonTab Id="home" Header="Home" KeyTip="H" ScreenTip="Common commands" />
+<RibbonTab Id="home" Header="Home" KeyTip="H" ScreenTip="Common commands" />
 ```
 
 - **Selection:**
@@ -23,11 +23,11 @@
 ## Contextual tabs
 
 ```xml
-<rs:Ribbon.ContextualGroups>
-  <rs:RibbonContextualTabGroup Id="table" Header="Table Tools" Color="#0F7B6C" Activation="SelectOnShow" />
-</rs:Ribbon.ContextualGroups>
-<rs:RibbonTab Id="tableDesign" Header="Table Design" ContextualGroupId="table" />
-<rs:RibbonTab Id="tableLayout" Header="Layout" ContextualGroupId="table" />
+<Ribbon.ContextualGroups>
+  <RibbonContextualTabGroup Id="table" Header="Table Tools" Color="#0F7B6C" Activation="SelectOnShow" />
+</Ribbon.ContextualGroups>
+<RibbonTab Id="tableDesign" Header="Table Design" ContextualGroupId="table" />
+<RibbonTab Id="tableLayout" Header="Layout" ContextualGroupId="table" />
 ```
 
 ```csharp

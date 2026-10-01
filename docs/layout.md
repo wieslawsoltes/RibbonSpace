@@ -27,8 +27,8 @@ An item's `SizeDefinition` maps the group state to the item size:
 | `Small` | `Small` | always icon only |
 
 ```xml
-<rs:RibbonSplitButton Label="Paste" SizeDefinition="Large" />          <!-- always large (Office Paste) -->
-<rs:RibbonButton Label="Find" Size="Large" SizeDefinition="Large, Large, Medium" />
+<RibbonSplitButton Label="Paste" SizeDefinition="Large" />          <!-- always large (Office Paste) -->
+<RibbonButton Label="Find" Size="Large" SizeDefinition="Large, Large, Medium" />
 ```
 
 Galleries show `MaxColumns` in the Large state and `MinColumns` in the Medium state, and become a drop-down button

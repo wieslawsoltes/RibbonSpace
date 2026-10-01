@@ -1,16 +1,16 @@
 # Backstage (File view)
 
 ```xml
-<rs:Ribbon.Backstage>
-  <rs:RibbonBackstage Title="Word" NavigationPaneWidth="220">
-    <rs:RibbonBackstageItem Id="home" Header="Home" Icon="&#xE80F;" KeyTip="H">
+<Ribbon.Backstage>
+  <RibbonBackstage Title="Word" NavigationPaneWidth="220">
+    <RibbonBackstageItem Id="home" Header="Home" Icon="&#xE80F;" KeyTip="H">
       <local:BackstageHomePage />                           <!-- page content -->
-    </rs:RibbonBackstageItem>
-    <rs:RibbonBackstageItem Id="save" Header="Save" Icon="&#xE74E;" Command="{x:Bind ViewModel.SaveCommand}" />  <!-- action -->
-    <rs:RibbonBackstageItem Id="info" Header="Info" HasSeparatorBefore="True" Content="{x:Bind ViewModel.Info}" ContentTemplate="{StaticResource InfoTemplate}" />
-    <rs:RibbonBackstageItem Id="options" Header="Options" Icon="&#xE713;" Placement="Bottom" />
-  </rs:RibbonBackstage>
-</rs:Ribbon.Backstage>
+    </RibbonBackstageItem>
+    <RibbonBackstageItem Id="save" Header="Save" Icon="&#xE74E;" Command="{x:Bind ViewModel.SaveCommand}" />  <!-- action -->
+    <RibbonBackstageItem Id="info" Header="Info" HasSeparatorBefore="True" Content="{x:Bind ViewModel.Info}" ContentTemplate="{StaticResource InfoTemplate}" />
+    <RibbonBackstageItem Id="options" Header="Options" Icon="&#xE713;" Placement="Bottom" />
+  </RibbonBackstage>
+</Ribbon.Backstage>
 ```
 
 - **Open / close:**

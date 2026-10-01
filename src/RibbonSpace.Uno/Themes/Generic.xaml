@@ -1,0 +1,11 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="ms-appx:///RibbonSpace.Uno/Themes/Shared.xaml" />
+    <ResourceDictionary Source="ms-appx:///RibbonSpace.Uno/Themes/Items.xaml" />
+    <ResourceDictionary Source="ms-appx:///RibbonSpace.Uno/Themes/Ribbon.xaml" />
+    <ResourceDictionary Source="ms-appx:///RibbonSpace.Uno/Themes/Backstage.xaml" />
+    <ResourceDictionary Source="ms-appx:///RibbonSpace.Uno/Themes/Inputs.xaml" />
+    <ResourceDictionary Source="ms-appx:///RibbonSpace.Uno/Themes/Chrome.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

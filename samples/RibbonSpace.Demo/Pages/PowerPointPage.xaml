@@ -1,0 +1,194 @@
+<UserControl x:Class="RibbonSpace.Demo.Pages.PowerPointPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:rs="using:RibbonSpace.Controls">
+  <Grid Background="{ThemeResource RibbonWindowBackgroundBrush}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <rs:RibbonTitleBar x:Name="TitleBar" Title="Product launch" Subtitle="• Simplified ribbon" AppIcon="&#xE7F4;" />
+    <rs:Ribbon x:Name="Ribbon" Grid.Row="1" DisplayMode="Simplified" IsShortcutRoutingEnabled="True">
+      <rs:Ribbon.QuickAccessToolBar>
+        <rs:RibbonQuickAccessToolBar>
+          <rs:RibbonButton Id="pp.save" Label="Save" Icon="&#xE74E;" />
+          <rs:RibbonButton Id="pp.undo" Label="Undo" Icon="&#xE7A7;" />
+          <rs:RibbonButton Id="pp.fromBeginning" Label="From Beginning" Icon="&#xE768;" Shortcut="F5" />
+        </rs:RibbonQuickAccessToolBar>
+      </rs:Ribbon.QuickAccessToolBar>
+      <rs:Ribbon.TabStripItems>
+        <rs:RibbonButton Id="pp.record" Label="Record" Icon="&#xE7C8;" SimplifiedLabel="Show" />
+        <rs:RibbonSplitButton Id="pp.present" Label="Present" Icon="&#xE7F4;" Size="Small" SimplifiedLabel="Show" />
+        <rs:RibbonButton Id="pp.share" Label="Share" Icon="&#xE72D;" SimplifiedLabel="Show" />
+      </rs:Ribbon.TabStripItems>
+
+      <rs:RibbonTab Header="Home" Id="home">
+        <rs:RibbonGroup Header="Clipboard" Id="clipboard" Icon="&#xE77F;">
+          <rs:RibbonSplitButton Id="pp.paste" Label="Paste" Icon="&#xE77F;" SizeDefinition="Large" SimplifiedVisibility="Pinned" />
+          <rs:RibbonButton Id="pp.cut" Label="Cut" Icon="&#xE8C6;" />
+          <rs:RibbonButton Id="pp.copy" Label="Copy" Icon="&#xE8C8;" />
+          <rs:RibbonToggleButton Id="pp.formatPainter" Label="Format Painter" Icon="&#xE771;" Size="Medium" SimplifiedVisibility="Overflow" />
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Slides" Id="slides" Icon="&#xE7F4;">
+          <rs:RibbonSplitButton Id="pp.newSlide" Label="New Slide" Icon="&#xE710;" SizeDefinition="Large" Shortcut="Ctrl+M" />
+          <rs:RibbonDropDownButton Id="pp.layout" Label="Layout" Icon="&#xE8A9;" />
+          <rs:RibbonButton Id="pp.reset" Label="Reset" Icon="&#xE72C;" SimplifiedVisibility="Overflow" />
+          <rs:RibbonDropDownButton Id="pp.section" Label="Section" Icon="&#xE8FD;" SimplifiedVisibility="Overflow" />
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Font" Id="font" ItemsLayout="Rows" RowCount="2" Icon="&#xE8D2;">
+          <rs:RibbonStackPanel>
+            <rs:RibbonFontComboBox Id="pp.font" Text="Aptos Display" />
+            <rs:RibbonFontSizeComboBox Id="pp.fontSize" Text="28" />
+          </rs:RibbonStackPanel>
+          <rs:RibbonStackPanel>
+            <rs:RibbonButtonGroup>
+              <rs:RibbonToggleButton Id="pp.bold" Label="Bold" Icon="&#xE8DD;" Shortcut="Ctrl+B" />
+              <rs:RibbonToggleButton Id="pp.italic" Label="Italic" Icon="&#xE8DB;" Shortcut="Ctrl+I" />
+              <rs:RibbonToggleButton Id="pp.underline" Label="Underline" Icon="&#xE8DC;" Shortcut="Ctrl+U" />
+            </rs:RibbonButtonGroup>
+            <rs:RibbonColorPicker Id="pp.fontColor" Label="Font Color" Icon="&#xE8D3;" SelectedColor="#C43E1C" />
+          </rs:RibbonStackPanel>
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Paragraph" Id="paragraph" Icon="&#xE8FD;">
+          <rs:RibbonSplitButton Id="pp.bullets" Label="Bullets" Icon="&#xE8FD;" Size="Small" IsCheckable="True" />
+          <rs:RibbonButtonGroup>
+            <rs:RibbonToggleButton Id="pp.left" Label="Align Left" Icon="&#xE8E4;" GroupName="ppalign" IsChecked="True" />
+            <rs:RibbonToggleButton Id="pp.center" Label="Center" Icon="&#xE8E3;" GroupName="ppalign" />
+            <rs:RibbonToggleButton Id="pp.right" Label="Align Right" Icon="&#xE8E2;" GroupName="ppalign" />
+          </rs:RibbonButtonGroup>
+          <rs:RibbonDropDownButton Id="pp.textDirection" Label="Text Direction" Icon="&#xE8D2;" SimplifiedVisibility="Overflow" />
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Drawing" Id="drawing" Icon="&#xE91B;">
+          <rs:RibbonDropDownButton Id="pp.shapes" Label="Shapes" Icon="&#xE91B;" SizeDefinition="Large" />
+          <rs:RibbonDropDownButton Id="pp.arrange" Label="Arrange" Icon="&#xE8F4;" />
+          <rs:RibbonColorPicker Id="pp.shapeFill" Label="Shape Fill" Icon="&#xE790;" SelectedColor="#C43E1C" />
+          <rs:RibbonColorPicker Id="pp.shapeOutline" Label="Shape Outline" Icon="&#xE80A;" SelectedColor="#404040" />
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Designer" Id="designer" Icon="&#xE790;">
+          <rs:RibbonButton Id="pp.designer" Label="Designer" Icon="&#xE790;" Size="Large" SimplifiedVisibility="Pinned" />
+        </rs:RibbonGroup>
+      </rs:RibbonTab>
+
+      <rs:RibbonTab Header="Insert" Id="insert">
+        <rs:RibbonGroup Header="Slides" Id="insertSlides">
+          <rs:RibbonSplitButton Id="pp.newSlide2" Label="New Slide" Icon="&#xE710;" SizeDefinition="Large" />
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Tables" Id="insertTables">
+          <rs:RibbonDropDownButton Id="pp.table" Label="Table" Icon="&#xE80A;" Size="Large" />
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Images" Id="images">
+          <rs:RibbonDropDownButton Id="pp.pictures" Label="Pictures" Icon="&#xEB9F;" Size="Large" />
+          <rs:RibbonButton Id="pp.screenshot" Label="Screenshot" Icon="&#xE722;" />
+          <rs:RibbonButton Id="pp.photoAlbum" Label="Photo Album" Icon="&#xE8F1;" />
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Illustrations" Id="pp.illustrations">
+          <rs:RibbonDropDownButton Id="pp.shapes2" Label="Shapes" Icon="&#xE91B;" Size="Large" />
+          <rs:RibbonButton Id="pp.icons" Label="Icons" Icon="&#xED58;" Size="Large" />
+          <rs:RibbonButton Id="pp.chart" Label="Chart" Icon="&#xE9D2;" />
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Media" Id="pp.media">
+          <rs:RibbonDropDownButton Id="pp.video" Label="Video" Icon="&#xE714;" Size="Large" />
+          <rs:RibbonDropDownButton Id="pp.audio" Label="Audio" Icon="&#xE8D6;" Size="Large" />
+        </rs:RibbonGroup>
+      </rs:RibbonTab>
+
+      <rs:RibbonTab Header="Design" Id="design">
+        <rs:RibbonGroup Header="Themes" Id="themes" ReductionOrder="1">
+          <rs:RibbonGallery x:Name="Themes" Id="pp.themes" Label="Themes" Icon="&#xE790;" MaxColumns="6" MinColumns="3" ItemWidth="80" ItemHeight="56" ShowItemLabels="False">
+            <rs:RibbonGalleryItem Label="Office Theme" PreviewText="Aa" PreviewFontSize="20" PreviewBackground="#FFFFFF" PreviewForeground="#262626" />
+            <rs:RibbonGalleryItem Label="Facet" PreviewText="Aa" PreviewFontSize="20" PreviewBackground="#90C226" PreviewForeground="#FFFFFF" />
+            <rs:RibbonGalleryItem Label="Ion" PreviewText="Aa" PreviewFontSize="20" PreviewBackground="#1E5155" PreviewForeground="#FFFFFF" />
+            <rs:RibbonGalleryItem Label="Retrospect" PreviewText="Aa" PreviewFontSize="20" PreviewBackground="#E48312" PreviewForeground="#FFFFFF" />
+            <rs:RibbonGalleryItem Label="Slice" PreviewText="Aa" PreviewFontSize="20" PreviewBackground="#146194" PreviewForeground="#FFFFFF" />
+            <rs:RibbonGalleryItem Label="Wisp" PreviewText="Aa" PreviewFontSize="20" PreviewBackground="#EFE3C6" PreviewForeground="#5E3A1B" />
+            <rs:RibbonGalleryItem Label="Berlin" PreviewText="Aa" PreviewFontSize="20" PreviewBackground="#A6452E" PreviewForeground="#FFFFFF" />
+            <rs:RibbonGalleryItem Label="Dividend" PreviewText="Aa" PreviewFontSize="20" PreviewBackground="#4D1434" PreviewForeground="#FFFFFF" />
+          </rs:RibbonGallery>
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Customize" Id="customize">
+          <rs:RibbonDropDownButton Id="pp.slideSize" Label="Slide Size" Icon="&#xE740;" Size="Large" />
+          <rs:RibbonButton Id="pp.formatBackground" Label="Format Background" Icon="&#xE790;" Size="Large" />
+        </rs:RibbonGroup>
+      </rs:RibbonTab>
+
+      <rs:RibbonTab Header="Transitions" Id="transitions">
+        <rs:RibbonGroup Header="Preview" Id="preview">
+          <rs:RibbonButton Id="pp.previewTransition" Label="Preview" Icon="&#xE768;" Size="Large" />
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Transition to This Slide" Id="transitionGallery" ReductionOrder="1">
+          <rs:RibbonGallery Id="pp.transitions" Label="Transitions" Icon="&#xE8AB;" MaxColumns="7" MinColumns="3" ItemWidth="60" ItemHeight="60">
+            <rs:RibbonGalleryItem Label="None" Icon="&#xE711;" />
+            <rs:RibbonGalleryItem Label="Morph" Icon="&#xE8AB;" />
+            <rs:RibbonGalleryItem Label="Fade" Icon="&#xE706;" />
+            <rs:RibbonGalleryItem Label="Push" Icon="&#xE76C;" />
+            <rs:RibbonGalleryItem Label="Wipe" Icon="&#xE8B3;" />
+            <rs:RibbonGalleryItem Label="Split" Icon="&#xE8A0;" />
+            <rs:RibbonGalleryItem Label="Reveal" Icon="&#xE890;" />
+            <rs:RibbonGalleryItem Label="Cut" Icon="&#xE8C6;" />
+            <rs:RibbonGalleryItem Label="Random Bars" Icon="&#xE9D2;" />
+          </rs:RibbonGallery>
+          <rs:RibbonDropDownButton Id="pp.effectOptions" Label="Effect Options" Icon="&#xE713;" Size="Large" />
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Timing" Id="timing">
+          <rs:RibbonSpinner Id="pp.duration" Label="Duration:" Value="2" Minimum="0" Maximum="59" Increment="0.25" Format="00.00" />
+          <rs:RibbonCheckBox Id="pp.onMouseClick" Label="On Mouse Click" IsChecked="True" />
+          <rs:RibbonButton Id="pp.applyToAll" Label="Apply To All" Icon="&#xE8B3;" />
+        </rs:RibbonGroup>
+      </rs:RibbonTab>
+
+      <rs:RibbonTab Header="Slide Show" Id="slideShow">
+        <rs:RibbonGroup Header="Start Slide Show" Id="start">
+          <rs:RibbonButton Id="pp.fromBeginning2" Label="From Beginning" Icon="&#xE768;" Size="Large" Shortcut="F5" />
+          <rs:RibbonButton Id="pp.fromCurrent" Label="From Current Slide" Icon="&#xE768;" Size="Large" Shortcut="Shift+F5" />
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Set Up" Id="setUp">
+          <rs:RibbonButton Id="pp.setUpShow" Label="Set Up Slide Show" Icon="&#xE713;" Size="Large" />
+          <rs:RibbonToggleButton Id="pp.hideSlide" Label="Hide Slide" Icon="&#xE890;" Size="Large" />
+          <rs:RibbonCheckBox Id="pp.useTimings" Label="Use Timings" IsChecked="True" />
+        </rs:RibbonGroup>
+      </rs:RibbonTab>
+
+      <rs:RibbonTab Header="View" Id="view">
+        <rs:RibbonGroup Header="Presentation Views" Id="presentationViews">
+          <rs:RibbonToggleButton Id="pp.normal" Label="Normal" Icon="&#xE7F4;" Size="Large" GroupName="ppview" IsChecked="True" />
+          <rs:RibbonToggleButton Id="pp.sorter" Label="Slide Sorter" Icon="&#xE80A;" Size="Large" GroupName="ppview" />
+          <rs:RibbonToggleButton Id="pp.notesPage" Label="Notes Page" Icon="&#xE70B;" Size="Large" GroupName="ppview" />
+        </rs:RibbonGroup>
+        <rs:RibbonGroup Header="Show" Id="ppShow">
+          <rs:RibbonCheckBox Id="pp.ruler" Label="Ruler" />
+          <rs:RibbonCheckBox Id="pp.gridlines" Label="Gridlines" />
+          <rs:RibbonCheckBox Id="pp.guides" Label="Guides" />
+        </rs:RibbonGroup>
+      </rs:RibbonTab>
+    </rs:Ribbon>
+
+    <Grid Grid.Row="2" Padding="12" ColumnSpacing="12">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="170" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <StackPanel x:Name="Thumbnails" Spacing="10" />
+      <Viewbox Grid.Column="1" Stretch="Uniform">
+        <Border x:Name="Slide" Width="960" Height="540" Background="#FFFFFF" CornerRadius="4" BorderThickness="1" BorderBrush="#22000000">
+          <Grid Padding="60">
+            <StackPanel VerticalAlignment="Center" Spacing="16">
+              <TextBlock x:Name="SlideTitle" Text="Introducing RibbonSpace" FontSize="54" FontWeight="SemiBold" Foreground="#262626" />
+              <TextBlock x:Name="SlideSubtitle" Text="A modern ribbon for Uno Platform" FontSize="28" Foreground="#595959" />
+            </StackPanel>
+          </Grid>
+        </Border>
+      </Viewbox>
+    </Grid>
+
+    <rs:RibbonStatusBar Grid.Row="3">
+      <TextBlock Text="Slide 1 of 4" VerticalAlignment="Center" />
+      <TextBlock x:Name="Status" Text="Hover the Themes gallery for live preview" VerticalAlignment="Center" />
+      <rs:RibbonStatusBar.EndItems>
+        <rs:RibbonButton Label="Notes" Icon="&#xE70B;" />
+        <rs:RibbonZoomControl Value="64" />
+      </rs:RibbonStatusBar.EndItems>
+    </rs:RibbonStatusBar>
+  </Grid>
+</UserControl>

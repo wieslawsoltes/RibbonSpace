@@ -1,0 +1,57 @@
+<UserControl x:Class="RibbonSpace.Demo.Pages.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ScrollViewer Background="{ThemeResource RibbonWindowBackgroundBrush}">
+    <Grid Padding="32" ColumnSpacing="32" RowSpacing="12">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="360" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <StackPanel Spacing="14">
+        <TextBlock Text="Appearance" FontSize="22" FontWeight="SemiBold" />
+        <ComboBox x:Name="Theme" Header="Theme" Width="280" SelectedIndex="0">
+          <x:String>System</x:String>
+          <x:String>Light</x:String>
+          <x:String>Dark</x:String>
+        </ComboBox>
+        <ComboBox x:Name="Palette" Header="Accent palette" Width="280" />
+        <ComboBox x:Name="Chrome" Header="Chrome style" Width="280" SelectedIndex="0">
+          <x:String>Neutral</x:String>
+          <x:String>Colorful (accent title bar)</x:String>
+        </ComboBox>
+        <ComboBox x:Name="Density" Header="Density" Width="280" SelectedIndex="0">
+          <x:String>Comfortable</x:String>
+          <x:String>Compact</x:String>
+          <x:String>Touch</x:String>
+        </ComboBox>
+        <ComboBox x:Name="Layout" Header="Ribbon layout (all pages)" Width="280" SelectedIndex="0">
+          <x:String>Page default</x:String>
+          <x:String>Classic</x:String>
+          <x:String>Simplified</x:String>
+        </ComboBox>
+        <ComboBox x:Name="Language" Header="Ribbon UI language" Width="280" SelectedIndex="0">
+          <x:String>en</x:String>
+          <x:String>de</x:String>
+          <x:String>fr</x:String>
+          <x:String>es</x:String>
+          <x:String>pl</x:String>
+        </ComboBox>
+        <TextBlock Text="Word ribbon" FontSize="22" FontWeight="SemiBold" Margin="0,16,0,0" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button x:Name="ShowState" Content="Show state JSON" />
+          <Button x:Name="ResetCustomization" Content="Reset customization" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button x:Name="Customize" Content="Customize the Ribbon..." />
+          <Button x:Name="Palette2" Content="Command palette" />
+        </StackPanel>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Spacing="12">
+        <TextBlock Text="State (RibbonState JSON)" FontSize="16" FontWeight="SemiBold" />
+        <TextBox x:Name="StateJson" AcceptsReturn="True" TextWrapping="Wrap" Height="260" FontFamily="Consolas,Menlo,monospace" FontSize="12" />
+        <TextBlock Text="Event log (ItemInvoked)" FontSize="16" FontWeight="SemiBold" />
+        <TextBlock x:Name="LogText" FontFamily="Consolas,Menlo,monospace" FontSize="12" TextWrapping="Wrap" />
+      </StackPanel>
+    </Grid>
+  </ScrollViewer>
+</UserControl>

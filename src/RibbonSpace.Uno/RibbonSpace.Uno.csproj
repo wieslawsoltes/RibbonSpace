@@ -1,0 +1,26 @@
+<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net10.0-desktop;net10.0-browserwasm</TargetFrameworks>
+    <TargetFrameworks Condition="'$(RibbonSpaceAllTargets)' == 'true'">$(TargetFrameworks);net10.0-android;net10.0-ios</TargetFrameworks>
+    <TargetFrameworks Condition="'$(RibbonSpaceAllTargets)' == 'true' and $([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.26100</TargetFrameworks>
+    <TargetFrameworks Condition="'$(RibbonSpaceTargetFrameworks)' != ''">$(RibbonSpaceTargetFrameworks)</TargetFrameworks>
+    <UnoSingleProject>true</UnoSingleProject>
+    <OutputType>Library</OutputType>
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+    <!--
+      Skia renderer (the Uno 6 default). Without it the WebAssembly target references the native DOM runtime
+      (Uno.WinUI.Runtime.WebAssembly), which Skia-rendered apps reject (UNOB0017). Desktop targets always include the
+      Skia packages regardless of this setting.
+    -->
+    <UnoFeatures>SkiaRenderer</UnoFeatures>
+    <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
+    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;Uno0001</NoWarn>
+    <RootNamespace>RibbonSpace</RootNamespace>
+    <Description>Professional Office-style Ribbon for Uno Platform: classic and simplified layouts, adaptive group resizing, contextual tabs, backstage, Quick Access Toolbar, KeyTips, galleries, color pickers, ScreenTips, command search, customization, toolbars and full MVVM support. Themeable and lookless.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../RibbonSpace.Core/RibbonSpace.Core.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net9.0</TargetFrameworks>
+    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsTrimmable>true</IsTrimmable>
+    <IsAotCompatible>true</IsAotCompatible>
+    <Description>UI-agnostic, MVVM-first ribbon model for RibbonSpace: tabs, groups, commands, galleries, Quick Access Toolbar, backstage, contextual tabs, KeyTips, adaptive layout, command search, customization and persistence.</Description>
+  </PropertyGroup>
+</Project>

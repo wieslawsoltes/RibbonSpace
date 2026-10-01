@@ -76,12 +76,16 @@ jobs:
         run: dotnet workload install android ios wasm-tools
       # WinUI class libraries with XAML must be built with Visual Studio's MSBuild, not `dotnet build` (UNOB0008).
       - uses: microsoft/setup-msbuild@v2
-      - name: Pack (all targets)
+      - name: Pack RibbonSpace.Core
         shell: bash
+        run: dotnet pack src/RibbonSpace.Core/RibbonSpace.Core.csproj -c Release -p:Version="$VERSION" -o artifacts/packages
+      # MSBuild from setup-msbuild is on the PATH of PowerShell / cmd steps, not of Git Bash.
+      - name: Pack RibbonSpace.Uno (all targets)
+        shell: pwsh
         run: |
-          dotnet pack src/RibbonSpace.Core/RibbonSpace.Core.csproj -c Release -p:Version="$VERSION" -o artifacts/packages
-          msbuild src/RibbonSpace.Uno/RibbonSpace.Uno.csproj -t:Pack -restore -m -p:Configuration=Release -p:Version="$VERSION" -p:RibbonSpaceAllTargets=true -p:PackageOutputPath="$GITHUB_WORKSPACE/artifacts/packages"
-          ls -la artifacts/packages
+          msbuild src/RibbonSpace.Uno/RibbonSpace.Uno.csproj -t:Pack -restore -m -p:Configuration=Release "-p:Version=$env:VERSION" -p:RibbonSpaceAllTargets=true "-p:PackageOutputPath=$env:GITHUB_WORKSPACE/artifacts/packages"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Get-ChildItem artifacts/packages
       - uses: actions/upload-artifact@v4
         with:
           name: nuget-packages

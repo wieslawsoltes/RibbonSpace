@@ -5,6 +5,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-01
+
 ### Added
 - `RibbonSpace.Core`:
   - MVVM ribbon model (tabs, groups, 18 item kinds, menus, galleries, colour pickers, backstage, contextual groups,
@@ -76,3 +78,6 @@ All notable changes to this project are documented here. The format follows
   - runtime UI test runner
   - screenshot automation
   - CI, Pages and Trusted Publishing release workflows
+
+[Unreleased]: https://github.com/wieslawsoltes/RibbonSpace/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/wieslawsoltes/RibbonSpace/releases/tag/v1.0.0

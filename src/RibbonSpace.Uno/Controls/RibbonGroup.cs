@@ -91,6 +91,8 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
         DefaultStyleKey = typeof(RibbonGroup);
         RibbonTheme.EnsureResources();
         Items.CollectionChanged += OnItemsChanged;
+        SlideOutItems.CollectionChanged += OnSlideOutItemsChanged;
+        RightTapped += OnGroupRightTapped;
         IsTabStop = false;
         AutomationProperties.SetLandmarkType(this, AutomationLandmarkType.Custom);
     }
@@ -198,7 +200,8 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
 
     private void UpdateVisibility()
     {
-        Visibility = IsGroupVisible && !_hiddenByCustomization ? Visibility.Visible : Visibility.Collapsed;
+        // A floating panel leaves its place in the tab (it lives in its own window-level popup).
+        Visibility = IsGroupVisible && !_hiddenByCustomization && !IsFloating ? Visibility.Visible : Visibility.Collapsed;
         Tab?.InvalidateGroupsLayout();
     }
 
@@ -215,6 +218,7 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
             _collapsedButton.Click -= OnCollapsedClick;
         }
 
+        DetachPanelParts();
         if (_itemsPresenter is not null && ReferenceEquals(_itemsPresenter.Child, _itemsPanel))
         {
             _itemsPresenter.Child = null;
@@ -226,10 +230,12 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
         _captionRow = GetTemplateChild("PART_CaptionRow") as FrameworkElement;
         _launcher = GetTemplateChild("PART_DialogLauncher") as Button;
         _collapsedButton = GetTemplateChild("PART_CollapsedButton") as RibbonButton;
-        if (_itemsPresenter is not null && _popupPresenter?.Child != _itemsPanel)
+        if (_itemsPresenter is not null && _popupPresenter?.Child != _itemsPanel && !IsFloating)
         {
             _itemsPresenter.Child = _itemsPanel;
         }
+
+        AttachPanelParts();
 
         if (_launcher is not null)
         {
@@ -240,7 +246,7 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
         {
             _collapsedButton.Click += OnCollapsedClick;
             _collapsedButton.IsChromeButton = true;
-            _collapsedButton.ApplyLayout(new RibbonItemLayout(RibbonItemSize.Large, _metrics));
+            ApplyCollapsedButtonLayout();
         }
 
         SyncItems();
@@ -254,7 +260,10 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
         if (_collapsedButton is not null)
         {
             _collapsedButton.Label = Header;
-            _collapsedButton.Icon = Icon ?? Items.OfType<IRibbonItem>().FirstOrDefault(i => i.Icon is not null)?.Icon ?? "";
+            // Panel titles (AutoCAD "Minimize to Panel Titles") show the title only.
+            _collapsedButton.Icon = PanelPresentation == RibbonPanelPresentation.Titles
+                ? null
+                : Icon ?? Items.OfType<IRibbonItem>().FirstOrDefault(i => i.Icon is not null)?.Icon ?? "";
             _collapsedButton.ScreenTip = ScreenTip;
         }
 
@@ -294,9 +303,16 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
 
         var visible = IsDialogLauncherVisible || DialogLauncherCommand is not null;
         _launcher.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-        var tip = DialogLauncherScreenTip ?? RibbonStrings.Current.Format(nameof(RibbonStrings.DialogLauncher), Header ?? string.Empty);
-        ToolTipService.SetToolTip(_launcher, RibbonScreenTipService.Create(RibbonStrings.Current.Format(nameof(RibbonStrings.DialogLauncher), Header ?? string.Empty), tip is string ? null : tip, null));
+        ToolTipService.SetToolTip(_launcher, CreateLauncherToolTip());
         AutomationProperties.SetName(_launcher, RibbonStrings.Current.Format(nameof(RibbonStrings.DialogLauncher), Header ?? string.Empty));
+    }
+
+    // A new tooltip per button: tooltip content is an element and can only have one parent.
+    private ToolTip? CreateLauncherToolTip()
+    {
+        var title = RibbonStrings.Current.Format(nameof(RibbonStrings.DialogLauncher), Header ?? string.Empty);
+        var tip = DialogLauncherScreenTip ?? title;
+        return RibbonScreenTipService.CreateToolTip(RibbonScreenTipService.Create(title, tip is string ? null : tip, null));
     }
 
     private void OnLauncherClick(object sender, RoutedEventArgs e) => OpenDialogLauncher();
@@ -415,7 +431,7 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
             ApplyItemLayouts(itemState, simplified, metrics);
         }
 
-        _collapsedButton?.ApplyLayout(new RibbonItemLayout(RibbonItemSize.Large, metrics));
+        ApplyCollapsedButtonLayout();
         ApplyPresentation();
         _itemsPanel.InvalidateMeasure();
         InvalidateMeasure();
@@ -454,9 +470,11 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
 
         if (_captionRow is not null)
         {
-            _captionRow.Visibility = IsSimplified || collapsed ? Visibility.Collapsed : Visibility.Visible;
+            _captionRow.Visibility = IsSimplified || collapsed || !ShowsCaption ? Visibility.Collapsed : Visibility.Visible;
             _captionRow.Height = _metrics.GroupCaptionHeight;
         }
+
+        UpdateSlideOutButton();
 
         VisualStateManager.GoToState(this, IsSimplified ? "Simplified" : collapsed ? "Collapsed" : "Expanded", false);
     }
@@ -542,6 +560,8 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
             var caption = new Grid { Height = _metrics.GroupCaptionHeight, Children = { header, launcher } };
             var content = new StackPanel { Padding = new Thickness(4, 3, 4, 0) };
             content.Children.Add(_popupPresenter);
+            _popupSlideOutHost = new Border { Margin = new Thickness(0, 2, 0, 0) };
+            content.Children.Add(_popupSlideOutHost);
             content.Children.Add(caption);
             var chrome = new Border { Child = content, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(6) };
             RibbonTheme.SetThemeBrush(chrome, Border.BackgroundProperty, "RibbonCommandBarBackgroundBrush");
@@ -569,6 +589,7 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
         ApplyItemLayouts(RibbonGroupState.Large, false, _metrics);
         _itemsPanel.IsSimplified = false;
         _popupPresenter.Child = _itemsPanel;
+        MoveSlideOutIntoPopup();
         _popup.XamlRoot = XamlRoot;
         if (_popup.Child is FrameworkElement popupChild)
         {
@@ -586,7 +607,7 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
             if (_launcher is not null)
             {
                 AutomationProperties.SetName(_popupLauncher, AutomationProperties.GetName(_launcher));
-                ToolTipService.SetToolTip(_popupLauncher, ToolTipService.GetToolTip(_launcher));
+                ToolTipService.SetToolTip(_popupLauncher, CreateLauncherToolTip());
             }
         }
 
@@ -607,6 +628,7 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
 
     private void RestoreFromPopup()
     {
+        MoveSlideOutOutOfPopup();
         if (_popupPresenter is not null && ReferenceEquals(_popupPresenter.Child, _itemsPanel))
         {
             _popupPresenter.Child = null;
@@ -652,6 +674,18 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
             }
         }
 
+        if (IsPopupOpen)
+        {
+            foreach (var target in SlideOutItems.Where(i => i.Visibility == Visibility.Visible).SelectMany(Flatten))
+            {
+                yield return target;
+            }
+        }
+        else if (!IsSimplified && _slideOutButton is { Visibility: Visibility.Visible })
+        {
+            yield return _slideOutButton;
+        }
+
         if (IsPopupOpen && _popupLauncher is { Visibility: Visibility.Visible })
         {
             yield return _popupLauncher;
@@ -687,7 +721,7 @@ public partial class RibbonGroup : Control, IRibbonLayoutHost
     }
 
     /// <summary>All items including nested ones.</summary>
-    public IEnumerable<FrameworkElement> GetAllItems() => Items.SelectMany(Flatten);
+    public IEnumerable<FrameworkElement> GetAllItems() => Items.Concat(SlideOutItems).SelectMany(Flatten);
 
     /// <inheritdoc />
     protected override AutomationPeer OnCreateAutomationPeer() => new RibbonGroupAutomationPeer(this);

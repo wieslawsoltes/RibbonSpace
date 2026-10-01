@@ -191,6 +191,8 @@ public partial class Ribbon
                 QuickAccessPosition = newModel.QuickAccessPosition;
                 IsQuickAccessVisible = newModel.IsQuickAccessVisible;
                 ShowQuickAccessLabels = newModel.ShowQuickAccessLabels;
+                MinimizeBehavior = newModel.MinimizeBehavior;
+                ShowGroupCaptions = newModel.ShowGroupCaptions;
                 ApplicationButtonLabel = newModel.ApplicationButtonLabel;
                 IsApplicationButtonVisible = newModel.IsApplicationButtonVisible;
             }
@@ -201,6 +203,7 @@ public partial class Ribbon
         },
         nameof(RibbonModel.SelectedTabId), nameof(RibbonModel.DisplayMode), nameof(RibbonModel.VisibilityMode), nameof(RibbonModel.Density),
         nameof(RibbonModel.QuickAccessPosition), nameof(RibbonModel.IsQuickAccessVisible), nameof(RibbonModel.ShowQuickAccessLabels),
+        nameof(RibbonModel.MinimizeBehavior), nameof(RibbonModel.ShowGroupCaptions),
         nameof(RibbonModel.ApplicationButtonLabel), nameof(RibbonModel.IsApplicationButtonVisible));
 
         if (newModel.SelectedTabId is null && SelectedTab is not null)
@@ -424,6 +427,15 @@ public partial class Ribbon
             model.QuickAccessPosition = QuickAccessPosition;
             model.IsQuickAccessVisible = IsQuickAccessVisible;
             model.ShowQuickAccessLabels = ShowQuickAccessLabels;
+        }
+    }
+
+    private void OnModelPanelOptionsChanged()
+    {
+        if (Model is { } model && !_syncingModel)
+        {
+            model.MinimizeBehavior = MinimizeBehavior;
+            model.ShowGroupCaptions = ShowGroupCaptions;
         }
     }
 

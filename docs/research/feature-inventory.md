@@ -115,3 +115,37 @@ Problems common to all of them:
   - Tabs-only KeyTips and tabs-only customization.
   - Thin automation peers.
   - Missing localization.
+
+## 5. AutoCAD-class ribbons (CadSpace)
+
+CadSpace's ribbon follows the AutoCAD layout:
+- compact dark panels with captions and launchers;
+- large commands whose label opens an alternatives menu ("LINE ▾");
+- three-row columns of small tools;
+- a Layers panel (layer drop-down plus visibility and lock toggles) and a Properties panel (colour, linetype and
+  lineweight pickers that show ByLayer and mixed values);
+- contextual tabs;
+- minimize and horizontal scrolling.
+
+AutoCAD itself documents these additional ribbon behaviours: expanded panels with a pushpin, floating panels,
+minimizing to tabs, panel titles or panel buttons (or cycling through all of them), and right-click Show Tabs / Show
+Panels. It also has progressive tooltips, the application menu (menu browser), and layer and property drop-downs drawn
+with icons.
+
+| AutoCAD / CadSpace | RibbonSpace |
+|---|---|
+| Dark blue-grey ribbon, panel title bars | `RibbonThemeStyle.Cad`, `RibbonThemePalette.Cad`, density `Compact` |
+| Large command + alternatives drop-down | `RibbonSplitButton` (`FollowLastChoice`), `RibbonDropDownButton` |
+| Three-row small tool columns | `RibbonGroup` items with `Size="Medium"` / `Small` (columns of 3), `RibbonStackPanel` rows |
+| Panel launcher arrow | `DialogLauncherCommand` / `IsDialogLauncherVisible` |
+| Expanded panel with pushpin | `RibbonGroup.SlideOutItems`, `IsSlideOutPinned` |
+| Floating panels, return to ribbon | `Ribbon.CanFloatGroups`, `RibbonGroup.Float()` / `ReturnToRibbon()`, `RibbonState.FloatingGroups` |
+| Minimize to tabs / panel titles / panel buttons / cycle | `RibbonVisibilityMode.PanelTitles` / `PanelButtons`, `Ribbon.MinimizeBehavior`, `IsMinimizeButtonVisible` |
+| Right-click Show Tabs / Show Panels / Show Panel Titles | `Ribbon.IsVisibilityMenuEnabled`, `ShowGroupCaptions` |
+| Contextual tabs (Text Editor, Hatch Creation) | `RibbonContextualTabGroup` (`Activation="SelectOnShow"`) |
+| Progressive tooltips | `RibbonScreenTip.ExtendedDescription` / `ExtendedImage`, `RibbonScreenTipService.ExtendedDelay` |
+| Application menu (search, sub-commands, recent documents) | `RibbonApplicationMenu` |
+| Layer / colour / linetype / lineweight drop-downs | `RibbonComboBox.ItemTemplate`, `SelectionBoxTemplate`, `PlaceholderText` for mixed values |
+| Workspace switching | `RibbonTab.IsTabVisible`, `ApplyCustomization`, or swapping the `RibbonModel` |
+| Line-art command icons | layered path icons (`RibbonIcon.Stroke`, `RibbonIcon.Layers`) |
+| Command line, status bar toggles, layout tabs | gallery CAD page (`RibbonStatusBar`, app XAML) |

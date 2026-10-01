@@ -26,6 +26,9 @@ public partial class Ribbon
         QuickAccessItemIds = GetQuickAccessItemIds().ToList(),
         Customization = Clone(_customization),
         RecentSearchIds = SearchEngine.Recent.ToList(),
+        MinimizeBehavior = MinimizeBehavior,
+        ShowGroupCaptions = ShowGroupCaptions,
+        FloatingGroups = GetFloatingGroupStates(),
     };
 
     /// <summary>Restores a state captured with <see cref="GetState"/>.</summary>
@@ -40,6 +43,8 @@ public partial class Ribbon
         }
 
         DisplayMode = state.DisplayMode;
+        MinimizeBehavior = state.MinimizeBehavior;
+        ShowGroupCaptions = state.ShowGroupCaptions;
         VisibilityMode = state.VisibilityMode;
         Density = state.Density;
         QuickAccessPosition = state.QuickAccessPosition;
@@ -82,6 +87,11 @@ public partial class Ribbon
         if (state.SelectedTabId is { } tabId)
         {
             SelectTab(tabId);
+        }
+
+        if (state.FloatingGroups is { } floating)
+        {
+            ApplyFloatingGroupStates(floating);
         }
     }
 

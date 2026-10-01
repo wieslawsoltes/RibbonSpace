@@ -140,15 +140,15 @@ public sealed class ItemTests : RuntimeTestBase
         var button = new RibbonButton { Label = "Cut", ScreenTip = new RibbonScreenTip { Description = "Cut it", DisabledReason = "Nothing selected" } };
         var copy = (RibbonButton)((IRibbonItem)button).CreateLinkedCopy()!;
         await Mount(new StackPanel { Children = { button, copy } });
-        var tip = ToolTipService.GetToolTip(button) as RibbonScreenTip;
-        var copyTip = ToolTipService.GetToolTip(copy) as RibbonScreenTip;
+        var tip = (ToolTipService.GetToolTip(button) as ToolTip)?.Content as RibbonScreenTip;
+        var copyTip = (ToolTipService.GetToolTip(copy) as ToolTip)?.Content as RibbonScreenTip;
         Assert.NotNull(tip, "Item tooltip");
         Assert.NotNull(copyTip, "Copy tooltip");
         Assert.False(ReferenceEquals(tip, copyTip), "Each element gets its own tooltip");
         Assert.True(string.IsNullOrEmpty(tip!.DisabledReason), "No disabled reason while enabled");
         button.IsEnabled = false;
         await Settle();
-        Assert.Equal("Nothing selected", (ToolTipService.GetToolTip(button) as RibbonScreenTip)?.DisabledReason);
+        Assert.Equal("Nothing selected", ((ToolTipService.GetToolTip(button) as ToolTip)?.Content as RibbonScreenTip)?.DisabledReason);
     }
 
     [RibbonTest]

@@ -18,6 +18,7 @@ RibbonSpace provides a modern, Office-style ribbon, plus toolbars, a title bar, 
 | [KeyTips](keytips.md) | Keyboard access keys, levels, automation API |
 | [Search and command palette](search.md) | Microsoft Search box, palette, custom results |
 | [Galleries and pickers](galleries.md) | Galleries, colour pickers, grid picker, combo boxes, spinners |
+| [CAD ribbons](cad.md) | AutoCAD-style theme, expanded panels, minimize states, floating panels, progressive tooltips, application menu |
 | [Toolbars and chrome](toolbars.md) | Toolbars, tool palettes, option bars, menu bar, title bar, status bar |
 | [Theming](theming.md) | Light / Dark / HighContrast, palettes, chrome styles, brush keys, re-templating |
 | [Localization](localization.md) | Built-in languages, custom strings |

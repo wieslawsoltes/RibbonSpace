@@ -26,6 +26,12 @@ public class RibbonGroupModel : RibbonNodeModel
     /// <summary>Items.</summary>
     public ObservableCollection<RibbonItemModel> Items { get; } = [];
 
+    /// <summary>
+    /// Less frequently used commands shown in the expanded (slide-out) part of the panel, opened from the arrow in
+    /// the panel title (AutoCAD expanded panels).
+    /// </summary>
+    public ObservableCollection<RibbonItemModel> SlideOutItems { get; } = [];
+
     /// <summary>Arrangement of items.</summary>
     public RibbonGroupItemsLayout ItemsLayout { get => _itemsLayout; set => SetProperty(ref _itemsLayout, value); }
 

@@ -319,12 +319,31 @@
   </Style>
 
   <!-- Flyout presenter matching ribbon popups. -->
+  <!-- Ribbon look for drop-down menus (applied by RibbonMenu.ApplyTheme). -->
+  <Style x:Key="RibbonMenuFlyoutPresenterStyle" TargetType="MenuFlyoutPresenter">
+    <Setter Property="Background" Value="{ThemeResource RibbonPopupBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource RibbonPopupBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{ThemeResource RibbonPopupCornerRadius}" />
+  </Style>
+
+  <!-- Ribbon look for item tooltips / ScreenTips (RibbonScreenTipService.CreateToolTip). -->
+  <Style x:Key="RibbonToolTipStyle" TargetType="ToolTip">
+    <Setter Property="Background" Value="{ThemeResource RibbonScreenTipBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource RibbonScreenTipBorderBrush}" />
+    <Setter Property="Foreground" Value="{ThemeResource RibbonForegroundBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{ThemeResource RibbonPopupCornerRadius}" />
+    <Setter Property="Padding" Value="9,7,9,8" />
+    <Setter Property="MaxWidth" Value="480" />
+  </Style>
+
   <Style x:Key="RibbonFlyoutPresenterStyle" TargetType="FlyoutPresenter">
     <Setter Property="Background" Value="{ThemeResource RibbonPopupBackgroundBrush}" />
     <Setter Property="BorderBrush" Value="{ThemeResource RibbonPopupBorderBrush}" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="Padding" Value="4" />
-    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="CornerRadius" Value="{ThemeResource RibbonPopupCornerRadius}" />
     <Setter Property="MinWidth" Value="0" />
     <Setter Property="MaxWidth" Value="1200" />
     <Setter Property="MinHeight" Value="0" />

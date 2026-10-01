@@ -19,6 +19,10 @@
           <x:String>Neutral</x:String>
           <x:String>Colorful (accent title bar)</x:String>
         </ComboBox>
+        <ComboBox x:Name="Surface" Header="Surface style (Office pages)" Width="280" SelectedIndex="0">
+          <x:String>Office</x:String>
+          <x:String>CAD (AutoCAD-like)</x:String>
+        </ComboBox>
         <ComboBox x:Name="Density" Header="Density" Width="280" SelectedIndex="0">
           <x:String>Comfortable</x:String>
           <x:String>Compact</x:String>

@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using RibbonSpace.Controls.Primitives;
 using RibbonSpace.Localization;
 using Windows.UI;
+using RibbonSpace.Layout;
 
 namespace RibbonSpace.Controls;
 
@@ -237,15 +238,24 @@ public partial class RibbonTab : Control
         InvalidateMeasure();
     }
 
-    internal void ApplyPresentation(RibbonMetrics metrics, bool simplified, bool adaptive)
+    internal void ApplyPresentation(RibbonMetrics metrics, bool simplified, bool adaptive, RibbonPanelPresentation presentation = RibbonPanelPresentation.Full, bool showCaptions = true, RibbonReductionStrategy strategy = RibbonReductionStrategy.Stepwise)
     {
-        var changed = !ReferenceEquals(_groupsPanel.Metrics, metrics) || _groupsPanel.IsSimplified != simplified || _groupsPanel.IsAdaptive != adaptive;
+        var changed = !ReferenceEquals(_groupsPanel.Metrics, metrics) || _groupsPanel.IsSimplified != simplified || _groupsPanel.IsAdaptive != adaptive
+            || _groupsPanel.PanelPresentation != presentation || _groupsPanel.ShowCaptions != showCaptions || _groupsPanel.ReductionStrategy != strategy;
+        _groupsPanel.ReductionStrategy = strategy;
         _groupsPanel.Metrics = metrics;
         _groupsPanel.IsSimplified = simplified;
         _groupsPanel.IsAdaptive = adaptive;
+        _groupsPanel.PanelPresentation = presentation;
+        _groupsPanel.ShowCaptions = showCaptions;
         _overflowButton.ApplyLayout(new RibbonItemLayout(RibbonItemSize.Small, metrics, true, false));
         if (changed)
         {
+            foreach (var group in Groups)
+            {
+                group.ResetPresentationState();
+            }
+
             _groupsPanel.InvalidateCache();
             InvalidateGroupsLayout();
         }

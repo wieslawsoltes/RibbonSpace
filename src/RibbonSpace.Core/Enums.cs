@@ -42,6 +42,23 @@ public enum RibbonVisibilityMode
     TabsOnly,
     /// <summary>The ribbon is hidden until revealed from the top edge (Office "Full-screen mode").</summary>
     FullScreen,
+    /// <summary>Tabs plus one button per panel (group); clicking a button opens the panel (AutoCAD "Minimize to Panel Buttons").</summary>
+    PanelButtons,
+    /// <summary>Tabs plus the panel (group) titles; clicking a title opens the panel (AutoCAD "Minimize to Panel Titles").</summary>
+    PanelTitles,
+}
+
+/// <summary>What the ribbon's minimize button / <c>ToggleMinimized</c> does (AutoCAD minimize behaviour).</summary>
+public enum RibbonMinimizeBehavior
+{
+    /// <summary>Toggle between the full ribbon and tabs only (Office behaviour).</summary>
+    Tabs,
+    /// <summary>Toggle between the full ribbon and panel titles.</summary>
+    PanelTitles,
+    /// <summary>Toggle between the full ribbon and panel buttons.</summary>
+    PanelButtons,
+    /// <summary>Cycle full ribbon → panel buttons → panel titles → tabs → full ribbon (AutoCAD "Cycle Through All").</summary>
+    CycleAll,
 }
 
 /// <summary>Placement of the Quick Access Toolbar.</summary>

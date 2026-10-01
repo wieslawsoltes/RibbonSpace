@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Media;
 using RibbonSpace.Commands;
 using RibbonSpace.Controls.Primitives;
 using RibbonSpace.Localization;
+using RibbonSpace.Layout;
 
 namespace RibbonSpace.Controls;
 
@@ -130,6 +131,7 @@ public partial class Ribbon : Control, IRibbonItemOwner
             }
         };
         ActualThemeChanged += (_, _) => OnActualThemeChanged();
+        RegisterPropertyChangedCallback(VisibilityProperty, (_, _) => OnRibbonVisibilityChanged());
         AutomationProperties.SetName(this, "Ribbon");
     }
 
@@ -266,6 +268,7 @@ public partial class Ribbon : Control, IRibbonItemOwner
         _tabStripScroll = GetTemplateChild("PART_TabStripScroll") as RibbonScrollPanel;
         _applicationButton = GetTemplateChild("PART_ApplicationButton") as Button;
         _displayOptionsButton = GetTemplateChild("PART_DisplayOptionsButton") as Button;
+        AttachMinimizeButtons();
         _revealButton = GetTemplateChild("PART_RevealButton") as Button;
         _tabRow = GetTemplateChild("PART_TabRow") as FrameworkElement;
         _commandBar = GetTemplateChild("PART_CommandBar") as Border;
@@ -321,6 +324,8 @@ public partial class Ribbon : Control, IRibbonItemOwner
         {
             OpenBackstageCore();
         }
+
+        ShowFloatingGroups();
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -339,7 +344,10 @@ public partial class Ribbon : Control, IRibbonItemOwner
         foreach (var group in Tabs.SelectMany(t => t.Groups))
         {
             group.ClosePopup();
+            group.CloseSlideOut();
         }
+
+        SuspendFloatingGroups();
     }
 
     private void OnStringsChanged(object? sender, EventArgs e) => DispatcherQueue?.TryEnqueue(() =>
@@ -660,6 +668,7 @@ public partial class Ribbon : Control, IRibbonItemOwner
             foreach (var group in oldTab.Groups)
             {
                 group.ClosePopup();
+                group.CloseSlideOut();
             }
         }
 
@@ -672,7 +681,13 @@ public partial class Ribbon : Control, IRibbonItemOwner
                 _lastRegularTab = newTab;
             }
 
-            newTab.ApplyPresentation(Metrics, DisplayMode == RibbonDisplayMode.Simplified, IsAdaptiveLayoutEnabled);
+            newTab.ApplyPresentation(Metrics, DisplayMode == RibbonDisplayMode.Simplified, IsAdaptiveLayoutEnabled, CurrentPanelPresentation, ShowGroupCaptions, ReductionStrategy);
+
+            // Pinned expanded panels come back with their tab.
+            foreach (var group in newTab.Groups.Where(g => g.IsSlideOutPinned))
+            {
+                DispatcherQueue?.TryEnqueue(group.OpenSlideOut);
+            }
         }
 
         foreach (var header in _headers)
@@ -716,9 +731,10 @@ public partial class Ribbon : Control, IRibbonItemOwner
     {
         var metrics = Metrics;
         var simplified = DisplayMode == RibbonDisplayMode.Simplified;
+        var presentation = CurrentPanelPresentation;
         foreach (var tab in Tabs)
         {
-            tab.ApplyPresentation(metrics, simplified, IsAdaptiveLayoutEnabled);
+            tab.ApplyPresentation(metrics, simplified, IsAdaptiveLayoutEnabled, presentation, ShowGroupCaptions, ReductionStrategy);
         }
 
         foreach (var item in TabStripItems.OfType<IRibbonItem>())
@@ -736,14 +752,22 @@ public partial class Ribbon : Control, IRibbonItemOwner
 
     private void OnVisibilityModeChanged()
     {
-        IsMinimized = VisibilityMode == RibbonVisibilityMode.TabsOnly;
+        IsMinimized = IsMinimizedMode(VisibilityMode);
         if (VisibilityMode != RibbonVisibilityMode.FullScreen)
         {
             IsFullScreenRevealed = false;
         }
 
         CloseMinimizedPopup();
+        foreach (var group in Tabs.SelectMany(t => t.Groups))
+        {
+            group.ClosePopup();
+            group.CloseSlideOut();
+        }
+
+        ApplyPresentation();
         UpdateChrome();
+        UpdateMinimizeButton();
         RaiseStateChanged();
         OnModelVisibilityModeChanged();
     }
@@ -752,15 +776,18 @@ public partial class Ribbon : Control, IRibbonItemOwner
     {
         if (value && VisibilityMode == RibbonVisibilityMode.AlwaysShow)
         {
-            VisibilityMode = RibbonVisibilityMode.TabsOnly;
+            VisibilityMode = MinimizedState;
         }
-        else if (!value && VisibilityMode == RibbonVisibilityMode.TabsOnly)
+        else if (!value && IsMinimizedMode(VisibilityMode))
         {
             VisibilityMode = RibbonVisibilityMode.AlwaysShow;
         }
     }
 
-    /// <summary>Toggles between <see cref="RibbonVisibilityMode.AlwaysShow"/> and <see cref="RibbonVisibilityMode.TabsOnly"/>.</summary>
+    /// <summary>
+    /// Minimizes or restores the ribbon according to <see cref="MinimizeBehavior"/>: full ribbon ↔ tabs only (Office),
+    /// ↔ panel titles / panel buttons, or the AutoCAD cycle full → panel buttons → panel titles → tabs → full.
+    /// </summary>
     public void ToggleMinimized()
     {
         if (!IsCollapsible)
@@ -768,7 +795,7 @@ public partial class Ribbon : Control, IRibbonItemOwner
             return;
         }
 
-        VisibilityMode = VisibilityMode == RibbonVisibilityMode.AlwaysShow ? RibbonVisibilityMode.TabsOnly : RibbonVisibilityMode.AlwaysShow;
+        VisibilityMode = NextMinimizeState();
     }
 
     private void UpdateChrome()
@@ -883,7 +910,13 @@ public partial class Ribbon : Control, IRibbonItemOwner
     private void OnApplicationButtonClick(object sender, RoutedEventArgs e) => InvokeApplicationButton();
 
     /// <summary>Runs the application button action (backstage, application menu or the click event).</summary>
-    public void InvokeApplicationButton()
+    public void InvokeApplicationButton() => InvokeApplicationButton(null);
+
+    /// <summary>
+    /// Runs the application button action anchored at <paramref name="anchor"/> (e.g. the application icon of a
+    /// <c>RibbonTitleBar</c>, as in AutoCAD); <c>null</c> uses the File button.
+    /// </summary>
+    public void InvokeApplicationButton(FrameworkElement? anchor)
     {
         HideKeyTips();
         var args = new RibbonHandledEventArgs();
@@ -897,9 +930,10 @@ public partial class Ribbon : Control, IRibbonItemOwner
         {
             IsBackstageOpen = true;
         }
-        else if (ApplicationMenu is not null && _applicationButton is not null)
+        else if (ApplicationMenu is not null && (anchor ?? _applicationButton) is { } target)
         {
-            ApplicationMenu.ShowAt(_applicationButton);
+            RibbonMenu.ApplyTheme(ApplicationMenu);
+            ApplicationMenu.ShowAt(target);
         }
     }
 
@@ -959,7 +993,7 @@ public partial class Ribbon : Control, IRibbonItemOwner
     }
 
     /// <summary>Raises <see cref="StateChanged"/>.</summary>
-    protected void RaiseStateChanged()
+    protected internal void RaiseStateChanged()
     {
         if (IsLoaded)
         {

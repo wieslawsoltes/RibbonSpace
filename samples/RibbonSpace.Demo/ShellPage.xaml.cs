@@ -20,23 +20,89 @@ public sealed partial class ShellPage : Page
             ["excel"] = () => new ExcelPage(),
             ["powerpoint"] = () => new PowerPointPage(),
             ["tools"] = () => new ToolsPage(),
+            ["cad"] = () => new CadPage(),
             ["settings"] = () => new SettingsPage(),
         };
+        CadRail.Icon = Cad.CadIcon.Get(nameof(Cad.CadIcons.AppLogo));
         foreach (var toggle in Rail.Items.OfType<RibbonToggleButton>())
         {
             toggle.Checked += (s, _) => Show((string)((FrameworkElement)s!).Tag);
         }
 
         Loaded += (_, _) => Show("word");
+
+        // Office pages are recreated after a surface style change so that their controls pick up the new shapes.
+        DemoSettings.SurfaceStyleChanged += (_, _) =>
+        {
+            foreach (var stale in _pages.Where(p => p.Key is not ("settings" or "cad") && p.Key != CurrentPage).ToList())
+            {
+                PageHost.Children.Remove(stale.Value);
+                _pages.Remove(stale.Key);
+            }
+        };
     }
 
+    private static Ribbon? FindRibbon(DependencyObject? root)
+    {
+        if (root is null)
+        {
+            return null;
+        }
+
+        if (root is Ribbon ribbon)
+        {
+            return ribbon;
+        }
+
+        for (var i = 0; i < Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(root); i++)
+        {
+            if (FindRibbon(Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(root, i)) is { } found)
+            {
+                return found;
+            }
+        }
+
+        return null;
+    }
+
+    private RibbonChromeStyle _officeChrome = RibbonChromeStyle.Neutral;
+
     public string CurrentPage { get; private set; } = "word";
+
+    private void OnCadThemeChanged(FrameworkElement sender, object args)
+    {
+        if (CurrentPage == "cad")
+        {
+            Rail.RequestedTheme = sender.ActualTheme;
+        }
+    }
 
     public FrameworkElement? CurrentContent => _pages.GetValueOrDefault(CurrentPage);
 
     public void Show(string key)
     {
+        // Pages are collapsed, not unloaded: close the hidden page's ribbon popups and hide its floating panels.
+        if (CurrentPage != key && FindRibbon(_pages.GetValueOrDefault(CurrentPage)) is { } previousRibbon)
+        {
+            previousRibbon.SuspendPopups();
+        }
+
         CurrentPage = key;
+
+        // The CAD page always uses the CAD surface style, the other pages the style chosen in Settings. Shape
+        // resources (corners, margins) are read when controls are templated, so the style is applied before a page
+        // is created; brushes update live.
+        var style = key == "cad" ? RibbonThemeStyle.Cad : DemoSettings.SurfaceStyle;
+        if (key == "cad" && RibbonTheme.Style != RibbonThemeStyle.Cad)
+        {
+            _officeChrome = RibbonTheme.ChromeStyle;
+        }
+
+        if (RibbonTheme.Style != style || key == "cad")
+        {
+            RibbonTheme.Apply(key == "cad" ? RibbonThemePalette.Cad : RibbonTheme.Palette, key == "cad" ? RibbonChromeStyle.Neutral : _officeChrome, style);
+        }
+
         if (!_pages.TryGetValue(key, out var page))
         {
             page = _factories[key]();
@@ -54,6 +120,17 @@ public sealed partial class ShellPage : Page
             toggle.IsChecked = (string)toggle.Tag == key;
         }
 
+        // The rail follows the CAD page's own light / dark theme while it is shown.
+        FindRibbon(page)?.ResumePopups();
+        if (page is CadPage cad)
+        {
+            Rail.RequestedTheme = cad.ActualTheme;
+            cad.ActualThemeChanged -= OnCadThemeChanged;
+            cad.ActualThemeChanged += OnCadThemeChanged;
+            return;
+        }
+
+        Rail.RequestedTheme = ElementTheme.Default;
         RibbonTheme.ApplyPalette(key switch
         {
             "excel" => DemoSettings.PaletteOverride ?? RibbonThemePalette.Excel,
@@ -70,6 +147,23 @@ public static class DemoSettings
     public static RibbonThemePalette? PaletteOverride { get; set; }
 
     public static Ribbon? WordRibbon { get; set; }
+
+    /// <summary>Surface style of the Office pages (the CAD page always uses <see cref="RibbonThemeStyle.Cad"/>).</summary>
+    public static RibbonThemeStyle SurfaceStyle { get; private set; } = RibbonThemeStyle.Office;
+
+    public static event EventHandler? SurfaceStyleChanged;
+
+    public static void SetSurfaceStyle(RibbonThemeStyle style)
+    {
+        if (SurfaceStyle == style)
+        {
+            return;
+        }
+
+        SurfaceStyle = style;
+        RibbonTheme.ApplyStyle(style);
+        SurfaceStyleChanged?.Invoke(null, EventArgs.Empty);
+    }
 
     public static event EventHandler? Changed;
 

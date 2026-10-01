@@ -19,6 +19,25 @@ public sealed class RibbonStrings
             ["FullScreenMode"] = "Full-screen mode",
             ["ShowTabsOnly"] = "Show tabs only",
             ["AlwaysShowRibbon"] = "Always show Ribbon",
+            ["ShowPanelButtons"] = "Show panel buttons",
+            ["ShowPanelTitles"] = "Show panel titles",
+            ["MinimizeToTabs"] = "Minimize to Tabs",
+            ["MinimizeToPanelTitles"] = "Minimize to Panel Titles",
+            ["MinimizeToPanelButtons"] = "Minimize to Panel Buttons",
+            ["CycleThroughAll"] = "Cycle through All",
+            ["MinimizeRibbon"] = "Minimize the Ribbon",
+            ["ShowFullRibbon"] = "Show Full Ribbon",
+            ["ShowTabs"] = "Show Tabs",
+            ["ShowPanels"] = "Show Panels",
+            ["ShowGroupTitles"] = "Show Panel Titles",
+            ["FloatPanel"] = "Float Panel",
+            ["ReturnPanelToRibbon"] = "Return Panel to Ribbon",
+            ["ReturnPanelsToRibbon"] = "Return Panels to Ribbon",
+            ["PinPanel"] = "Keep panel open",
+            ["UnpinPanel"] = "Unpin panel",
+            ["ExpandPanel"] = "More {0} commands",
+            ["RecentDocuments"] = "Recent Documents",
+            ["SearchCommands"] = "Search commands",
             ["UseSimplifiedRibbon"] = "Simplified Ribbon",
             ["UseClassicRibbon"] = "Classic Ribbon",
             ["ShowQuickAccessToolbar"] = "Show Quick Access Toolbar",
@@ -88,6 +107,25 @@ public sealed class RibbonStrings
             ["FullScreenMode"] = "Vollbildmodus",
             ["ShowTabsOnly"] = "Nur Registerkarten anzeigen",
             ["AlwaysShowRibbon"] = "Menüband immer anzeigen",
+            ["ShowPanelButtons"] = "Gruppenschaltflächen anzeigen",
+            ["ShowPanelTitles"] = "Gruppentitel anzeigen",
+            ["MinimizeToTabs"] = "Auf Registerkarten minimieren",
+            ["MinimizeToPanelTitles"] = "Auf Gruppentitel minimieren",
+            ["MinimizeToPanelButtons"] = "Auf Gruppenschaltflächen minimieren",
+            ["CycleThroughAll"] = "Alle durchlaufen",
+            ["MinimizeRibbon"] = "Menüband minimieren",
+            ["ShowFullRibbon"] = "Vollständiges Menüband anzeigen",
+            ["ShowTabs"] = "Registerkarten anzeigen",
+            ["ShowPanels"] = "Gruppen anzeigen",
+            ["ShowGroupTitles"] = "Gruppentitel anzeigen",
+            ["FloatPanel"] = "Gruppe lösen",
+            ["ReturnPanelToRibbon"] = "Gruppe an Menüband zurückgeben",
+            ["ReturnPanelsToRibbon"] = "Gruppen an Menüband zurückgeben",
+            ["PinPanel"] = "Gruppe geöffnet lassen",
+            ["UnpinPanel"] = "Gruppe lösen",
+            ["ExpandPanel"] = "Weitere Befehle: {0}",
+            ["RecentDocuments"] = "Zuletzt verwendete Dokumente",
+            ["SearchCommands"] = "Befehle suchen",
             ["UseSimplifiedRibbon"] = "Vereinfachtes Menüband",
             ["UseClassicRibbon"] = "Klassisches Menüband",
             ["ShowQuickAccessToolbar"] = "Symbolleiste für den Schnellzugriff anzeigen",
@@ -157,6 +195,25 @@ public sealed class RibbonStrings
             ["FullScreenMode"] = "Mode plein écran",
             ["ShowTabsOnly"] = "Afficher uniquement les onglets",
             ["AlwaysShowRibbon"] = "Toujours afficher le ruban",
+            ["ShowPanelButtons"] = "Afficher les boutons des groupes",
+            ["ShowPanelTitles"] = "Afficher les titres des groupes",
+            ["MinimizeToTabs"] = "Réduire aux onglets",
+            ["MinimizeToPanelTitles"] = "Réduire aux titres des groupes",
+            ["MinimizeToPanelButtons"] = "Réduire aux boutons des groupes",
+            ["CycleThroughAll"] = "Parcourir tous les états",
+            ["MinimizeRibbon"] = "Réduire le ruban",
+            ["ShowFullRibbon"] = "Afficher le ruban complet",
+            ["ShowTabs"] = "Afficher les onglets",
+            ["ShowPanels"] = "Afficher les groupes",
+            ["ShowGroupTitles"] = "Afficher les titres des groupes",
+            ["FloatPanel"] = "Détacher le groupe",
+            ["ReturnPanelToRibbon"] = "Remettre le groupe dans le ruban",
+            ["ReturnPanelsToRibbon"] = "Remettre les groupes dans le ruban",
+            ["PinPanel"] = "Garder le groupe ouvert",
+            ["UnpinPanel"] = "Libérer le groupe",
+            ["ExpandPanel"] = "Autres commandes : {0}",
+            ["RecentDocuments"] = "Documents récents",
+            ["SearchCommands"] = "Rechercher des commandes",
             ["UseSimplifiedRibbon"] = "Ruban simplifié",
             ["UseClassicRibbon"] = "Ruban classique",
             ["ShowQuickAccessToolbar"] = "Afficher la barre d'outils Accès rapide",
@@ -226,6 +283,25 @@ public sealed class RibbonStrings
             ["FullScreenMode"] = "Modo de pantalla completa",
             ["ShowTabsOnly"] = "Mostrar solo pestañas",
             ["AlwaysShowRibbon"] = "Mostrar siempre la cinta",
+            ["ShowPanelButtons"] = "Mostrar botones de grupos",
+            ["ShowPanelTitles"] = "Mostrar títulos de grupos",
+            ["MinimizeToTabs"] = "Minimizar a pestañas",
+            ["MinimizeToPanelTitles"] = "Minimizar a títulos de grupos",
+            ["MinimizeToPanelButtons"] = "Minimizar a botones de grupos",
+            ["CycleThroughAll"] = "Recorrer todos",
+            ["MinimizeRibbon"] = "Minimizar la cinta",
+            ["ShowFullRibbon"] = "Mostrar la cinta completa",
+            ["ShowTabs"] = "Mostrar pestañas",
+            ["ShowPanels"] = "Mostrar grupos",
+            ["ShowGroupTitles"] = "Mostrar títulos de grupos",
+            ["FloatPanel"] = "Desacoplar grupo",
+            ["ReturnPanelToRibbon"] = "Devolver grupo a la cinta",
+            ["ReturnPanelsToRibbon"] = "Devolver grupos a la cinta",
+            ["PinPanel"] = "Mantener grupo abierto",
+            ["UnpinPanel"] = "Desanclar grupo",
+            ["ExpandPanel"] = "Más comandos de {0}",
+            ["RecentDocuments"] = "Documentos recientes",
+            ["SearchCommands"] = "Buscar comandos",
             ["UseSimplifiedRibbon"] = "Cinta de opciones simplificada",
             ["UseClassicRibbon"] = "Cinta de opciones clásica",
             ["ShowQuickAccessToolbar"] = "Mostrar barra de herramientas de acceso rápido",
@@ -295,6 +371,25 @@ public sealed class RibbonStrings
             ["FullScreenMode"] = "Tryb pełnoekranowy",
             ["ShowTabsOnly"] = "Pokaż tylko karty",
             ["AlwaysShowRibbon"] = "Zawsze pokazuj wstążkę",
+            ["ShowPanelButtons"] = "Pokaż przyciski grup",
+            ["ShowPanelTitles"] = "Pokaż tytuły grup",
+            ["MinimizeToTabs"] = "Minimalizuj do kart",
+            ["MinimizeToPanelTitles"] = "Minimalizuj do tytułów grup",
+            ["MinimizeToPanelButtons"] = "Minimalizuj do przycisków grup",
+            ["CycleThroughAll"] = "Przełączaj wszystkie",
+            ["MinimizeRibbon"] = "Minimalizuj wstążkę",
+            ["ShowFullRibbon"] = "Pokaż pełną wstążkę",
+            ["ShowTabs"] = "Pokaż karty",
+            ["ShowPanels"] = "Pokaż grupy",
+            ["ShowGroupTitles"] = "Pokaż tytuły grup",
+            ["FloatPanel"] = "Odepnij grupę",
+            ["ReturnPanelToRibbon"] = "Przywróć grupę do wstążki",
+            ["ReturnPanelsToRibbon"] = "Przywróć grupy do wstążki",
+            ["PinPanel"] = "Zostaw grupę otwartą",
+            ["UnpinPanel"] = "Odepnij grupę",
+            ["ExpandPanel"] = "Więcej poleceń: {0}",
+            ["RecentDocuments"] = "Ostatnie dokumenty",
+            ["SearchCommands"] = "Szukaj poleceń",
             ["UseSimplifiedRibbon"] = "Uproszczona wstążka",
             ["UseClassicRibbon"] = "Klasyczna wstążka",
             ["ShowQuickAccessToolbar"] = "Pokaż pasek narzędzi Szybki dostęp",
@@ -480,6 +575,44 @@ public sealed class RibbonStrings
     public string ShowTabsOnly => this[nameof(ShowTabsOnly)];
     /// <summary>Always show Ribbon</summary>
     public string AlwaysShowRibbon => this[nameof(AlwaysShowRibbon)];
+    /// <summary>Show panel buttons</summary>
+    public string ShowPanelButtons => this[nameof(ShowPanelButtons)];
+    /// <summary>Show panel titles</summary>
+    public string ShowPanelTitles => this[nameof(ShowPanelTitles)];
+    /// <summary>Minimize to Tabs</summary>
+    public string MinimizeToTabs => this[nameof(MinimizeToTabs)];
+    /// <summary>Minimize to Panel Titles</summary>
+    public string MinimizeToPanelTitles => this[nameof(MinimizeToPanelTitles)];
+    /// <summary>Minimize to Panel Buttons</summary>
+    public string MinimizeToPanelButtons => this[nameof(MinimizeToPanelButtons)];
+    /// <summary>Cycle through All</summary>
+    public string CycleThroughAll => this[nameof(CycleThroughAll)];
+    /// <summary>Minimize the Ribbon</summary>
+    public string MinimizeRibbon => this[nameof(MinimizeRibbon)];
+    /// <summary>Show Full Ribbon</summary>
+    public string ShowFullRibbon => this[nameof(ShowFullRibbon)];
+    /// <summary>Show Tabs</summary>
+    public string ShowTabs => this[nameof(ShowTabs)];
+    /// <summary>Show Panels</summary>
+    public string ShowPanels => this[nameof(ShowPanels)];
+    /// <summary>Show Panel Titles</summary>
+    public string ShowGroupTitles => this[nameof(ShowGroupTitles)];
+    /// <summary>Float Panel</summary>
+    public string FloatPanel => this[nameof(FloatPanel)];
+    /// <summary>Return Panel to Ribbon</summary>
+    public string ReturnPanelToRibbon => this[nameof(ReturnPanelToRibbon)];
+    /// <summary>Return Panels to Ribbon</summary>
+    public string ReturnPanelsToRibbon => this[nameof(ReturnPanelsToRibbon)];
+    /// <summary>Keep panel open</summary>
+    public string PinPanel => this[nameof(PinPanel)];
+    /// <summary>Unpin panel</summary>
+    public string UnpinPanel => this[nameof(UnpinPanel)];
+    /// <summary>More {0} commands</summary>
+    public string ExpandPanel => this[nameof(ExpandPanel)];
+    /// <summary>Recent Documents</summary>
+    public string RecentDocuments => this[nameof(RecentDocuments)];
+    /// <summary>Search commands</summary>
+    public string SearchCommands => this[nameof(SearchCommands)];
     /// <summary>Simplified Ribbon</summary>
     public string UseSimplifiedRibbon => this[nameof(UseSimplifiedRibbon)];
     /// <summary>Classic Ribbon</summary>

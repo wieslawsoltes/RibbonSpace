@@ -551,6 +551,11 @@ public partial class Ribbon
             return launcherGroup.Header + " launcher";
         }
 
+        if (Tabs.SelectMany(t => t.Groups).FirstOrDefault(g => ReferenceEquals(g.SlideOutButton, target)) is { } expandedGroup)
+        {
+            return expandedGroup.Header + " more";
+        }
+
         return target switch
         {
             MenuFlyoutItem entry => entry.Text,
@@ -705,6 +710,21 @@ public partial class Ribbon
                 ClearBadges();
                 DispatcherQueue?.TryEnqueue(() => PushScope(header.Tab.GetKeyTipTargets(), cleanup));
                 return;
+        }
+
+        if (Tabs.SelectMany(t => t.Groups).FirstOrDefault(g => ReferenceEquals(g.SlideOutButton, target)) is { } expandedGroup)
+        {
+            // Expanded panel arrow: open it and continue with KeyTips for its commands.
+            expandedGroup.OpenSlideOut();
+            ClearBadges();
+            DispatcherQueue?.TryEnqueue(() => PushScope(expandedGroup.GetSlideOutKeyTipTargets(), () =>
+            {
+                if (!expandedGroup.IsSlideOutPinned)
+                {
+                    expandedGroup.CloseSlideOut();
+                }
+            }));
+            return;
         }
 
         if (FindGroupOfCollapsedButton(target) is { } collapsedGroup)

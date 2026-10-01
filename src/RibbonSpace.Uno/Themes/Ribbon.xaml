@@ -33,7 +33,7 @@
 
             <Border x:Name="PART_QuickAccessAboveHost" Grid.Row="0" Padding="6,2,6,0" Visibility="Collapsed" HorizontalAlignment="Left" />
 
-            <Grid x:Name="PART_TabRow" Grid.Row="1" Padding="6,0,6,0" MinHeight="30">
+            <Grid x:Name="PART_TabRow" Grid.Row="1" Padding="{ThemeResource RibbonTabRowPadding}" MinHeight="30">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -46,15 +46,24 @@
               <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" Margin="8,0,0,0">
                 <StackPanel x:Name="PART_TabStripItemsHost" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" />
                 <ContentPresenter Content="{TemplateBinding TabStripEndContent}" VerticalAlignment="Center" />
+                <!-- AutoCAD-style minimize button: cycles the minimize states; the arrow picks the behaviour. -->
+                <StackPanel x:Name="PART_MinimizeButtons" Orientation="Horizontal" Spacing="0" Visibility="Collapsed">
+                  <Button x:Name="PART_MinimizeButton" Style="{StaticResource RibbonChromeButtonStyle}" Width="24" Height="22" Padding="0">
+                    <FontIcon x:Name="PART_MinimizeGlyph" Glyph="&#xE70E;" FontSize="10" />
+                  </Button>
+                  <Button x:Name="PART_MinimizeBehaviorButton" Style="{StaticResource RibbonChromeButtonStyle}" Width="14" Height="22" Padding="0">
+                    <FontIcon Glyph="&#xE70D;" FontSize="8" />
+                  </Button>
+                </StackPanel>
               </StackPanel>
             </Grid>
 
             <Border x:Name="PART_CommandBar"
                     Grid.Row="2"
-                    Margin="6,1,6,6"
+                    Margin="{ThemeResource RibbonCommandBarMargin}"
                     Background="{ThemeResource RibbonCommandBarBackgroundBrush}"
                     BorderBrush="{ThemeResource RibbonCommandBarBorderBrush}"
-                    BorderThickness="1"
+                    BorderThickness="{ThemeResource RibbonCommandBarBorderThickness}"
                     CornerRadius="{ThemeResource RibbonCommandBarCornerRadius}">
               <Grid>
                 <Grid.ColumnDefinitions>
@@ -102,7 +111,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="c:RibbonTabHeader">
-          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="4" Margin="1,3,1,1">
+          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="{ThemeResource RibbonTabCornerRadius}" Margin="{ThemeResource RibbonTabMargin}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -129,6 +138,7 @@
                     <Setter Target="PART_Text.Foreground" Value="{ThemeResource RibbonTabSelectedForegroundBrush}" />
                     <Setter Target="PART_Text.FontWeight" Value="SemiBold" />
                     <Setter Target="PART_Indicator.Opacity" Value="1" />
+                    <Setter Target="PART_SelectedBackground.Opacity" Value="1" />
                   </VisualState.Setters>
                 </VisualState>
                 <!-- Selected contextual tab: keeps the contextual text colour set by the control. -->
@@ -136,6 +146,7 @@
                   <VisualState.Setters>
                     <Setter Target="PART_Text.FontWeight" Value="SemiBold" />
                     <Setter Target="PART_Indicator.Opacity" Value="1" />
+                    <Setter Target="PART_SelectedBackground.Opacity" Value="1" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -148,6 +159,8 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
+            <!-- Selected-tab fill (CAD style; transparent in the Office style). -->
+            <Border x:Name="PART_SelectedBackground" Opacity="0" Background="{ThemeResource RibbonTabSelectedBackgroundBrush}" CornerRadius="{ThemeResource RibbonTabCornerRadius}" />
             <Rectangle x:Name="PART_ContextualBand" Height="3" VerticalAlignment="Top" Margin="6,0" RadiusX="1.5" RadiusY="1.5" Opacity="0" Fill="{ThemeResource RibbonAccentBrush}" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}">
               <p:RibbonIconPresenter x:Name="PART_Icon" IconSize="16" Margin="0,0,6,0" VerticalAlignment="Center" Visibility="Collapsed" Foreground="{TemplateBinding Foreground}" />
@@ -204,16 +217,27 @@
               </Grid.RowDefinitions>
               <Border x:Name="PART_ItemsPresenter" Margin="4,2,4,0" VerticalAlignment="Center" />
               <c:RibbonButton x:Name="PART_CollapsedButton" Visibility="Collapsed" ShowChevron="True" Size="Large" CanAddToQuickAccess="False" Margin="3,2,3,0" />
-              <Grid x:Name="PART_CaptionRow" Grid.Row="1" Height="17">
+              <Grid x:Name="PART_CaptionRow" Grid.Row="1" Height="17"
+                    Margin="{ThemeResource RibbonGroupCaptionMargin}"
+                    Background="{ThemeResource RibbonGroupCaptionBackgroundBrush}"
+                    CornerRadius="{ThemeResource RibbonGroupCaptionCornerRadius}">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
                 <TextBlock x:Name="PART_Header"
+                           Grid.ColumnSpan="3"
                            Text="{TemplateBinding Header}"
                            FontSize="11"
-                           Foreground="{ThemeResource RibbonSecondaryForegroundBrush}"
+                           Foreground="{ThemeResource RibbonGroupCaptionForegroundBrush}"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            TextTrimming="CharacterEllipsis"
                            Margin="16,0,16,1" />
-                <Button x:Name="PART_DialogLauncher" Style="{StaticResource RibbonDialogLauncherButtonStyle}" HorizontalAlignment="Right" Margin="0,0,1,1" Visibility="Collapsed" />
+                <!-- Expanded panel (slide-out) arrow, shown when the group has SlideOutItems. -->
+                <Button x:Name="PART_SlideOutButton" Grid.Column="1" Style="{StaticResource RibbonDialogLauncherButtonStyle}" Margin="0,0,1,1" Visibility="Collapsed" Content="&#xE70D;" />
+                <Button x:Name="PART_DialogLauncher" Grid.Column="2" Style="{StaticResource RibbonDialogLauncherButtonStyle}" Margin="0,0,1,1" Visibility="Collapsed" />
               </Grid>
             </Grid>
             <Rectangle x:Name="PART_Separator" Grid.Column="1" Width="1" Margin="0,8,0,8" Fill="{ThemeResource RibbonSeparatorBrush}" />

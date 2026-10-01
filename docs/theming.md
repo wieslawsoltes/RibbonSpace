@@ -15,11 +15,22 @@ RibbonTheme.SetTheme((FrameworkElement)window.Content, ElementTheme.Dark);
 
 ```csharp
 RibbonTheme.ApplyPalette(RibbonThemePalette.Excel);                 // Word, Excel, PowerPoint, Outlook, OneNote, Access,
-                                                                    // Visio, Project, Publisher, Teams, Graphite
+                                                                    // Visio, Project, Publisher, Teams, Graphite, Cad
 RibbonTheme.ApplyAccent(Windows.UI.Color.FromArgb(255, 0x14, 0x73, 0xE6));
 RibbonTheme.ApplyChromeStyle(RibbonChromeStyle.Colorful);           // accent title bar / tab row (Office "Colorful")
 RibbonTheme.Apply(RibbonThemePalette.FromAccent(RibbonColor.Parse("#8764B8"), "Purple"), RibbonChromeStyle.Neutral);
 ```
+
+A surface style can be applied as well. `RibbonThemeStyle.Office` is the default. `RibbonThemeStyle.Cad` gives an
+AutoCAD-class look: blue-grey surfaces, an edge-to-edge command bar, panel title bars, flat filled tabs and square
+corners. It pairs with `RibbonThemePalette.Cad`:
+
+```csharp
+RibbonTheme.Apply(RibbonThemePalette.Cad, RibbonChromeStyle.Neutral, RibbonThemeStyle.Cad);
+RibbonTheme.ApplyStyle(RibbonThemeStyle.Office);
+```
+
+See [CAD ribbons](cad.md) for details.
 
 Palettes are applied **in place**: the existing brush instances change colour, so every control updates at once
 without re-templating or rebuilding the UI. Each palette defines a light and a dark accent, both meeting contrast
@@ -52,6 +63,7 @@ Or define the key in your own resources, which take precedence over the built-in
 | KeyTips and ScreenTips | `RibbonKeyTipBackgroundBrush`, `RibbonKeyTipForegroundBrush`, `RibbonKeyTipBorderBrush`, `RibbonScreenTipBackgroundBrush`, `RibbonScreenTipBorderBrush` |
 | Title bar | `RibbonTitleBarBackgroundBrush`, `RibbonTitleBarForegroundBrush`, `RibbonTitleBarHoverBrush`, `RibbonTitleBarIconBrush`, `RibbonSearchBackgroundBrush`, `RibbonSearchBorderBrush` |
 | Backstage | `RibbonBackstagePaneBackgroundBrush`, `RibbonBackstagePaneForegroundBrush`, `RibbonBackstagePaneHoverBrush`, `RibbonBackstagePaneSelectedBrush`, `RibbonBackstageContentBackgroundBrush` |
+| Panels (CAD style) | `RibbonGroupCaptionBackgroundBrush`, `RibbonGroupCaptionForegroundBrush`, `RibbonTabSelectedBackgroundBrush`, `RibbonFloatingPanelBarBrush` (transparent or neutral in the Office style) |
 | Other | `RibbonGalleryItemBorderBrush`, `RibbonGalleryItemSelectedBorderBrush`, `RibbonFocusBrush`, `RibbonStatusBarBackgroundBrush`, `RibbonStatusBarForegroundBrush`, `RibbonToolBarBackgroundBrush`, `RibbonSwatchBorderBrush`, `RibbonShadowBrush`, `RibbonScrollButtonBackgroundBrush` |
 
 Code that builds visuals (custom popups, templates set up in code) should resolve brushes for the element's theme
@@ -64,7 +76,8 @@ var brush = RibbonTheme.GetBrush(element, "RibbonAccentBrush");                 
 
 Other resources: `RibbonControlCornerRadius`, `RibbonCommandBarCornerRadius`, `RibbonPopupCornerRadius`, and the
 keyed styles `RibbonChromeButtonStyle`, `RibbonApplicationButtonStyle`, `RibbonDialogLauncherButtonStyle`,
-`RibbonMenuItemButtonStyle`, `RibbonGalleryItemStyle`, `RibbonSwatchButtonStyle`, `RibbonFlyoutPresenterStyle` and
+`RibbonMenuItemButtonStyle`, `RibbonMenuFlyoutPresenterStyle` (drop-down menus, applied by `RibbonMenu.ApplyTheme`),
+`RibbonToolTipStyle` (item tooltips), `RibbonGalleryItemStyle`, `RibbonSwatchButtonStyle`, `RibbonFlyoutPresenterStyle` and
 `RibbonBackstageNavButtonStyle`.
 
 ## Re-templating

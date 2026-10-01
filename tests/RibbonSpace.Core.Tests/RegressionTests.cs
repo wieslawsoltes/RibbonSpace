@@ -241,4 +241,78 @@ public class RegressionTests
             RibbonStrings.Current = previous;
         }
     }
+
+    [Fact]
+    public void Icon_layers_round_trip()
+    {
+        var icon = RibbonIcon.Layers(32, new RibbonIconLayer("M4,28 L28,4", 1.8), new RibbonIconLayer("M2,26 h4 v4 h-4 Z", 0, "#3DA9F5", 0.8));
+        Assert.Equal(RibbonIconKind.Path, icon.Kind);
+        Assert.Equal(32, icon.ViewBoxSize);
+        var layers = RibbonIconLayer.Parse(icon.Value);
+        Assert.Equal(2, layers.Count);
+        Assert.Equal(1.8, layers[0].StrokeThickness);
+        Assert.Null(layers[0].Color);
+        Assert.Equal("#3DA9F5", layers[1].Color);
+        Assert.Equal(0.8, layers[1].Opacity);
+        Assert.Equal("M2,26 h4 v4 h-4 Z", layers[1].Data);
+        Assert.Equal(1.5, RibbonIconLayer.Parse(RibbonIcon.Stroke("M0,0 L10,10").Value)[0].StrokeThickness);
+        Assert.Single(RibbonIconLayer.Parse("M1,1 L2,2"));
+        Assert.StartsWith("[stroke=1.8]", icon.Value, StringComparison.Ordinal);
+        var xaml = RibbonIconLayer.Parse("[viewbox=32;stroke=2]M0,0 L4,4|{color=#FF0000}M1,1 h2 v2 Z");
+        Assert.Equal(2, xaml[0].StrokeThickness);
+        Assert.Equal("#FF0000", xaml[1].Color);
+        Assert.Equal(32, RibbonIconLayer.ParseViewBox("[viewbox=32;stroke=2]M0,0 L4,4"));
+        Assert.Null(RibbonIconLayer.ParseViewBox("M0,0 L4,4"));
+        Assert.Empty(RibbonIconLayer.Parse("  "));
+    }
+
+    [Fact]
+    public void Cad_state_round_trips()
+    {
+        var state = new RibbonState
+        {
+            MinimizeBehavior = RibbonMinimizeBehavior.CycleAll,
+            VisibilityMode = RibbonVisibilityMode.PanelTitles,
+            ShowGroupCaptions = false,
+            FloatingGroups = [new RibbonFloatingGroupState { GroupId = "layers", X = 40, Y = 300 }, null!],
+        };
+        var restored = RibbonStateSerializer.Deserialize(RibbonStateSerializer.Serialize(state))!;
+        Assert.Equal(RibbonMinimizeBehavior.CycleAll, restored.MinimizeBehavior);
+        Assert.Equal(RibbonVisibilityMode.PanelTitles, restored.VisibilityMode);
+        Assert.False(restored.ShowGroupCaptions);
+        Assert.Single(restored.FloatingGroups!);
+        Assert.Equal(300, restored.FloatingGroups![0].Y);
+        Assert.True(RibbonStateSerializer.Deserialize("{}")!.ShowGroupCaptions, "Panel titles default to shown");
+    }
+
+    [Fact]
+    public void Slide_out_items_are_part_of_the_model()
+    {
+        var model = new RibbonModel();
+        var tab = new RibbonTabModel("home");
+        var group = new RibbonGroupModel("draw");
+        group.SlideOutItems.Add(new RibbonButtonModel("xline") { CommandId = "xline" });
+        tab.Groups.Add(group);
+        model.Tabs.Add(tab);
+        Assert.NotNull(model.FindItem("xline"));
+        model.SetCommandEnabled("xline", false);
+        Assert.False(model.FindItem("xline")!.IsEnabled);
+    }
+
+    [Fact]
+    public void Group_by_group_reduction_collapses_low_priority_groups_first()
+    {
+        var groups = new[]
+        {
+            new RibbonGroupLayoutInfo([200, 150, 100, 50], ReductionOrder: 0),
+            new RibbonGroupLayoutInfo([200, 150, 100, 50], ReductionOrder: 0),
+            new RibbonGroupLayoutInfo([200, 150, 100, 50], ReductionOrder: 1),
+        };
+        var result = RibbonAdaptiveLayout.Compute(groups, 460, 0, RibbonReductionStrategy.GroupByGroup);
+        Assert.True(result.Fits);
+        Assert.Equal([RibbonGroupState.Large, RibbonGroupState.Large, RibbonGroupState.Collapsed], result.States);
+        var stepwise = RibbonAdaptiveLayout.Compute(groups, 460, 0);
+        Assert.Equal(RibbonGroupState.Medium, stepwise.States[0]);
+    }
 }
+

@@ -43,10 +43,18 @@ of them and modern Word, Excel and PowerPoint ([research](https://github.com/wie
 | **Toolbars** | Horizontal / vertical / two-column tool palettes with "⋯" overflow, tool option bars, a classic menu bar. |
 | **MVVM** | Bind a `RibbonModel`. Everything is generated and **two-way synchronized**; string-id routing via `ItemInvoked`, `ICommand`, or a command catalog. |
 | **Customization and state** | Office "Customize the Ribbon / QAT" dialog, hide / rename / reorder, custom tabs and groups, import / export, versioned AOT-safe JSON state, plugin merging. |
-| **Theming** | Lookless templates; Light / Dark / HighContrast; 11 application palettes plus custom accents, applied live; Colorful or Neutral chrome; Compact / Comfortable / Touch density; fully custom metrics. |
-| **Quality** | Accessibility peers and stable automation ids, localization (en, de, fr, es, pl), RTL, 91 unit tests and 67 runtime UI tests, trimming / AOT friendly. |
+| **CAD ribbons** | AutoCAD-class features ([guide](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/cad.md)): CAD theme style, expanded panels with pushpin, minimize to panel titles / buttons or cycle, floating panels, Show Tabs / Panels menus, progressive tooltips, application menu with search and recent documents, layer and property drop-downs, line-art icons. |
+| **Theming** | Lookless templates; Light / Dark / HighContrast; Office or CAD surface style; 12 application palettes plus custom accents, applied live; Colorful or Neutral chrome; Compact / Comfortable / Touch density; fully custom metrics. |
+| **Quality** | Accessibility peers and stable automation ids, localization (en, de, fr, es, pl), RTL, 95 unit tests and 83 runtime UI tests, trimming / AOT friendly. |
 
 <table>
+<tr>
+<td colspan="2"><img src="https://raw.githubusercontent.com/wieslawsoltes/RibbonSpace/main/docs/images/cad.png" alt="CAD workspace" /><br/><sub>CAD: AutoCAD-class ribbon with the CAD theme, layer drop-down, floating and expanded panels (<a href="https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/cad.md">guide</a>)</sub></td>
+</tr>
+<tr>
+<td><img src="https://raw.githubusercontent.com/wieslawsoltes/RibbonSpace/main/docs/images/cad-appmenu.png" alt="CAD application menu" /><br/><sub>Application menu with search, sub-commands and recent documents</sub></td>
+<td><img src="https://raw.githubusercontent.com/wieslawsoltes/RibbonSpace/main/docs/images/cad-tooltip.png" alt="Progressive tooltip" /><br/><sub>Progressive tooltip with extended help</sub></td>
+</tr>
 <tr>
 <td><img src="https://raw.githubusercontent.com/wieslawsoltes/RibbonSpace/main/docs/images/excel.png" alt="Excel style MVVM ribbon" /><br/><sub>Excel: 100% MVVM (<code>RibbonModel</code>)</sub></td>
 <td><img src="https://raw.githubusercontent.com/wieslawsoltes/RibbonSpace/main/docs/images/ppt.png" alt="PowerPoint simplified ribbon" /><br/><sub>PowerPoint: simplified ribbon</sub></td>

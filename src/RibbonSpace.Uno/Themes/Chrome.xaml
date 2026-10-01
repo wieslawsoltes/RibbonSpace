@@ -25,7 +25,11 @@
             </Grid.ColumnDefinitions>
             <!-- Empty drag area behind the content (AttachToWindow registers it as the OS title bar). -->
             <Border x:Name="PART_DragRegion" Grid.Column="3" Background="Transparent" />
-            <p:RibbonIconPresenter Icon="{TemplateBinding AppIcon}" IconSize="20" Margin="12,0,6,0" Foreground="{ThemeResource RibbonTitleBarIconBrush}" />
+            <p:RibbonIconPresenter x:Name="PART_AppIcon" Icon="{TemplateBinding AppIcon}" IconSize="20" Margin="12,0,6,0" Foreground="{ThemeResource RibbonTitleBarIconBrush}" />
+            <!-- Application menu button (IsAppIconMenuEnabled): the app icon opens the ribbon's application menu / backstage. -->
+            <Button x:Name="PART_AppButton" Style="{StaticResource RibbonChromeButtonStyle}" Visibility="Collapsed" Padding="6,4" Margin="6,0,2,0" VerticalAlignment="Center">
+              <p:RibbonIconPresenter Icon="{TemplateBinding AppIcon}" IconSize="24" Foreground="{ThemeResource RibbonTitleBarIconBrush}" />
+            </Button>
             <ContentPresenter x:Name="PART_StartContent" Grid.Column="1" Content="{TemplateBinding StartContent}" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" />
             <Border x:Name="PART_QuickAccessHost" Grid.Column="2" VerticalAlignment="Center" Margin="4,0" />
             <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">

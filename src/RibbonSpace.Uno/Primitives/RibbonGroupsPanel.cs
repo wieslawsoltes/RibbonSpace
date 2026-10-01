@@ -26,6 +26,15 @@ public partial class RibbonGroupsPanel : Panel, IRibbonScrollContent
     /// <summary>Enables adaptive resizing (disable to always show large groups and scroll).</summary>
     public bool IsAdaptive { get; set; } = true;
 
+    /// <summary>Panel buttons / panel titles presentation (AutoCAD minimize states); classic layout only.</summary>
+    public RibbonPanelPresentation PanelPresentation { get; set; }
+
+    /// <summary>How groups shrink when the tab does not fit (Office stepwise or AutoCAD-like group by group).</summary>
+    public RibbonReductionStrategy ReductionStrategy { get; set; }
+
+    /// <summary>Whether group captions (panel titles) are shown.</summary>
+    public bool ShowCaptions { get; set; } = true;
+
     /// <summary>Spacing between groups.</summary>
     public double GroupSpacing { get; set; }
 
@@ -78,7 +87,16 @@ public partial class RibbonGroupsPanel : Panel, IRibbonScrollContent
             _simplifiedCache.Remove(stale);
         }
 
-        var height = IsSimplified ? Metrics.SimplifiedHeight : Metrics.GroupContentHeight + Metrics.GroupCaptionHeight + 4;
+        var height = IsSimplified
+            ? Metrics.SimplifiedHeight
+            : PanelPresentation == RibbonPanelPresentation.Titles
+                ? Metrics.GroupCaptionHeight + 12
+                : Metrics.GroupContentHeight + (ShowCaptions ? Metrics.GroupCaptionHeight : 0) + 4;
+        foreach (var group in groups)
+        {
+            group.PanelPresentation = IsSimplified ? RibbonPanelPresentation.Full : PanelPresentation;
+        }
+
         var result = IsSimplified ? MeasureSimplified(groups, availableSize.Width, height) : MeasureClassic(groups, availableSize.Width, height);
         _extent = result.Width;
         return result;
@@ -89,7 +107,12 @@ public partial class RibbonGroupsPanel : Panel, IRibbonScrollContent
         SetOverflow(false);
         _overflowButton?.Measure(new Size(0, 0));
         var states = new RibbonGroupState[groups.Length];
-        if (IsAdaptive && !double.IsInfinity(available))
+        if (PanelPresentation != RibbonPanelPresentation.Full)
+        {
+            // Panel buttons / titles: every group is a button that opens the full panel.
+            Array.Fill(states, RibbonGroupState.Collapsed);
+        }
+        else if (IsAdaptive && !double.IsInfinity(available))
         {
             var infos = new RibbonGroupLayoutInfo[groups.Length];
             for (var i = 0; i < groups.Length; i++)
@@ -111,7 +134,7 @@ public partial class RibbonGroupsPanel : Panel, IRibbonScrollContent
                 infos[i] = new RibbonGroupLayoutInfo(cached.Widths, group.ReductionOrder, group.CanCollapse);
             }
 
-            states = RibbonAdaptiveLayout.Compute(infos, available, GroupSpacing).States.ToArray();
+            states = RibbonAdaptiveLayout.Compute(infos, available, GroupSpacing, ReductionStrategy).States.ToArray();
 
         }
 

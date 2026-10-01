@@ -28,6 +28,9 @@ public partial class RibbonTitleBar : Control
     /// <summary>Identifies <see cref="Subtitle"/>.</summary>
     public static readonly DependencyProperty SubtitleProperty = DependencyProperty.Register(nameof(Subtitle), typeof(string), typeof(RibbonTitleBar), new PropertyMetadata(null));
 
+    /// <summary>Identifies <see cref="IsAppIconMenuEnabled"/>.</summary>
+    public static readonly DependencyProperty IsAppIconMenuEnabledProperty = DependencyProperty.Register(nameof(IsAppIconMenuEnabled), typeof(bool), typeof(RibbonTitleBar), new PropertyMetadata(false, (d, _) => ((RibbonTitleBar)d).UpdateAppButton()));
+
     /// <summary>Identifies <see cref="AppIcon"/>.</summary>
     public static readonly DependencyProperty AppIconProperty = DependencyProperty.Register(nameof(AppIcon), typeof(object), typeof(RibbonTitleBar), new PropertyMetadata(null));
 
@@ -86,6 +89,47 @@ public partial class RibbonTitleBar : Control
     /// <summary>Application icon.</summary>
     public object? AppIcon { get => GetValue(AppIconProperty); set => SetValue(AppIconProperty, value); }
 
+    /// <summary>
+    /// Turns the application icon into a button that opens the linked ribbon's application menu or backstage (the
+    /// AutoCAD application button). Combine with <c>Ribbon.IsApplicationButtonVisible="False"</c> to hide the File tab button.
+    /// </summary>
+    public bool IsAppIconMenuEnabled { get => (bool)GetValue(IsAppIconMenuEnabledProperty); set => SetValue(IsAppIconMenuEnabledProperty, value); }
+
+    /// <summary>Raised when the application icon button is clicked (set <c>Handled</c> to replace the default action).</summary>
+    public event EventHandler<RibbonHandledEventArgs>? AppIconClick;
+
+    private Button? _appButton;
+    private FrameworkElement? _appIcon;
+
+    /// <summary>The application icon button (<see cref="IsAppIconMenuEnabled"/>), e.g. to anchor menus from code.</summary>
+    public Button? AppButton => _appButton;
+
+    private void UpdateAppButton()
+    {
+        if (_appButton is not null)
+        {
+            _appButton.Visibility = IsAppIconMenuEnabled ? Visibility.Visible : Visibility.Collapsed;
+            var name = Ribbon?.ApplicationButtonLabel ?? Localization.RibbonStrings.Current.File;
+            AutomationProperties.SetName(_appButton, name);
+            ToolTipService.SetToolTip(_appButton, name);
+        }
+
+        if (_appIcon is not null)
+        {
+            _appIcon.Visibility = IsAppIconMenuEnabled ? Visibility.Collapsed : Visibility.Visible;
+        }
+    }
+
+    private void OnAppButtonClick(object sender, RoutedEventArgs e)
+    {
+        var args = new RibbonHandledEventArgs();
+        AppIconClick?.Invoke(this, args);
+        if (!args.Handled && sender is FrameworkElement anchor)
+        {
+            Ribbon?.InvokeApplicationButton(anchor);
+        }
+    }
+
     /// <summary>Content after the icon (AutoSave toggle...).</summary>
     public object? StartContent { get => GetValue(StartContentProperty); set => SetValue(StartContentProperty, value); }
 
@@ -117,6 +161,19 @@ public partial class RibbonTitleBar : Control
         _search = GetTemplateChild("PART_SearchBox") as RibbonSearchBox;
         _titleElement = GetTemplateChild("PART_Title") as FrameworkElement;
         _dragRegion = GetTemplateChild("PART_DragRegion") as FrameworkElement;
+        if (_appButton is not null)
+        {
+            _appButton.Click -= OnAppButtonClick;
+        }
+
+        _appButton = GetTemplateChild("PART_AppButton") as Button;
+        _appIcon = GetTemplateChild("PART_AppIcon") as FrameworkElement;
+        if (_appButton is not null)
+        {
+            _appButton.Click += OnAppButtonClick;
+        }
+
+        UpdateAppButton();
         if (_search is not null)
         {
             _search.Ribbon = Ribbon;
@@ -370,6 +427,15 @@ public partial class RibbonStatusBar : Control, IRibbonLayoutHost, IRibbonItemOw
     /// <summary>Identifies <see cref="Ribbon"/>.</summary>
     public static readonly DependencyProperty RibbonProperty = DependencyProperty.Register(nameof(Ribbon), typeof(Ribbon), typeof(RibbonStatusBar), new PropertyMetadata(null, (d, _) => ((RibbonStatusBar)d).ResolveCommands()));
 
+    /// <summary>Identifies <see cref="ShowLabels"/>.</summary>
+    public static readonly DependencyProperty ShowLabelsProperty = DependencyProperty.Register(nameof(ShowLabels), typeof(bool), typeof(RibbonStatusBar), new PropertyMetadata(true, (d, _) => ((RibbonStatusBar)d).Sync()));
+
+    /// <summary>
+    /// Shows item labels next to their icons (default). Set to false for icon-only toggles (CAD status bars); an item
+    /// with <c>ShowLabel="False"</c> is always icon-only.
+    /// </summary>
+    public bool ShowLabels { get => (bool)GetValue(ShowLabelsProperty); set => SetValue(ShowLabelsProperty, value); }
+
     private static readonly RibbonMetrics StatusMetrics = RibbonMetrics.Compact with { SimplifiedItemHeight = 22 };
     private StackPanel? _start;
     private StackPanel? _end;
@@ -461,7 +527,8 @@ public partial class RibbonStatusBar : Control, IRibbonLayoutHost, IRibbonItemOw
 
             if (item is IRibbonItem ribbonItem)
             {
-                ribbonItem.ApplyLayout(new RibbonItemLayout(RibbonItemSize.Small, StatusMetrics, true, true));
+                var showLabel = ShowLabels && (item as IRibbonItemEditable)?.ShowLabel != false;
+                ribbonItem.ApplyLayout(new RibbonItemLayout(RibbonItemSize.Small, StatusMetrics, true, showLabel));
             }
 
             host.Children.Add(item);

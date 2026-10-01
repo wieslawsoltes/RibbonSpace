@@ -327,9 +327,14 @@
         <ControlTemplate TargetType="c:RibbonScreenTip">
           <StackPanel Spacing="6" Padding="2">
             <TextBlock Text="{TemplateBinding TitleText}" FontWeight="SemiBold" TextWrapping="Wrap" />
-            <p:RibbonIconPresenter x:Name="PART_Image" Icon="{TemplateBinding Image}" IconSize="96" HorizontalAlignment="Left" />
+            <p:RibbonIconPresenter x:Name="PART_Image" Icon="{TemplateBinding Image}" IconSize="96" HorizontalAlignment="Left" Foreground="{ThemeResource RibbonIconBrush}" />
             <TextBlock x:Name="PART_Description" Text="{TemplateBinding Description}" TextWrapping="Wrap" Opacity="0.9" />
             <TextBlock x:Name="PART_DisabledReason" Text="{TemplateBinding DisabledReason}" TextWrapping="Wrap" FontStyle="Italic" Opacity="0.8" />
+            <!-- Progressive tooltip: shown after RibbonScreenTipService.ExtendedDelay. -->
+            <StackPanel x:Name="PART_Extended" Spacing="6" Visibility="Collapsed" BorderThickness="0,1,0,0" Padding="0,6,0,0" BorderBrush="{ThemeResource RibbonSeparatorBrush}">
+              <p:RibbonIconPresenter x:Name="PART_ExtendedImage" Icon="{TemplateBinding ExtendedImage}" IconSize="160" HorizontalAlignment="Left" Foreground="{ThemeResource RibbonIconBrush}" />
+              <TextBlock x:Name="PART_ExtendedDescription" Text="{TemplateBinding ExtendedDescription}" TextWrapping="Wrap" Opacity="0.9" />
+            </StackPanel>
             <StackPanel x:Name="PART_HelpText" Orientation="Horizontal" Spacing="6" BorderThickness="0,1,0,0" Padding="0,6,0,0" BorderBrush="{ThemeResource RibbonSeparatorBrush}">
               <FontIcon Glyph="&#xE897;" FontSize="12" />
               <TextBlock Text="{TemplateBinding HelpText}" TextWrapping="Wrap" />

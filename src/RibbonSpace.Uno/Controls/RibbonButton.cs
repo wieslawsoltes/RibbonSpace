@@ -473,6 +473,33 @@ public static class RibbonMenuCloner
 /// <summary>Menu helpers.</summary>
 public static class RibbonMenu
 {
+    /// <summary>
+    /// Identifies the <c>RibbonMenu.Icon</c> attached property: any RibbonSpace icon value (glyph, path, layered path,
+    /// image, RibbonIcon) for a <see cref="MenuFlyoutItem"/> / <see cref="MenuFlyoutSubItem"/> declared in XAML,
+    /// converted with <see cref="RibbonItemHelper.CreateMenuIcon"/> (and <see cref="RibbonItemHelper.MenuIconConverter"/>).
+    /// </summary>
+    public static readonly DependencyProperty IconProperty = DependencyProperty.RegisterAttached("Icon", typeof(object), typeof(RibbonMenu), new PropertyMetadata(null, OnIconChanged));
+
+    /// <summary>Gets the attached menu icon.</summary>
+    public static object? GetIcon(DependencyObject element) => element.GetValue(IconProperty);
+
+    /// <summary>Sets the attached menu icon.</summary>
+    public static void SetIcon(DependencyObject element, object? value) => element.SetValue(IconProperty, value);
+
+    private static void OnIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var icon = RibbonItemHelper.CreateMenuIcon(e.NewValue);
+        switch (d)
+        {
+            case MenuFlyoutItem item:
+                item.Icon = icon;
+                break;
+            case MenuFlyoutSubItem sub:
+                sub.Icon = icon;
+                break;
+        }
+    }
+
     private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<MenuFlyoutItem, Action> Invokers = new();
 
     /// <summary>Registers the click action of a menu item so clones (overflow menus) can invoke it.</summary>
@@ -483,6 +510,35 @@ public static class RibbonMenu
 
     /// <summary>Gets the registered click action.</summary>
     public static Action? GetInvoke(MenuFlyoutItem item) => Invokers.TryGetValue(item, out var action) ? action : null;
+
+    /// <summary>
+    /// Gives a menu or flyout the ribbon popup look (theme colours, popup corner radius) unless the application set its
+    /// own presenter style. Applied automatically to the flyouts of ribbon items and to the ribbon's own menus.
+    /// </summary>
+    public static void ApplyTheme(FlyoutBase? flyout)
+    {
+        switch (flyout)
+        {
+            case MenuFlyout menu when menu.MenuFlyoutPresenterStyle is null && TryGetStyle("RibbonMenuFlyoutPresenterStyle", out var menuStyle):
+                menu.MenuFlyoutPresenterStyle = menuStyle;
+                break;
+            case Flyout content when content.FlyoutPresenterStyle is null && TryGetStyle("RibbonFlyoutPresenterStyle", out var flyoutStyle):
+                content.FlyoutPresenterStyle = flyoutStyle;
+                break;
+        }
+    }
+
+    private static bool TryGetStyle(string key, out Style style)
+    {
+        if (Application.Current?.Resources.TryGetValue(key, out var value) == true && value is Style found)
+        {
+            style = found;
+            return true;
+        }
+
+        style = null!;
+        return false;
+    }
 
     /// <summary>Creates a menu item with a click action that survives cloning.</summary>
     public static MenuFlyoutItem Item(string text, Action action, object? icon = null, string? shortcut = null)

@@ -46,10 +46,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
       - run: dotnet test tests/RibbonSpace.Core.Tests/RibbonSpace.Core.Tests.csproj -c Release
@@ -66,16 +66,16 @@ jobs:
     env:
       VERSION: ${{ needs.version.outputs.version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
       - name: Install workloads
         run: dotnet workload install android ios wasm-tools
       # WinUI class libraries with XAML must be built with Visual Studio's MSBuild, not `dotnet build` (UNOB0008).
-      - uses: microsoft/setup-msbuild@v2
+      - uses: microsoft/setup-msbuild@v3
       - name: Pack RibbonSpace.Core
         shell: bash
         run: dotnet pack src/RibbonSpace.Core/RibbonSpace.Core.csproj -c Release -p:Version="$VERSION" -o artifacts/packages
@@ -86,7 +86,7 @@ jobs:
           msbuild src/RibbonSpace.Uno/RibbonSpace.Uno.csproj -t:Pack -restore -m -p:Configuration=Release "-p:Version=$env:VERSION" -p:RibbonSpaceAllTargets=true "-p:PackageOutputPath=$env:GITHUB_WORKSPACE/artifacts/packages"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Get-ChildItem artifacts/packages
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: nuget-packages
           path: |
@@ -101,10 +101,10 @@ jobs:
     env:
       VERSION: ${{ needs.version.outputs.version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
       - run: dotnet workload install wasm-tools --skip-manifest-update
@@ -113,7 +113,7 @@ jobs:
         run: |
           dotnet publish samples/RibbonSpace.Demo/RibbonSpace.Demo.csproj -f net10.0-browserwasm -c Release -p:DemoTargetFrameworks=net10.0-browserwasm -p:WasmShellWebAppBasePath=/ -o artifacts/browser
           (cd artifacts/browser/wwwroot && zip -qr "$GITHUB_WORKSPACE/RibbonSpace-Gallery-$VERSION-browser.zip" .)
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: gallery
           path: '*.zip'
@@ -128,14 +128,14 @@ jobs:
     env:
       VERSION: ${{ needs.version.outputs.version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: nuget-packages
           path: release-assets
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: gallery
           path: release-assets
@@ -167,11 +167,11 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: nuget-packages
           path: packages
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
       - name: Check NuGet user

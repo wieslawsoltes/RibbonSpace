@@ -103,5 +103,7 @@ jobs:
           dotnet-version: '10.0.x'
       - name: Install workloads
         run: dotnet workload install android ios wasm-tools
+      # WinUI class libraries with XAML must be built with Visual Studio's MSBuild, not `dotnet build` (UNOB0008).
+      - uses: microsoft/setup-msbuild@v2
       - name: Build RibbonSpace.Uno for every target
-        run: dotnet build src/RibbonSpace.Uno/RibbonSpace.Uno.csproj -c Release -p:RibbonSpaceAllTargets=true
+        run: msbuild src/RibbonSpace.Uno/RibbonSpace.Uno.csproj /restore /m /p:Configuration=Release /p:RibbonSpaceAllTargets=true

@@ -336,7 +336,8 @@ public partial class RibbonSearchBox : Control
         }
 
         _ignoredText = null;
-        if (_textBox.FocusState != FocusState.Unfocused)
+        // Typing (focused) or a programmatic change while the results are showing refreshes them.
+        if (_textBox.FocusState != FocusState.Unfocused || IsResultsOpen)
         {
             ShowResults();
         }

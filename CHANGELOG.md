@@ -14,7 +14,7 @@ All notable changes to this project are documented here. The format follows
   - KeyTip assignment and navigation
   - ranked command search
   - versioned, source-generated state JSON and customization model
-  - Office colour palettes with shade generation, and Microsoft 365 accent palettes
+  - Office colour palettes with shade generation, and application accent palettes (Word, Excel, PowerPoint, ...)
   - localization (en, de, fr, es, pl)
   - model merging
 - `RibbonSpace.Uno` ribbon:

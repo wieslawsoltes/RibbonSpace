@@ -1,6 +1,6 @@
 # RibbonSpace documentation
 
-RibbonSpace provides a Microsoft 365-class ribbon, plus toolbars, a title bar, a status bar and menus, for
+RibbonSpace provides a modern, Office-style ribbon, plus toolbars, a title bar, a status bar and menus, for
 [Uno Platform](https://platform.uno) on Windows, macOS, Linux, WebAssembly, iOS and Android.
 
 | Guide | Contents |
@@ -26,4 +26,4 @@ RibbonSpace provides a Microsoft 365-class ribbon, plus toolbars, a title bar, a
 | [Migrating the Space apps](migration.md) | Mapping each app's hand-written ribbon to RibbonSpace |
 | [Testing](testing.md) | Unit tests, runtime UI tests, screenshot automation |
 | [Releasing](releasing.md) | Versioning, CI, NuGet Trusted Publishing |
-| [Feature research](research/feature-inventory.md) | Analysis of the 17 apps and Microsoft 365 |
+| [Feature research](research/feature-inventory.md) | Analysis of the 17 apps and modern Office ribbons |

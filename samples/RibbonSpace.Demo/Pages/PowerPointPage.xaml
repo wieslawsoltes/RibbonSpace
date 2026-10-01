@@ -175,7 +175,7 @@
           <Grid Padding="60">
             <StackPanel VerticalAlignment="Center" Spacing="16">
               <TextBlock x:Name="SlideTitle" Text="Introducing RibbonSpace" FontSize="54" FontWeight="SemiBold" Foreground="#262626" />
-              <TextBlock x:Name="SlideSubtitle" Text="A Microsoft 365-class ribbon for Uno Platform" FontSize="28" Foreground="#595959" />
+              <TextBlock x:Name="SlideSubtitle" Text="A modern ribbon for Uno Platform" FontSize="28" Foreground="#595959" />
             </StackPanel>
           </Grid>
         </Border>

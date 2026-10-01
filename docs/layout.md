@@ -2,7 +2,7 @@
 
 ## Adaptive group resizing
 
-When a tab no longer fits, groups shrink step by step, as in Microsoft 365:
+When a tab no longer fits, groups shrink step by step, as in modern Office apps:
 
 1. Every group moves from **Large** to **Medium**. Groups with a higher `ReductionOrder` go first; ties go
    right-to-left.

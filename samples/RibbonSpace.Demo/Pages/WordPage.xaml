@@ -506,7 +506,7 @@
         <Border x:Name="PageSheet" RequestedTheme="Light" Width="760" MinHeight="760" HorizontalAlignment="Center" VerticalAlignment="Top" Background="White" CornerRadius="2" Padding="72,64" BorderThickness="1" BorderBrush="#20000000">
           <StackPanel Spacing="14">
             <TextBlock x:Name="DocTitle" Text="Quarterly report" FontSize="30" Foreground="#1F3864" />
-            <TextBlock x:Name="DocText" TextWrapping="Wrap" FontSize="16" Foreground="#242424" Text="RibbonSpace brings a Microsoft 365-class ribbon to Uno Platform. Select text styles, fonts, colors and alignment in the ribbon to format this paragraph. Hover the Styles gallery for live preview, press Alt for KeyTips, Alt+Q for search, Ctrl+F1 to collapse the ribbon, or right-click any command to add it to the Quick Access Toolbar." />
+            <TextBlock x:Name="DocText" TextWrapping="Wrap" FontSize="16" Foreground="#242424" Text="RibbonSpace brings a modern, Office-style ribbon to Uno Platform. Select text styles, fonts, colors and alignment in the ribbon to format this paragraph. Hover the Styles gallery for live preview, press Alt for KeyTips, Alt+Q for search, Ctrl+F1 to collapse the ribbon, or right-click any command to add it to the Quick Access Toolbar." />
             <StackPanel Orientation="Horizontal" Spacing="8">
               <Button x:Name="ToggleTable" Content="Select a table (shows Table Tools)" />
               <Button x:Name="ToggleDark" Content="Toggle dark mode" />

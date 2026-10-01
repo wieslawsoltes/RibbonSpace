@@ -18,7 +18,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591;Uno0001</NoWarn>
     <RootNamespace>RibbonSpace</RootNamespace>
-    <Description>Professional Microsoft 365-style Ribbon for Uno Platform: classic and simplified layouts, adaptive group resizing, contextual tabs, backstage, Quick Access Toolbar, KeyTips, galleries, color pickers, ScreenTips, command search, customization, toolbars and full MVVM support. Themeable and lookless.</Description>
+    <Description>Professional Office-style Ribbon for Uno Platform: classic and simplified layouts, adaptive group resizing, contextual tabs, backstage, Quick Access Toolbar, KeyTips, galleries, color pickers, ScreenTips, command search, customization, toolbars and full MVVM support. Themeable and lookless.</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../RibbonSpace.Core/RibbonSpace.Core.csproj" />

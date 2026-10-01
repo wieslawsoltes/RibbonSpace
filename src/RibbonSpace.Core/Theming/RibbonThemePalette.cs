@@ -5,12 +5,12 @@ public enum RibbonChromeStyle
 {
     /// <summary>Accent-colored title bar (Office "Colorful").</summary>
     Colorful,
-    /// <summary>Neutral title bar matching the ribbon (Office "White" / modern Microsoft 365).</summary>
+    /// <summary>Neutral title bar matching the ribbon (Office "White" / modern Office look).</summary>
     Neutral,
 }
 
 /// <summary>
-/// Accent palette used to theme a ribbon. Presets mirror the Microsoft 365 application brand colors.
+/// Accent palette used to theme a ribbon. Presets mirror the Office application brand colors.
 /// </summary>
 /// <param name="Name">Display name.</param>
 /// <param name="Accent">Primary accent (selected tab text, focus, checked state, backstage pane).</param>

@@ -15,7 +15,7 @@ using RibbonSpace.Localization;
 namespace RibbonSpace.Controls;
 
 /// <summary>
-/// Microsoft 365-style ribbon: tab row with application (File) button, contextual tabs and tab-row commands,
+/// Office-style ribbon: tab row with application (File) button, contextual tabs and tab-row commands,
 /// adaptive classic or simplified command area, Quick Access Toolbar, backstage, KeyTips, display options,
 /// customization and persistence. Use declaratively in XAML or bind <see cref="Model"/> for MVVM.
 /// </summary>

@@ -5,7 +5,7 @@
 <h1 align="center">RibbonSpace</h1>
 
 <p align="center">
-  <b>A Microsoft 365-class Ribbon for Uno Platform.</b><br/>
+  <b>A modern, Office-style Ribbon for Uno Platform.</b><br/>
   Classic and simplified layouts, adaptive resizing, contextual tabs, backstage, Quick Access Toolbar, KeyTips,
   galleries with live preview, Office color pickers, ScreenTips, command search, customization, toolbars and full MVVM.
 </p>
@@ -22,7 +22,7 @@
 
 RibbonSpace is the shared command UI for the Uno "Space" applications (TextSpace, GridSpace, PresentationSpace, NoteSpace,
 DataSpace, CadSpace, and ImageSpace, VectorSpace and the other toolbar-based apps). It was designed after studying all seventeen
-of them and Word, Excel and PowerPoint for Microsoft 365 ([research](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/research/feature-inventory.md)).
+of them and modern Word, Excel and PowerPoint ([research](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/research/feature-inventory.md)).
 
 ## Highlights
 
@@ -43,7 +43,7 @@ of them and Word, Excel and PowerPoint for Microsoft 365 ([research](https://git
 | **Toolbars** | Horizontal / vertical / two-column tool palettes with "⋯" overflow, tool option bars, a classic menu bar. |
 | **MVVM** | Bind a `RibbonModel`. Everything is generated and **two-way synchronized**; string-id routing via `ItemInvoked`, `ICommand`, or a command catalog. |
 | **Customization and state** | Office "Customize the Ribbon / QAT" dialog, hide / rename / reorder, custom tabs and groups, import / export, versioned AOT-safe JSON state, plugin merging. |
-| **Theming** | Lookless templates; Light / Dark / HighContrast; 11 Microsoft 365 palettes plus custom accents, applied live; Colorful or Neutral chrome; Compact / Comfortable / Touch density; fully custom metrics. |
+| **Theming** | Lookless templates; Light / Dark / HighContrast; 11 application palettes plus custom accents, applied live; Colorful or Neutral chrome; Compact / Comfortable / Touch density; fully custom metrics. |
 | **Quality** | Accessibility peers and stable automation ids, localization (en, de, fr, es, pl), RTL, 91 unit tests and 64 runtime UI tests, trimming / AOT friendly. |
 
 <table>
@@ -175,6 +175,8 @@ dotnet run --project tests/RibbonSpace.Uno.RuntimeTests -f net10.0-desktop   # r
 
 Requirements: .NET 10 SDK, and Uno.Sdk 6.7 (resolved from `global.json`). Building for WebAssembly needs the
 `wasm-tools` workload, and building every target needs `android` and `ios` too (`-p:RibbonSpaceAllTargets=true`).
+On Windows that also adds the WinAppSDK target, which must be built with Visual Studio's `msbuild /restore`
+rather than `dotnet build`.
 
 ## License
 

@@ -11,7 +11,7 @@ using RibbonSpace.Localization;
 namespace RibbonSpace.Controls;
 
 /// <summary>
-/// Microsoft 365 style title bar: application icon, Quick Access Toolbar (of the linked ribbon), document title,
+/// Office-style title bar: application icon, Quick Access Toolbar (of the linked ribbon), document title,
 /// centered command search and end content (account, share, window buttons area).
 /// </summary>
 public partial class RibbonTitleBar : Control

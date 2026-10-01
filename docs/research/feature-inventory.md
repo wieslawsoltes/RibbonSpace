@@ -1,4 +1,4 @@
-# Feature research: the Space apps and Microsoft 365
+# Feature research: the Space apps and modern Office ribbons
 
 RibbonSpace was extracted from, and designed to replace, the command UI of seventeen Uno Platform applications:
 [VectorSpace](https://github.com/wieslawsoltes/VectorSpace), [TextSpace](https://github.com/wieslawsoltes/TextSpace),
@@ -10,7 +10,7 @@ RibbonSpace was extracted from, and designed to replace, the command UI of seven
 [DataSpace](https://github.com/wieslawsoltes/DataSpace), [NoteSpace](https://github.com/wieslawsoltes/NoteSpace),
 [CadSpace](https://github.com/wieslawsoltes/CadSpace), [GitSpace](https://github.com/wieslawsoltes/GitSpace) and
 [ControlSpace](https://github.com/wieslawsoltes/ControlSpace). The feature set was then completed against Word,
-Excel and PowerPoint for Microsoft 365, and against two earlier Avalonia ribbons by the same author (RibbonControl and Ribbon).
+Excel and PowerPoint, and against two earlier Avalonia ribbons by the same author (RibbonControl and Ribbon).
 
 ## 1. What the apps had
 
@@ -67,7 +67,7 @@ Problems common to all of them:
 | 19 | Command search ("Tell me", Alt+Q) | TextSpace, GridSpace, PresentationSpace, CadSpace | `RibbonSearchBox`, `Ribbon.Search`, `RibbonSearchEngine` (fuzzy, acronyms, recents) |
 | 20 | Command palette | CodeSpace, VectorSpace, LabSpace | `RibbonCommandPalette` |
 | 21 | Collapse / pin / display options / full screen | DataSpace, CadSpace, PresentationSpace | `VisibilityMode` (AlwaysShow / TabsOnly popup / FullScreen), Ctrl+F1, double-click, display-options menu |
-| 22 | Single-line simplified ribbon with overflow | Office 365 | `DisplayMode=Simplified`, `RibbonSimplifiedLayout`, "More options" linked-copy overflow |
+| 22 | Single-line simplified ribbon with overflow | Office | `DisplayMode=Simplified`, `RibbonSimplifiedLayout`, "More options" linked-copy overflow |
 | 23 | KeyTips | missing everywhere | Alt / F10, multi-level, multi-letter, collision-free generation, popups, backstage |
 | 24 | String-id command routing (existing apps) and MVVM `ICommand` | all | `ItemInvoked` (id + parameter), `CommandId` + `RibbonCommandCatalog`, `ICommand` everywhere |
 | 25 | Command state by id (enabled / checked) | DataSpace | `Ribbon.SetCommandEnabled/Checked`, catalog descriptors |
@@ -85,9 +85,9 @@ Problems common to all of them:
 | 37 | Localization | missing everywhere | `RibbonStrings` (en, de, fr, es, pl; extensible) |
 | 38 | Vector icons independent of platform fonts | CadSpace, GridSpace (Skia icons) | `RibbonIconPresenter`: glyph, path data, image, `RibbonIcon`, `IconSource`, text |
 
-## 3. Microsoft 365 features and their equivalents
+## 3. Office ribbon features and their equivalents
 
-| Microsoft 365 | RibbonSpace |
+| Office | RibbonSpace |
 |---|---|
 | Rounded, floating command bar card on a neutral canvas (2023 visual refresh) | Default template (`RibbonCommandBarCornerRadius`, neutral chrome) |
 | Colourful title bar theme | `RibbonTheme.ApplyChromeStyle(RibbonChromeStyle.Colorful)` |

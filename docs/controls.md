@@ -35,7 +35,7 @@ Methods: `ApplyLayout(RibbonItemLayout)`, `IRibbonItem.CreateLinkedCopy()`, `IRi
 
 *Base:* `Control`
 
-Microsoft 365-style ribbon: tab row with application (File) button, contextual tabs and tab-row commands, adaptive classic or simplified command area, Quick Access Toolbar, backstage, KeyTips, display options, customization and persistence. Use declaratively in XAML or bind `Model` for MVVM.
+Office-style ribbon: tab row with application (File) button, contextual tabs and tab-row commands, adaptive classic or simplified command area, Quick Access Toolbar, backstage, KeyTips, display options, customization and persistence. Use declaratively in XAML or bind `Model` for MVVM.
 
 | Member | Kind | Type | Description |
 |---|---|---|---|
@@ -655,7 +655,7 @@ Microsoft Search style command search box ("Search (Alt+Q)") for the title bar o
 
 *Base:* `Control`
 
-Microsoft 365 style title bar: application icon, Quick Access Toolbar (of the linked ribbon), document title, centered command search and end content (account, share, window buttons area).
+Office-style title bar: application icon, Quick Access Toolbar (of the linked ribbon), document title, centered command search and end content (account, share, window buttons area).
 
 | Member | Kind | Type | Description |
 |---|---|---|---|

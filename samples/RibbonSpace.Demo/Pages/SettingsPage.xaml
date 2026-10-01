@@ -16,7 +16,7 @@
         </ComboBox>
         <ComboBox x:Name="Palette" Header="Accent palette" Width="280" />
         <ComboBox x:Name="Chrome" Header="Chrome style" Width="280" SelectedIndex="0">
-          <x:String>Neutral (Microsoft 365)</x:String>
+          <x:String>Neutral</x:String>
           <x:String>Colorful (accent title bar)</x:String>
         </ComboBox>
         <ComboBox x:Name="Density" Header="Density" Width="280" SelectedIndex="0">

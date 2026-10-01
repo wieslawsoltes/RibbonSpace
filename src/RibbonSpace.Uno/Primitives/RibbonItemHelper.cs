@@ -130,6 +130,8 @@ public static class RibbonItemHelper
 
         if (newFlyout is not null)
         {
+            RibbonMenu.ApplyTheme(newFlyout);
+
             // Static handler: a flyout shared by an item and its linked copies does not keep any of them alive.
             newFlyout.Opening -= OnHostedFlyoutOpening;
             newFlyout.Opening += OnHostedFlyoutOpening;
@@ -253,7 +255,7 @@ public static class RibbonItemHelper
         // A fresh tooltip element is built every time: a UIElement can only have one parent, and the source item and
         // its linked copies (QAT, custom groups) each need their own instance.
         var isEnabled = item is not Control control || control.IsEnabled;
-        var tip = RibbonScreenTipService.Create(ribbonItem.Label, ribbonItem.ScreenTip, ribbonItem.Shortcut, isEnabled);
+        var tip = RibbonScreenTipService.CreateToolTip(RibbonScreenTipService.Create(ribbonItem.Label, ribbonItem.ScreenTip, ribbonItem.Shortcut, isEnabled));
         SetOwnedValue(item, ToolTipService.ToolTipProperty, tip);
         SetOwnedValue(item, AutomationProperties.NameProperty, string.IsNullOrEmpty(ribbonItem.Label) ? null : ribbonItem.Label.Replace('\n', ' '));
         SetOwnedValue(item, AutomationProperties.AcceleratorKeyProperty, string.IsNullOrEmpty(ribbonItem.Shortcut) ? null : ribbonItem.Shortcut);
@@ -418,23 +420,82 @@ public static class RibbonItemHelper
     /// <summary>Creates an <see cref="IconElement"/> suitable for menus from any icon description.</summary>
     public static IconElement? CreateMenuIcon(object? icon)
     {
+        if (icon is not null && MenuIconConverter?.Invoke(icon) is { } converted)
+        {
+            return converted;
+        }
+
         switch (icon)
         {
             case null:
                 return null;
             case string s when Primitives.RibbonIconPresenter.Classify(s) == Model.RibbonIconKind.Glyph:
                 return new FontIcon { Glyph = s };
+            case string s when Primitives.RibbonIconPresenter.Classify(s) == Model.RibbonIconKind.Path:
+                return CreatePathMenuIcon(s);
+            case string s when Primitives.RibbonIconPresenter.Classify(s) == Model.RibbonIconKind.Image:
+                return CreateImageMenuIcon(s);
             case Model.RibbonIcon { Kind: Model.RibbonIconKind.Glyph } ri:
                 return new FontIcon { Glyph = ri.Value };
+            case Model.RibbonIcon { Kind: Model.RibbonIconKind.Path } ri:
+                return CreatePathMenuIcon(ri.Value);
+            case Model.RibbonIcon { Kind: Model.RibbonIconKind.Image } ri:
+                return CreateImageMenuIcon(ri.Value);
             case FontIconSource f:
                 return new FontIcon { Glyph = f.Glyph };
             case SymbolIconSource s:
                 return new SymbolIcon(s.Symbol);
+            case PathIconSource p:
+                return new PathIcon { Data = p.Data };
+            case BitmapIconSource b:
+                return new BitmapIcon { UriSource = b.UriSource, ShowAsMonochrome = b.ShowAsMonochrome };
+            case ImageIconSource i:
+                return new ImageIcon { Source = i.ImageSource };
             case FontIcon fi:
                 return new FontIcon { Glyph = fi.Glyph };
+            case SymbolIcon si:
+                return new SymbolIcon(si.Symbol);
+            case BitmapIcon bi:
+                return new BitmapIcon { UriSource = bi.UriSource, ShowAsMonochrome = bi.ShowAsMonochrome };
+            case ImageIcon ii:
+                return new ImageIcon { Source = ii.Source };
             default:
                 return null;
         }
+    }
+
+    /// <summary>
+    /// Optional converter for menu icons, tried before the built-in conversions. Menu items take a single-colour
+    /// <see cref="IconElement"/>; filled path icons become a <see cref="PathIcon"/>, but stroked or multi-colour layered
+    /// icons cannot be expressed that way, so apps can supply e.g. a rendered <see cref="ImageIcon"/> here.
+    /// </summary>
+    public static Func<object, IconElement?>? MenuIconConverter { get; set; }
+
+    private static IconElement? CreatePathMenuIcon(string value)
+    {
+        var layers = Model.RibbonIconLayer.Parse(value);
+        if (layers.Count == 0 || layers.Any(l => l.StrokeThickness > 0))
+        {
+            // Stroked line art has no PathIcon equivalent (PathIcon only fills).
+            return null;
+        }
+
+        try
+        {
+            var data = string.Join(" ", layers.Select(l => l.Data));
+            var escaped = System.Security.SecurityElement.Escape(data);
+            return (PathIcon)Microsoft.UI.Xaml.Markup.XamlReader.Load($"<PathIcon xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" Data=\"{escaped}\" />");
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    private static IconElement? CreateImageMenuIcon(string value)
+    {
+        var uri = Uri.TryCreate(value, UriKind.Absolute, out var absolute) ? absolute : Uri.TryCreate("ms-appx:///" + value.TrimStart('/'), UriKind.Absolute, out var packaged) ? packaged : null;
+        return uri is null ? null : new ImageIcon { Source = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(uri) };
     }
 
     /// <summary>Binds a DP of a linked copy to the same DP of the source item (one or two way).</summary>

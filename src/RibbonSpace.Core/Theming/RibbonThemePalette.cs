@@ -9,6 +9,18 @@ public enum RibbonChromeStyle
     Neutral,
 }
 
+/// <summary>Overall look of the ribbon surfaces (independent of the accent palette and Light / Dark).</summary>
+public enum RibbonThemeStyle
+{
+    /// <summary>Modern Office look: floating rounded command bar, underlined selected tab, plain panel captions.</summary>
+    Office,
+    /// <summary>
+    /// CAD look inspired by AutoCAD-class applications: blue-grey surfaces, edge-to-edge command bar, panel title bars,
+    /// flat tabs with a selected background and square corners.
+    /// </summary>
+    Cad,
+}
+
 /// <summary>
 /// Accent palette used to theme a ribbon. Presets mirror the Office application brand colors.
 /// </summary>
@@ -50,9 +62,12 @@ public sealed record RibbonThemePalette(string Name, RibbonColor Accent, RibbonC
     /// <summary>Neutral graphite for professional tools (CAD, IDEs).</summary>
     public static RibbonThemePalette Graphite { get; } = new("Graphite", RibbonColor.Parse("#3B4758"), RibbonColor.Parse("#9DB4D3"));
 
+    /// <summary>CAD blue, pairs with <see cref="RibbonThemeStyle.Cad"/>.</summary>
+    public static RibbonThemePalette Cad { get; } = new("CAD", RibbonColor.Parse("#0A7CB8"), RibbonColor.Parse("#3DA9F5"));
+
     /// <summary>All built-in presets.</summary>
     public static IReadOnlyList<RibbonThemePalette> Presets { get; } =
-        [Word, Excel, PowerPoint, Outlook, OneNote, Access, Visio, Project, Publisher, Teams, Graphite];
+        [Word, Excel, PowerPoint, Outlook, OneNote, Access, Visio, Project, Publisher, Teams, Graphite, Cad];
 
     /// <summary>Creates a palette from a single accent, deriving the dark-theme variant automatically.</summary>
     public static RibbonThemePalette FromAccent(RibbonColor accent, string name = "Custom")

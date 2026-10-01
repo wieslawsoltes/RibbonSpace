@@ -51,6 +51,24 @@ All notable changes to this project are documented here. The format follows
 - XAML without namespace boilerplate: RibbonSpace types are registered in Uno's global XAML namespace (`<Ribbon>`,
   no prefix or declaration in Uno.Sdk projects) and in the XML namespace `https://github.com/wieslawsoltes/RibbonSpace`
   (`RibbonXmlns`) with the implicit `rs` prefix; `using:` remains for Windows App SDK heads.
+- AutoCAD-class ribbon features:
+  - `RibbonThemeStyle.Cad` surface style and `RibbonThemePalette.Cad`
+  - expanded (slide-out) panels with a pushpin
+  - minimize to panel buttons or panel titles, `MinimizeBehavior` (including cycle through all) and the minimize button
+  - floating panels with persisted positions
+  - Show Tabs / Show Panels / Show Panel Titles menus
+  - progressive tooltips
+  - `RibbonApplicationMenu`
+  - `RibbonComboBox.SelectionBoxTemplate`
+  - layered, stroked path icons (XAML-safe `[stroke=…]` headers, `viewbox=`)
+  - `ReductionStrategy="GroupByGroup"`
+  - title-bar application button (`IsAppIconMenuEnabled`)
+  - icon-only status bars (`ShowLabels`)
+  - `SuspendPopups` / `ResumePopups`
+  - a CAD showcase page in the gallery
+- Ribbon drop-down menus and item tooltips use the ribbon popup look (`RibbonMenuFlyoutPresenterStyle`,
+  `RibbonToolTipStyle`); menu icons convert filled paths, images and icon sources, with `MenuIconConverter` for the
+  rest. Compact density fits two-line labels.
 - Persistence of recent searches, QAT defaults and reset (`DefaultQuickAccessItemIds`, `ResetQuickAccess`).
 - Tooling and samples:
   - automation peers

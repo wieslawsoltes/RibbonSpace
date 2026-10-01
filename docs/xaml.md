@@ -99,7 +99,9 @@ Common item properties: `Id`, `Label`, `Icon`, `LargeIcon`, `Size`, `SizeDefinit
 
 `Icon` accepts any of the following:
 - a glyph (`"&#xE8DD;"`)
-- SVG / XAML path data (`"M3 4h18v2H3z …"`)
+- SVG / XAML path data (`"M3 4h18v2H3z …"`), filled
+- layered line-art paths: `"[viewbox=32;stroke=1.8]M4,28 L28,4|[color=#3DA9F5]M2,26 h4 v4 h-4 Z"`, where each `|` layer is
+  stroked or filled and can have a fixed colour (see [CAD ribbons](cad.md#line-art-icons))
 - an image URI (`ms-appx:///Assets/paste.png`, `.svg`)
 - a short text (`"Aa"`, `"¶"`, `"$"`)
 - a Core `RibbonIcon` (glyph / path / image / text with an optional fixed colour)

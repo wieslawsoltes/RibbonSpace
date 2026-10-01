@@ -101,7 +101,15 @@ public partial class RibbonIconPresenter : Grid
             case Viewbox { Child: Canvas canvas }:
                 foreach (var path in canvas.Children.OfType<Path>())
                 {
-                    path.Fill = Foreground;
+                    // Layers with their own color keep it; themed layers follow the foreground.
+                    if (ReferenceEquals(path.Tag, ThemedStroke))
+                    {
+                        path.Stroke = Foreground;
+                    }
+                    else if (ReferenceEquals(path.Tag, ThemedFill))
+                    {
+                        path.Fill = Foreground;
+                    }
                 }
 
                 break;
@@ -118,7 +126,7 @@ public partial class RibbonIconPresenter : Grid
             return RibbonIconKind.Image;
         }
 
-        if (trimmed.Length > 6 && (trimmed[0] is 'M' or 'm' or 'F') && trimmed.Any(char.IsDigit))
+        if (trimmed.Length > 6 && (trimmed[0] is 'M' or 'm' or 'F' || (trimmed[0] == '{' && trimmed.Contains('}', StringComparison.Ordinal)) || (trimmed[0] == '[' && trimmed.Contains(']', StringComparison.Ordinal))) && trimmed.Any(char.IsDigit))
         {
             return RibbonIconKind.Path;
         }
@@ -132,7 +140,8 @@ public partial class RibbonIconPresenter : Grid
         switch (icon)
         {
             case string s when s.Length > 0:
-                return CreateElement(new RibbonIcon(Classify(s), s), size, out fixedForeground);
+                var kind = Classify(s);
+                return CreateElement(kind == RibbonIconKind.Path ? new RibbonIcon(kind, s, ViewBoxSize: RibbonIconLayer.ParseViewBox(s) ?? 24) : new RibbonIcon(kind, s), size, out fixedForeground);
             case RibbonIcon ri:
                 Brush? fixedBrush = null;
                 if (RibbonColor.TryParse(ri.Foreground, out var color))
@@ -213,28 +222,52 @@ public partial class RibbonIconPresenter : Grid
         }
     }
 
-    /// <summary>Creates a vector path element from path mini-language data.</summary>
+    /// <summary>
+    /// Creates a vector path element. <paramref name="data"/> is path mini-language data, or several layers separated by
+    /// <c>|</c>, each optionally starting with a <c>{stroke=1.5;color=#E8C66E}</c> header (see
+    /// <see cref="RibbonIcon.Layers"/>). Layers without a color follow the icon foreground (theme, disabled state).
+    /// </summary>
     public static FrameworkElement CreatePath(string data, double viewBoxSize, double size, Brush? fill)
     {
         var canvas = new Canvas { Width = viewBoxSize, Height = viewBoxSize };
-        foreach (var figure in SplitFigures(data))
+        foreach (var layer in RibbonIconLayer.Parse(data))
         {
-            var path = ParsePath(figure);
-            if (path is not null)
+            var path = ParsePath(layer.Data);
+            if (path is null)
             {
-                if (fill is not null)
-                {
-                    path.Fill = fill;
-                }
-
-                canvas.Children.Add(path);
+                continue;
             }
+
+            var layerBrush = RibbonColor.TryParse(layer.Color, out var color) ? new SolidColorBrush(color.ToColor()) : null;
+            var brush = layerBrush ?? fill;
+            if (layer.StrokeThickness > 0)
+            {
+                path.StrokeThickness = layer.StrokeThickness;
+                path.StrokeStartLineCap = path.StrokeEndLineCap = PenLineCap.Round;
+                path.StrokeLineJoin = PenLineJoin.Round;
+                path.Fill = null;
+                path.Stroke = brush;
+                path.Tag = layerBrush is null ? ThemedStroke : null;
+            }
+            else
+            {
+                path.Fill = brush;
+                path.Tag = layerBrush is null ? ThemedFill : null;
+            }
+
+            if (layer.Opacity < 1)
+            {
+                path.Opacity = layer.Opacity;
+            }
+
+            canvas.Children.Add(path);
         }
 
         return new Viewbox { Width = size, Height = size, Stretch = Stretch.Uniform, Child = canvas };
     }
 
-    private static IEnumerable<string> SplitFigures(string data) => [data];
+    private static readonly object ThemedFill = new();
+    private static readonly object ThemedStroke = new();
 
     // A UIElement can only have one parent: element icons already shown elsewhere (e.g. by the source item of a linked
     // copy) are not stolen.

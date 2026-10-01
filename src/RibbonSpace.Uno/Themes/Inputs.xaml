@@ -65,6 +65,8 @@
                 <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="Transparent" />
               </TextBox.Resources>
                 </TextBox>
+                <!-- Templated selection (SelectionBoxTemplate) of non-editable combo boxes. -->
+                <ContentPresenter x:Name="PART_SelectionBox" Visibility="Collapsed" IsHitTestVisible="False" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="6,0,2,0" />
                 <Button x:Name="PART_DropDownButton" Grid.Column="1" Style="{StaticResource RibbonChromeButtonStyle}" Width="18" Padding="0" CornerRadius="0,3,3,0" IsTabStop="False">
                   <FontIcon Glyph="&#xE70D;" FontSize="8" />
                 </Button>

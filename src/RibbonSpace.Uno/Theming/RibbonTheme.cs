@@ -22,6 +22,9 @@ public static class RibbonTheme
     /// <summary>Current chrome style.</summary>
     public static RibbonChromeStyle ChromeStyle => Resources.ChromeStyle;
 
+    /// <summary>Current surface style (Office or CAD).</summary>
+    public static RibbonThemeStyle Style => Resources.Style;
+
     /// <summary>
     /// Makes sure <see cref="RibbonThemeResources"/> is merged into <c>Application.Current.Resources</c>
     /// (reuses an instance merged in App.xaml). Called automatically by RibbonSpace controls.
@@ -81,6 +84,24 @@ public static class RibbonTheme
         Changed?.Invoke(null, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Switches the surface style (<see cref="RibbonThemeStyle.Office"/> or the AutoCAD-like <see cref="RibbonThemeStyle.Cad"/>).
+    /// Colours update live; shape resources (corners, margins) apply to controls templated afterwards, so switch
+    /// before creating the page (or recreate it).
+    /// </summary>
+    public static void ApplyStyle(RibbonThemeStyle style)
+    {
+        Resources.Apply(Palette, ChromeStyle, style);
+        Changed?.Invoke(null, EventArgs.Empty);
+    }
+
+    /// <summary>Applies palette, chrome style and surface style at once.</summary>
+    public static void Apply(RibbonThemePalette palette, RibbonChromeStyle chrome, RibbonThemeStyle style)
+    {
+        Resources.Apply(palette, chrome, style);
+        Changed?.Invoke(null, EventArgs.Empty);
+    }
+
     /// <summary>Overrides a single brush for a theme ("Light", "Dark", "HighContrast").</summary>
     public static void SetBrushColor(string key, Color color, string theme = "Light") => Resources.SetColor(key, color, theme);
 
@@ -136,6 +157,16 @@ public static class RibbonTheme
                 sender.SetValue(property, GetBrush(sender, key));
             }
         }
+    }
+
+    /// <summary>Resolves a RibbonSpace corner radius resource (style dependent, e.g. "RibbonPopupCornerRadius").</summary>
+    public static CornerRadius GetCornerRadius(FrameworkElement? scope, string key, double fallback)
+    {
+        var themeName = (scope?.ActualTheme ?? ApplicationTheme()) == ElementTheme.Dark ? "Dark" : "Light";
+        return Resources.ThemeDictionaries.TryGetValue(themeName, out var dictionary) && dictionary is ResourceDictionary themed
+            && themed.TryGetValue(key, out var value) && value is CornerRadius radius
+            ? radius
+            : new CornerRadius(fallback);
     }
 
     private static ElementTheme ApplicationTheme()

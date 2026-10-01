@@ -73,7 +73,9 @@ receives a `RibbonGridSize`.
   - `IsFontPreview`: each entry renders in its own font.
   - `PlaceholderText` shows for mixed values (for example "*Varies*").
   - Item text comes from `ItemTextSelector` (preferred for trimmed / AOT apps), then `DisplayMemberPath`
-    (evaluated with a data binding), then `RibbonNodeModel.Label` or `ToString()`. `ItemTemplate` customizes the list.
+    (evaluated with a data binding), then `RibbonNodeModel.Label` or `ToString()`. `ItemTemplate` customizes the list,
+    and `SelectionBoxTemplate` draws the selected item in the closed box of non-editable combo boxes (layer and
+    colour pickers, see [CAD ribbons](cad.md)).
 - **Keyboard:** Up/Down change the value, Alt+Down or F4 opens the list, Esc reverts.
 - **Events:** `Committed` (`Item` + `Text`), `SelectionChanged`, and `Command` with the item or the text.
 - **Presets:**

@@ -83,6 +83,8 @@ Contents are created once and switched instantly, never rebuilt.
   platform supports it and reserves space for the caption buttons (`CaptionButtonsInset`).
 - **Colourful chrome:** `RibbonTheme.ApplyChromeStyle(RibbonChromeStyle.Colorful)` paints the title bar and tab row
   in the accent colour.
+- **Application button:** `IsAppIconMenuEnabled="True"` turns `AppIcon` into a button that opens the ribbon's
+  application menu or backstage, as in AutoCAD; handle `AppIconClick` to replace the default action.
 
 ## RibbonStatusBar and RibbonZoomControl
 
@@ -95,3 +97,7 @@ Contents are created once and switched instantly, never rebuilt.
   </RibbonStatusBar.EndItems>
 </RibbonStatusBar>
 ```
+
+Status bar items are small buttons with labels by default. `ShowLabels="False"` makes them icon-only, for example CAD
+drafting toggles such as Grid, Snap and Ortho; an item with `ShowLabel="False"` is always icon-only. Items take part in
+command resolution and `ItemInvoked` like ribbon items (set `Ribbon` or `CommandCatalog`).

@@ -152,6 +152,9 @@ public partial class RibbonComboBox : RibbonInputBase
     /// <summary>Identifies <see cref="ItemTemplate"/>.</summary>
     public static readonly DependencyProperty ItemTemplateProperty = DependencyProperty.Register(nameof(ItemTemplate), typeof(DataTemplate), typeof(RibbonComboBox), new PropertyMetadata(null));
 
+    /// <summary>Identifies <see cref="SelectionBoxTemplate"/>.</summary>
+    public static readonly DependencyProperty SelectionBoxTemplateProperty = DependencyProperty.Register(nameof(SelectionBoxTemplate), typeof(DataTemplate), typeof(RibbonComboBox), new PropertyMetadata(null, (d, _) => ((RibbonComboBox)d).UpdateSelectionBox()));
+
     /// <summary>Identifies <see cref="DisplayMemberPath"/>.</summary>
     public static readonly DependencyProperty DisplayMemberPathProperty = DependencyProperty.Register(nameof(DisplayMemberPath), typeof(string), typeof(RibbonComboBox), new PropertyMetadata(null, (d, _) => ((RibbonComboBox)d).OnDisplayMemberPathChanged()));
 
@@ -210,6 +213,31 @@ public partial class RibbonComboBox : RibbonInputBase
     /// <summary>Converts items to text (defaults to <see cref="DisplayMemberPath"/>, then ToString / RibbonNodeModel label).</summary>
     /// <remarks>Preferred over <see cref="DisplayMemberPath"/> in trimmed / AOT apps: it needs no binding metadata.</remarks>
     public Func<object?, string>? ItemTextSelector { get; set; }
+
+    /// <summary>
+    /// Template of the selected item in the closed box of a non-editable combo box (e.g. the AutoCAD layer drop-down
+    /// with on/off, freeze and lock icons and a colour swatch). Without it the item text is shown.
+    /// </summary>
+    public DataTemplate? SelectionBoxTemplate { get => (DataTemplate?)GetValue(SelectionBoxTemplateProperty); set => SetValue(SelectionBoxTemplateProperty, value); }
+
+    private ContentPresenter? _selectionBox;
+
+    private void UpdateSelectionBox()
+    {
+        var templated = SelectionBoxTemplate is not null && !IsEditable && SelectedItem is not null;
+        if (_selectionBox is not null)
+        {
+            _selectionBox.ContentTemplate = SelectionBoxTemplate;
+            _selectionBox.Content = templated ? SelectedItem : null;
+            _selectionBox.Visibility = templated ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        if (_textBox is not null)
+        {
+            // The text box keeps focus and keyboard handling; it only becomes transparent.
+            _textBox.Opacity = templated ? 0 : 1;
+        }
+    }
 
     /// <summary>Property path of the item shown as its text (resolved with a data binding, like WinUI's ComboBox).</summary>
     public string? DisplayMemberPath { get => (string?)GetValue(DisplayMemberPathProperty); set => SetValue(DisplayMemberPathProperty, value); }
@@ -281,6 +309,7 @@ public partial class RibbonComboBox : RibbonInputBase
         base.OnApplyTemplate();
         _textBox = GetTemplateChild("PART_TextBox") as TextBox;
         _dropDownButton = GetTemplateChild("PART_DropDownButton") as Button;
+        _selectionBox = GetTemplateChild("PART_SelectionBox") as ContentPresenter;
         if (_textBox is not null)
         {
             _textBox.KeyDown += OnTextKeyDown;
@@ -304,6 +333,8 @@ public partial class RibbonComboBox : RibbonInputBase
         {
             _textBox.IsReadOnly = !IsEditable;
         }
+
+        UpdateSelectionBox();
     }
 
     private void OnItemsSourceChanged()
@@ -323,6 +354,7 @@ public partial class RibbonComboBox : RibbonInputBase
             _syncing = false;
         }
 
+        UpdateSelectionBox();
         SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(oldValue is null ? [] : [oldValue], newValue is null ? [] : [newValue]));
     }
 
@@ -479,7 +511,7 @@ public partial class RibbonComboBox : RibbonInputBase
         {
             _list = new StackPanel { Padding = new Thickness(2) };
             _scroll = new ScrollViewer { Content = _list, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled };
-            var chrome = new Border { Child = _scroll, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(6), Padding = new Thickness(0, 2, 0, 2), RequestedTheme = ActualTheme };
+            var chrome = new Border { Child = _scroll, BorderThickness = new Thickness(1), CornerRadius = RibbonTheme.GetCornerRadius(this, "RibbonPopupCornerRadius", 6), Padding = new Thickness(0, 2, 0, 2), RequestedTheme = ActualTheme };
 
             // Re-resolved when RequestedTheme is updated on open (the popup is outside the ribbon's tree).
             RibbonTheme.SetThemeBrush(chrome, Border.BackgroundProperty, "RibbonPopupBackgroundBrush");
@@ -588,6 +620,7 @@ public partial class RibbonComboBox : RibbonInputBase
         RibbonItemHelper.Link(this, copy, InputWidthProperty);
         RibbonItemHelper.Link(this, copy, ItemTemplateProperty);
         RibbonItemHelper.Link(this, copy, DisplayMemberPathProperty);
+        RibbonItemHelper.Link(this, copy, SelectionBoxTemplateProperty);
         RibbonItemHelper.Link(this, copy, IsFontPreviewProperty);
         if (ItemsSource is null)
         {

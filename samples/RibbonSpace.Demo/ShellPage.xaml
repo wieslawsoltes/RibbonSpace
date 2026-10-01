@@ -13,6 +13,7 @@
       <RibbonToggleButton Id="rail.excel" Label="Excel (MVVM)" Icon="&#xE80A;" GroupName="pages" Tag="excel" />
       <RibbonToggleButton Id="rail.powerpoint" Label="PowerPoint (Simplified)" Icon="&#xE7F4;" GroupName="pages" Tag="powerpoint" />
       <RibbonToggleButton Id="rail.tools" Label="Toolbars &amp; palettes" Icon="&#xE771;" GroupName="pages" Tag="tools" />
+      <RibbonToggleButton x:Name="CadRail" Id="rail.cad" Label="CAD (AutoCAD-class ribbon)" GroupName="pages" Tag="cad" />
       <RibbonSeparator />
       <RibbonToggleButton Id="rail.settings" Label="Settings" Icon="&#xE713;" GroupName="pages" Tag="settings" />
     </RibbonToolBar>

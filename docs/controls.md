@@ -67,6 +67,21 @@ Office-style ribbon: tab row with application (File) button, contextual tabs and
 | `BuildDisplayOptionsMenu` | method | `MenuFlyout` | Builds the Office "Ribbon display options" menu. |
 | `Model` | property | `RibbonModel?` | MVVM definition of the ribbon. Tabs, groups, items, contextual groups, QAT, tab-row items and the backstage are generated from the model and kept in two-way sync (selection, display options, checked states, values...). XAML-declared tabs are kept in front of generated tabs. Collection changes are applied incrementally; model subscriptions are detached while the ribbon is unloaded (the elements are kept) and re-attached when it loads. |
 | `GetModel` | method | `RibbonNodeModel?` | Returns the model an element was generated from. |
+| `GroupFloatingChanged` | event | `EventHandler<RibbonGroup>?` | Raised when a group starts or stops floating. |
+| `MinimizeBehavior` | property | `RibbonMinimizeBehavior` | What `ToggleMinimized` (Ctrl+F1, tab double-click, the minimize button) does: Office's tabs-only toggle, or AutoCAD's panel titles / panel buttons states or the full cycle. |
+| `IsMinimizeButtonVisible` | property | `bool` | Shows the AutoCAD-style minimize button (with a behaviour drop-down) at the end of the tab row. |
+| `ShowGroupCaptions` | property | `bool` | Shows the panel (group) titles under each group ("Show Panel Titles"). |
+| `CanFloatGroups` | property | `bool` | Lets users float panels: drag a panel title away from the ribbon, or use "Float Panel" in its context menu. |
+| `IsVisibilityMenuEnabled` | property | `bool` | Adds "Show Tabs", "Show Panels" and "Show Panel Titles" to the ribbon context menu (AutoCAD). |
+| `ReductionStrategy` | property | `RibbonReductionStrategy` | How groups shrink when a tab does not fit: `Stepwise` (Office: all groups go Medium, then Small, then collapse) or `GroupByGroup` (AutoCAD-like: the least important group collapses completely before the next one shrinks). `RibbonGroup.ReductionOrder` sets the importance. |
+| `FloatingGroups` | property | `IReadOnlyList<RibbonGroup>` | Groups currently floating outside the ribbon. |
+| `ReturnAllPanelsToRibbon` | method | `void` | Returns every floating panel to the ribbon ("Return Panels to Ribbon"). |
+| `NextMinimizeState` | method | `RibbonVisibilityMode` | The visibility mode `ToggleMinimized` moves to from the current one. |
+| `BuildMinimizeBehaviorMenu` | method | `MenuFlyout` | Builds the AutoCAD minimize-behaviour menu (Minimize to Tabs / Panel Titles / Panel Buttons / Cycle through All). |
+| `BuildShowTabsMenu` | method | `MenuFlyoutSubItem` | "Show Tabs": checkable entries for every regular tab (unchecking hides it through the customization). |
+| `BuildShowPanelsMenu` | method | `MenuFlyoutSubItem` | "Show Panels": checkable entries for the groups of a tab. |
+| `SuspendPopups` | method | `void` | Closes the ribbon's transient popups (collapsed-group and expanded panels, the "Show tabs only" popup, KeyTips, the backstage) and hides floating panels. Call it when an ancestor of the ribbon is collapsed (e.g. a tabbed or paged host hides the page) — the ribbon does this itself when it is unloaded or its own Visibility collapses. |
+| `ResumePopups` | method | `void` | Shows floating panels (and pinned expanded panels of the selected tab) again after `SuspendPopups`. |
 | `QuickAccessChanged` | event | `EventHandler?` | Raised when the QAT position, visibility or items change (hosts such as `RibbonTitleBar` relayout). |
 | `QuickAccessToolBar` | property | `RibbonQuickAccessToolBar?` | The Quick Access Toolbar. |
 | `QuickAccessPosition` | property | `RibbonQuickAccessPosition` | QAT position. |
@@ -134,7 +149,7 @@ Office-style ribbon: tab row with application (File) button, contextual tabs and
 | `SetActiveContextualGroups` | method | `void` | Shows exactly the given contextual groups and hides the others. |
 | `FindTab` | method | `RibbonTab?` | Finds a tab by id (or header). |
 | `SelectTab` | method | `bool` | Selects a tab by id. Returns false when unknown or hidden. |
-| `ToggleMinimized` | method | `void` | Toggles between `AlwaysShow` and `TabsOnly`. |
+| `ToggleMinimized` | method | `void` | Minimizes or restores the ribbon according to `MinimizeBehavior`: full ribbon ↔ tabs only (Office), ↔ panel titles / panel buttons, or the AutoCAD cycle full → panel buttons → panel titles → tabs → full. |
 | `OpenMinimizedPopup` | method | `void` | Opens the temporary command popup of a minimized ribbon. |
 | `CloseMinimizedPopup` | method | `void` | Closes the temporary command popup of a minimized ribbon. |
 | `InvokeApplicationButton` | method | `void` | Runs the application button action (backstage, application menu or the click event). |
@@ -202,6 +217,18 @@ Ribbon group ("Clipboard", "Font"): arranges items, shows the caption and dialog
 
 | Member | Kind | Type | Description |
 |---|---|---|---|
+| `FloatingChanged` | event | `EventHandler?` | Raised when the group starts or stops floating. |
+| `SlideOutItems` | property | `ObservableCollection<UIElement>` | Less frequently used commands shown in the expanded part of the panel, opened from the arrow in the panel title (AutoCAD expanded panels). The pushpin keeps it open (`IsSlideOutPinned`). |
+| `IsSlideOutPinned` | property | `bool` | Keeps the expanded panel open (pushpin) until unpinned; it reopens when the tab is selected again. |
+| `IsSlideOutOpen` | property | `bool` | True while the expanded panel is shown. |
+| `SlideOutButton` | property | `Button?` | The arrow in the panel title that opens the expanded panel (KeyTips, tests). |
+| `IsFloating` | property | `bool` | The panel floats in its own window-level panel outside the ribbon (AutoCAD floating panels); it stays open when other tabs are selected until returned to the ribbon. |
+| `FloatingPosition` | property | `Point` | Position of the floating panel in window coordinates. |
+| `IsFloatingPanelOpen` | property | `bool` | True while the floating panel is on screen. |
+| `OpenSlideOut` | method | `void` | Opens the expanded part of the panel below the group. |
+| `CloseSlideOut` | method | `void` | Closes the expanded part of the panel (keeps `IsSlideOutPinned`). |
+| `Float` | method | `void` | Floats the panel at a window position (defaults to just below its place in the ribbon). |
+| `ReturnToRibbon` | method | `void` | Returns a floating panel to its place in the ribbon. |
 | `DialogLauncherClick` | event | `RoutedEventHandler?` | Raised when the dialog launcher is clicked. |
 | `Items` | property | `ObservableCollection<UIElement>` | Items. |
 | `Header` | property | `string?` | Caption. |
@@ -301,6 +328,7 @@ Editable / read-only ribbon combo box (font family, font size, number format, zo
 | `MaxDropDownHeight` | property | `double` | Maximum drop-down height. |
 | `IsFontPreview` | property | `bool` | Renders each entry in its own font (font pickers). |
 | `ItemTextSelector` | property | `Func<object?, string>?` | Converts items to text (defaults to `DisplayMemberPath`, then ToString / RibbonNodeModel label). Preferred over `DisplayMemberPath` in trimmed / AOT apps: it needs no binding metadata. |
+| `SelectionBoxTemplate` | property | `DataTemplate?` | Template of the selected item in the closed box of a non-editable combo box (e.g. the AutoCAD layer drop-down with on/off, freeze and lock icons and a colour swatch). Without it the item text is shown. |
 | `DisplayMemberPath` | property | `string?` | Property path of the item shown as its text (resolved with a data binding, like WinUI's ComboBox). |
 | `IsDropDownOpen` | property | `bool` | True while the drop-down is open. |
 | `EffectiveItems` | property | `IReadOnlyList<object>` | Effective items. |
@@ -606,6 +634,57 @@ Navigation entry of a `RibbonBackstage`: a page (Content) or an action (Command)
 | `IsPage` | property | `bool` | True for page items. |
 | `NavigationButton` | property | `Button?` | Navigation button generated for this item. |
 
+## RibbonApplicationMenu
+
+*Base:* `ContentControl`
+
+Application menu in the style of AutoCAD's menu browser (and the Office 2007 application menu): a command search box, commands on the left whose sub-commands open in the right pane on hover, a recent documents list with pins, and footer buttons. Host it in the ribbon's `ApplicationMenu` flyout: &lt;Ribbon.ApplicationMenu&gt;&lt;Flyout&gt;&lt;RibbonApplicationMenu Ribbon="{x:Bind Ribbon}"&gt;…&lt;/RibbonApplicationMenu&gt;&lt;/Flyout&gt;&lt;/Ribbon.ApplicationMenu&gt;
+
+| Member | Kind | Type | Description |
+|---|---|---|---|
+| `ItemInvoked` | event | `EventHandler<RibbonApplicationMenuItemEventArgs>?` | Raised when a command (or sub-command) is invoked. |
+| `RecentItemInvoked` | event | `EventHandler<RibbonApplicationMenuRecentItem>?` | Raised when a recent document is opened. |
+| `Items` | property | `ObservableCollection<RibbonApplicationMenuItem>` | Commands (left column). |
+| `RecentItems` | property | `ObservableCollection<RibbonApplicationMenuRecentItem>` | Recent documents (right pane by default). Pinned documents are listed first. |
+| `FooterItems` | property | `ObservableCollection<UIElement>` | Footer elements, usually buttons such as "Options" and "Exit". |
+| `Ribbon` | property | `Ribbon?` | Ribbon whose commands the search box finds. |
+| `RecentHeader` | property | `string?` | Header of the recent documents pane (default "Recent Documents"). |
+| `IsSearchVisible` | property | `bool` | Shows the command search box. |
+| `ShownItem` | property | `RibbonApplicationMenuItem?` | The item whose sub-commands are shown (`null` for recent documents or search results). |
+| `Invoke` | method | `void` | Invokes a command item as if clicked (sub-commands open instead when it has any). |
+| `SearchMenu` | method | `IReadOnlyList<RibbonSearchResult>` | Searches the menu's own commands and the ribbon (when `Ribbon` is set). |
+
+## RibbonApplicationMenuItem
+
+*Base:* `DependencyObject`
+
+A command of the `RibbonApplicationMenu` (left column), optionally with sub-commands.
+
+| Member | Kind | Type | Description |
+|---|---|---|---|
+| `Click` | event | `EventHandler<RibbonApplicationMenuItemEventArgs>?` | Raised when the item is invoked. |
+| `Description` | property | `string?` | Description shown when the item is listed as a sub-command. |
+| `Command` | property | `ICommand?` | Command executed on click (items with sub-commands open them instead). |
+| `CommandParameter` | property | `object?` | Command parameter. |
+| `IsEnabled` | property | `bool` | Enabled state. |
+| `HasSeparatorBefore` | property | `bool` | Draws a separator above the item. |
+| `Items` | property | `ObservableCollection<RibbonApplicationMenuItem>` | Sub-commands shown in the right pane when the item is hovered (e.g. Save As → Drawing, Template...). |
+
+## RibbonApplicationMenuRecentItem
+
+*Base:* `DependencyObject`
+
+A recent document of the `RibbonApplicationMenu`.
+
+| Member | Kind | Type | Description |
+|---|---|---|---|
+| `Click` | event | `EventHandler?` | Raised when the document is opened from the list. |
+| `Title` | property | `string?` | Document title (file name). |
+| `Path` | property | `string?` | Location shown under the title. |
+| `IsPinned` | property | `bool` | Pinned documents stay at the top of the list. |
+| `Command` | property | `ICommand?` | Command executed with the item as parameter. |
+| `Tag` | property | `object?` | Any app data (file path, document id...). |
+
 ## RibbonScreenTip
 
 *Base:* `Control`
@@ -614,12 +693,27 @@ Rich tooltip (Office "ScreenTip"): bold title with shortcut, description, image 
 
 | Member | Kind | Type | Description |
 |---|---|---|---|
+| `ExtendedDescription` | property | `string?` | Extended help shown after `ExtendedDelay` while the tooltip stays open (AutoCAD-style progressive tooltip). |
+| `ExtendedImage` | property | `object?` | Illustration shown with the extended help (any icon description, image or element). |
+| `IsExtended` | property | `bool` | True while the extended part is shown. |
+| `HasExtendedContent` | property | `bool` | True when there is extended content. |
 | `Title` | property | `string?` | Title (defaults to the item label). |
 | `Description` | property | `string?` | Description. |
 | `Image` | property | `object?` | Illustration (any icon description). |
 | `HelpText` | property | `string?` | Footer ("Tell me more"). |
 | `DisabledReason` | property | `string?` | Why the command is disabled. |
 | `TitleText` | property | `string` | Formatted title including the shortcut (template use). |
+
+## RibbonScreenTipService
+
+Builds tooltip content for ribbon items.
+
+| Member | Kind | Type | Description |
+|---|---|---|---|
+| `ExtendedDelay` | property | `TimeSpan` | Delay before a progressive tooltip shows its extended part (`ExtendedDescription` / `ExtendedImage`). Zero shows it immediately. |
+| `IsExtendedEnabled` | property | `bool` | Enables the extended part of progressive tooltips (AutoCAD "Show extended tooltips"). |
+| `CreateToolTip` | method | `ToolTip?` | Wraps tooltip content in a `ToolTip` with the ribbon ScreenTip look (`RibbonToolTipStyle`: theme colours and popup corners). Returns `null` for no content. |
+| `Create` | method | `object?` | Creates tooltip content from a label, a ScreenTip value (string / RibbonScreenTip / model) and a shortcut. |
 
 ## RibbonKeyTip
 
@@ -664,6 +758,9 @@ Office-style title bar: application icon, Quick Access Toolbar (of the linked ri
 | `DisplayTitle` | property | `string?` | Title shown by the template: `Title`, or the title of the linked ribbon's model. |
 | `Subtitle` | property | `string?` | Secondary text next to the title ("Saved", "Editing"). |
 | `AppIcon` | property | `object?` | Application icon. |
+| `IsAppIconMenuEnabled` | property | `bool` | Turns the application icon into a button that opens the linked ribbon's application menu or backstage (the AutoCAD application button). Combine with `Ribbon.IsApplicationButtonVisible="False"` to hide the File tab button. |
+| `AppIconClick` | event | `EventHandler<RibbonHandledEventArgs>?` | Raised when the application icon button is clicked (set `Handled` to replace the default action). |
+| `AppButton` | property | `Button?` | The application icon button (`IsAppIconMenuEnabled`), e.g. to anchor menus from code. |
 | `StartContent` | property | `object?` | Content after the icon (AutoSave toggle...). |
 | `EndContent` | property | `object?` | Content at the right (account, share, comments). |
 | `IsSearchVisible` | property | `bool` | Shows the command search box. |
@@ -680,6 +777,7 @@ Status bar with start and end zones (page count, word count, view buttons, zoom)
 
 | Member | Kind | Type | Description |
 |---|---|---|---|
+| `ShowLabels` | property | `bool` | Shows item labels next to their icons (default). Set to false for icon-only toggles (CAD status bars); an item with `ShowLabel="False"` is always icon-only. |
 | `ItemInvoked` | event | `EventHandler<RibbonItemInvokedEventArgs>?` | Raised when an item is invoked. |
 | `Items` | property | `System.Collections.ObjectModel.ObservableCollection<UIElement>` | Items at the start (left). |
 | `EndItems` | property | `System.Collections.ObjectModel.ObservableCollection<UIElement>` | Items at the end (right). |
@@ -771,14 +869,17 @@ Runtime theming API for RibbonSpace (palette, accent, chrome style, light / dark
 | `Resources` | property | `RibbonThemeResources` | Theme resources merged into the application. |
 | `Palette` | property | `RibbonThemePalette` | Current palette. |
 | `ChromeStyle` | property | `RibbonChromeStyle` | Current chrome style. |
+| `Style` | property | `RibbonThemeStyle` | Current surface style (Office or CAD). |
 | `EnsureResources` | method | `RibbonThemeResources` | Makes sure `RibbonThemeResources` is merged into `Application.Current.Resources` (reuses an instance merged in App.xaml). Called automatically by RibbonSpace controls. |
 | `ApplyPalette` | method | `void` | Applies a palette (e.g. `Excel`) keeping the chrome style. |
 | `ApplyAccent` | method | `void` | Applies a custom accent color. |
 | `ApplyChromeStyle` | method | `void` | Switches between accent-colored ("Colorful") and neutral chrome. |
 | `Apply` | method | `void` | Applies palette and chrome style. |
+| `ApplyStyle` | method | `void` | Switches the surface style (`Office` or the AutoCAD-like `Cad`). Colours update live; shape resources (corners, margins) apply to controls templated afterwards, so switch before creating the page (or recreate it). |
 | `SetBrushColor` | method | `void` | Overrides a single brush for a theme ("Light", "Dark", "HighContrast"). |
 | `SetTheme` | method | `void` | Sets Light / Dark / Default on an element subtree (typically the window content). |
 | `GetBrush` | method | `Brush?` | Resolves a RibbonSpace brush for the theme of  (its `ActualTheme`, or High Contrast when enabled). Unlike `Application.Current.Resources[key]` this honours `SetTheme` / `RequestedTheme` on a subtree or popup. Unknown keys fall back to the application resources. |
+| `GetCornerRadius` | method | `CornerRadius` | Resolves a RibbonSpace corner radius resource (style dependent, e.g. "RibbonPopupCornerRadius"). |
 | `ToColor` | method | `Color` | Converts a Core color. |
 | `ToRibbonColor` | method | `RibbonColor` | Converts to a Core color. |
 
@@ -791,11 +892,13 @@ Theme resources (Light, Dark, HighContrast) used by every RibbonSpace control. M
 | Member | Kind | Type | Description |
 |---|---|---|---|
 | `BrushKeys` | property | `IReadOnlyList<string>` | All brush keys defined by RibbonSpace. |
+| `ShapeKeys` | property | `IReadOnlyList<string>` | Shape resources (corner radii, margins, thickness) that differ between `RibbonThemeStyle` values. They are read when a control is templated, so a style change applies to controls created afterwards (brushes update live). |
 | `Palette` | property | `RibbonThemePalette` | Current palette. |
 | `ChromeStyle` | property | `RibbonChromeStyle` | Current chrome style. |
+| `Style` | property | `RibbonThemeStyle` | Current surface style (Office or CAD). |
 | `GetBrush` | method | `SolidColorBrush?` | Returns the brush instance of a key for a theme ("Light", "Dark", "HighContrast"). |
 | `SetColor` | method | `void` | Overrides one brush color for one theme (in place). |
-| `Apply` | method | `void` | Applies a palette and chrome style (in place; all controls update immediately). |
+| `Apply` | method | `void` | Applies a palette and chrome style keeping the current surface style (in place; all controls update immediately). |
 
 ## RibbonCustomizeDialog
 

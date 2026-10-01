@@ -20,5 +20,8 @@ RIBBONSPACE_CAPTURE=word.png RIBBONSPACE_PAGE=word RIBBONSPACE_WIDTH=1400 RIBBON
 `RIBBONSPACE_ACTION` accepts comma-separated steps: `keytips`, `keytips-home`, `backstage`, `simplified`, `classic`,
 `overflow`, `minimized`, `minimized-popup`, `fullscreen`, `contextual`, `insert`, `design`, `layout`, `view`,
 `gallery`, `colorpicker`, `paste`, `qat-below`, `search`, `palette`, `customize`, `customize-qat`, `add-qat`,
-`collapsed-group`, `touch`, `compact`, `colorful` and `dark`. `RIBBONSPACE_THEME=Dark` switches to the dark theme. Open
+`collapsed-group`, `touch`, `compact`, `colorful` and `dark`, plus `page:<key>` (switch pages mid-run) and `surface-cad` (CAD surface style for the Office pages). With
+`RIBBONSPACE_PAGE=cad`: `cad-slideout`, `cad-appmenu`, `cad-panelbuttons`, `cad-paneltitles`, `cad-float`,
+`cad-tooltip`, `cad-layers`, `cad-contextual`, `cad-hatch`, `cad-circle`, `cad-blocks`, `cad-view`, `cad-3d`, `cad-light` and
+`cad-cmd:<command>` (runs a command-line entry such as `cad-cmd:circle`). `RIBBONSPACE_THEME=Dark` switches to the dark theme. Open
 popups (KeyTips, flyouts, backstage) are composited into the capture.

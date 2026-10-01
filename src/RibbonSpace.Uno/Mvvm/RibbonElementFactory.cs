@@ -116,6 +116,7 @@ public class RibbonElementFactory
         });
         BindKeywords(group, model, bindings);
         bindings.Items<RibbonItemModel, UIElement>(model.Items, group.Items, CreateItem, changed: OnStructureChanged);
+        bindings.Items<RibbonItemModel, UIElement>(model.SlideOutItems, group.SlideOutItems, CreateItem, changed: OnStructureChanged);
         return group;
     }
 

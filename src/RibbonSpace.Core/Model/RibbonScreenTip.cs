@@ -11,6 +11,8 @@ public sealed class RibbonScreenTip : ObservableObject
     private string? _helpText;
     private string? _disabledReason;
     private RibbonIcon? _image;
+    private string? _extendedDescription;
+    private RibbonIcon? _extendedImage;
 
     /// <summary>Creates an empty ScreenTip.</summary>
     public RibbonScreenTip()
@@ -42,6 +44,15 @@ public sealed class RibbonScreenTip : ObservableObject
 
     /// <summary>Optional illustration.</summary>
     public RibbonIcon? Image { get => _image; set => SetProperty(ref _image, value); }
+
+    /// <summary>
+    /// Extended help shown when the pointer stays on the command (AutoCAD-style progressive tooltip), after
+    /// <c>RibbonScreenTipService.ExtendedDelay</c>.
+    /// </summary>
+    public string? ExtendedDescription { get => _extendedDescription; set => SetProperty(ref _extendedDescription, value); }
+
+    /// <summary>Illustration shown with the extended help (progressive tooltip).</summary>
+    public RibbonIcon? ExtendedImage { get => _extendedImage; set => SetProperty(ref _extendedImage, value); }
 
     /// <summary>Formats the title with the shortcut, e.g. "Bold (Ctrl+B)".</summary>
     public static string FormatTitle(string? title, string? shortcut)

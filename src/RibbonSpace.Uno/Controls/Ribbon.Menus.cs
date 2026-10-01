@@ -60,6 +60,7 @@ public partial class Ribbon
             menu.Items.Add(new MenuFlyoutSeparator());
         }
 
+        AddPanelMenuEntries(menu, element);
         if (CanCustomize)
         {
             menu.Items.Add(RibbonMenu.Item(strings.CustomizeQuickAccessToolbar + "...", () => ShowCustomizeDialog(RibbonCustomizePage.QuickAccessToolbar)));
@@ -74,9 +75,10 @@ public partial class Ribbon
 
         if (IsCollapsible)
         {
-            menu.Items.Add(RibbonMenu.Item(VisibilityMode == RibbonVisibilityMode.AlwaysShow ? strings.CollapseRibbon : strings.PinRibbon, ToggleMinimized, VisibilityMode == RibbonVisibilityMode.AlwaysShow ? "" : ""));
+            menu.Items.Add(RibbonMenu.Item(VisibilityMode == RibbonVisibilityMode.AlwaysShow ? strings.CollapseRibbon : strings.PinRibbon, () => VisibilityMode = VisibilityMode == RibbonVisibilityMode.AlwaysShow ? MinimizedState : RibbonVisibilityMode.AlwaysShow, VisibilityMode == RibbonVisibilityMode.AlwaysShow ? "" : ""));
         }
 
+        RibbonMenu.ApplyTheme(menu);
         var args = new RibbonContextMenuEventArgs(element, menu);
         ContextMenuOpening?.Invoke(this, args);
         if (args.Handled || menu.Items.Count == 0)
@@ -130,6 +132,12 @@ public partial class Ribbon
         }
 
         AddMode(strings.FullScreenMode, RibbonVisibilityMode.FullScreen, "");
+        if (MinimizeBehavior != RibbonMinimizeBehavior.Tabs || IsMinimizeButtonVisible || IsMinimizedMode(VisibilityMode) && VisibilityMode != RibbonVisibilityMode.TabsOnly)
+        {
+            AddMode(strings.ShowPanelTitles, RibbonVisibilityMode.PanelTitles, "\uE8FD");
+            AddMode(strings.ShowPanelButtons, RibbonVisibilityMode.PanelButtons, "\uE8A9");
+        }
+
         AddMode(strings.ShowTabsOnly, RibbonVisibilityMode.TabsOnly, "");
         AddMode(strings.AlwaysShowRibbon, RibbonVisibilityMode.AlwaysShow, "");
         if (IsSimplifiedModeAvailable)
@@ -147,6 +155,7 @@ public partial class Ribbon
         var qat = new ToggleMenuFlyoutItem { Text = strings.ShowQuickAccessToolbar, IsChecked = IsQuickAccessVisible };
         qat.Click += (_, _) => IsQuickAccessVisible = qat.IsChecked;
         menu.Items.Add(qat);
+        RibbonMenu.ApplyTheme(menu);
         return menu;
     }
 }

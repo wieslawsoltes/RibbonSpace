@@ -270,6 +270,7 @@ public partial class Ribbon
         labels.Click += (_, _) => ShowQuickAccessLabels = labels.IsChecked;
         menu.Items.Add(labels);
         menu.Items.Add(RibbonMenu.Item(strings.HideQuickAccessToolbar, () => IsQuickAccessVisible = false));
+        RibbonMenu.ApplyTheme(menu);
         return menu;
     }
 

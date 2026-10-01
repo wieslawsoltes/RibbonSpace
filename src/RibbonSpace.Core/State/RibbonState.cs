@@ -33,6 +33,15 @@ public sealed class RibbonState
     /// <summary>QAT labels.</summary>
     public bool ShowQuickAccessLabels { get; set; }
 
+    /// <summary>Minimize behaviour (tabs, panel titles, panel buttons or cycle).</summary>
+    public RibbonMinimizeBehavior MinimizeBehavior { get; set; }
+
+    /// <summary>Panel (group) titles shown.</summary>
+    public bool ShowGroupCaptions { get; set; } = true;
+
+    /// <summary>Panels floating outside the ribbon, with their positions. <c>null</c> keeps the current floats.</summary>
+    public List<RibbonFloatingGroupState>? FloatingGroups { get; set; }
+
     /// <summary>Ids of items in the QAT, in order. <c>null</c> keeps the application defaults.</summary>
     public List<string>? QuickAccessItemIds { get; set; }
 
@@ -53,6 +62,7 @@ public sealed class RibbonState
         QuickAccessItemIds?.RemoveAll(string.IsNullOrEmpty);
         RecentSearchIds?.RemoveAll(string.IsNullOrEmpty);
         RecentColors?.RemoveAll(string.IsNullOrEmpty);
+        FloatingGroups?.RemoveAll(g => g is null || string.IsNullOrEmpty(g.GroupId));
     }
 }
 
@@ -159,4 +169,17 @@ public sealed class RibbonCustomGroup
         ItemIds ??= [];
         ItemIds.RemoveAll(string.IsNullOrEmpty);
     }
+}
+
+/// <summary>A panel (group) floating outside the ribbon.</summary>
+public sealed class RibbonFloatingGroupState
+{
+    /// <summary>Group id.</summary>
+    public string GroupId { get; set; } = string.Empty;
+
+    /// <summary>Left position in window coordinates.</summary>
+    public double X { get; set; }
+
+    /// <summary>Top position in window coordinates.</summary>
+    public double Y { get; set; }
 }

@@ -48,8 +48,9 @@ public sealed record RibbonMetrics
     /// <summary>Compact metrics.</summary>
     public static RibbonMetrics Compact { get; } = new()
     {
-        TabHeight = 26, GroupContentHeight = 62, GroupCaptionHeight = 15, LargeItemHeight = 60, LargeItemMinWidth = 40,
-        RowHeight = 20, LargeIconSize = 28, SmallIconSize = 16, SimplifiedHeight = 34, SimplifiedItemHeight = 26, ItemPadding = 4,
+        // Two-line large labels need icon + 2 × ~15 px lines: smaller text and icon than Comfortable, same row count.
+        TabHeight = 26, GroupContentHeight = 64, GroupCaptionHeight = 15, LargeItemHeight = 62, LargeItemMinWidth = 40,
+        RowHeight = 20, LargeIconSize = 26, SmallIconSize = 16, SimplifiedHeight = 34, SimplifiedItemHeight = 26, FontSize = 11, CaptionFontSize = 10, ItemPadding = 4,
     };
 
     /// <summary>Touch metrics.</summary>

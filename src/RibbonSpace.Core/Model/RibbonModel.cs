@@ -16,6 +16,8 @@ public class RibbonModel : ObservableObject
     private RibbonQuickAccessPosition _quickAccessPosition;
     private bool _isQuickAccessVisible = true;
     private bool _showQuickAccessLabels;
+    private RibbonMinimizeBehavior _minimizeBehavior;
+    private bool _showGroupCaptions = true;
     private string? _applicationButtonLabel = "File";
     private bool _isApplicationButtonVisible = true;
     private string? _title;
@@ -70,6 +72,12 @@ public class RibbonModel : ObservableObject
     /// <summary>Shows labels in the QAT (Office "Show command labels").</summary>
     public bool ShowQuickAccessLabels { get => _showQuickAccessLabels; set => SetProperty(ref _showQuickAccessLabels, value); }
 
+    /// <summary>What minimizing does (Office tabs only, or the AutoCAD panel titles / buttons / cycle).</summary>
+    public RibbonMinimizeBehavior MinimizeBehavior { get => _minimizeBehavior; set => SetProperty(ref _minimizeBehavior, value); }
+
+    /// <summary>Shows the panel (group) titles under each group.</summary>
+    public bool ShowGroupCaptions { get => _showGroupCaptions; set => SetProperty(ref _showGroupCaptions, value); }
+
     /// <summary>Label of the application (File) button.</summary>
     public string? ApplicationButtonLabel { get => _applicationButtonLabel; set => SetProperty(ref _applicationButtonLabel, value); }
 
@@ -113,7 +121,7 @@ public class RibbonModel : ObservableObject
         {
             foreach (var group in tab.Groups)
             {
-                foreach (var item in Flatten(group.Items))
+                foreach (var item in Flatten(group.Items.Concat(group.SlideOutItems)))
                 {
                     yield return item;
                 }

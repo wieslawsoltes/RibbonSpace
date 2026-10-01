@@ -33,6 +33,7 @@ public sealed partial class SettingsPage : UserControl
             RibbonTheme.ApplyPalette(DemoSettings.PaletteOverride ?? RibbonThemePalette.Word);
         };
         Chrome.SelectionChanged += (_, _) => RibbonTheme.ApplyChromeStyle(Chrome.SelectedIndex == 1 ? RibbonChromeStyle.Colorful : RibbonChromeStyle.Neutral);
+        Surface.SelectionChanged += (_, _) => DemoSettings.SetSurfaceStyle(Surface.SelectedIndex == 1 ? RibbonThemeStyle.Cad : RibbonThemeStyle.Office);
         Density.SelectionChanged += (_, _) => ApplyLayout();
         Layout.SelectionChanged += (_, _) => ApplyLayout();
         Language.SelectionChanged += (_, _) => RibbonStrings.Current = RibbonStrings.ForCulture(new CultureInfo((string)Language.SelectedItem));

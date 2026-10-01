@@ -11,7 +11,7 @@ namespace RibbonSpace.Demo;
 
 /// <summary>
 /// Screenshot automation used for documentation and visual regression checks:
-/// RIBBONSPACE_CAPTURE=out.png RIBBONSPACE_PAGE=word|excel|powerpoint|tools|settings RIBBONSPACE_WIDTH=1400
+/// RIBBONSPACE_CAPTURE=out.png RIBBONSPACE_PAGE=word|excel|powerpoint|tools|cad|settings RIBBONSPACE_WIDTH=1400
 /// RIBBONSPACE_ACTION=comma-separated steps (see docs/testing.md), RIBBONSPACE_THEME=Light|Dark.
 /// </summary>
 internal static class Capture
@@ -205,9 +205,85 @@ internal static class Capture
                 case "dark":
                     shell.RequestedTheme = ElementTheme.Dark;
                     break;
+                case var show when show.StartsWith("page:", StringComparison.Ordinal):
+                    // Switch pages mid-run (e.g. "page:word" after the CAD page to check the Office style returns).
+                    shell.Show(show["page:".Length..]);
+                    await Task.Delay(800);
+                    break;
+                case "surface-cad":
+                    DemoSettings.SetSurfaceStyle(RibbonSpace.Theming.RibbonThemeStyle.Cad);
+                    break;
+                default:
+                    if (shell.CurrentContent is Pages.CadPage cad)
+                    {
+                        await RunCadActionAsync(step.Trim(), cad, ribbon);
+                    }
+
+                    break;
             }
 
             await Task.Delay(500);
+        }
+    }
+
+    // CAD showcase (RIBBONSPACE_PAGE=cad).
+    private static async Task RunCadActionAsync(string step, Pages.CadPage cad, Ribbon ribbon)
+    {
+        switch (step)
+        {
+            case "cad-slideout":
+                cad.DrawPanel.IsSlideOutPinned = true;
+                cad.DrawPanel.OpenSlideOut();
+                break;
+            case "cad-appmenu":
+                cad.ShowApplicationMenu();
+                await Task.Delay(500);
+                cad.ApplicationMenu.Invoke(cad.SaveAsMenuItem);
+                break;
+            case "cad-panelbuttons":
+                ribbon.VisibilityMode = RibbonVisibilityMode.PanelButtons;
+                await Task.Delay(500);
+                cad.DrawPanel.OpenPopup();
+                break;
+            case "cad-paneltitles":
+                ribbon.VisibilityMode = RibbonVisibilityMode.PanelTitles;
+                await Task.Delay(500);
+                cad.LayersPanel.OpenPopup();
+                break;
+            case "cad-float":
+                cad.FloatLayersPanel();
+                break;
+            case "cad-tooltip":
+                RibbonScreenTipService.ExtendedDelay = TimeSpan.Zero;
+                cad.ShowToolTip("line");
+                break;
+            case "cad-layers":
+                cad.LayerDropDown.OpenDropDown();
+                break;
+            case "cad-contextual":
+                cad.ShowTextEditor();
+                break;
+            case "cad-hatch":
+                cad.ShowHatchCreation();
+                break;
+            case "cad-light":
+                cad.SetLightTheme(true);
+                break;
+            case var command when command.StartsWith("cad-cmd:", StringComparison.Ordinal):
+                cad.RunCommand(command["cad-cmd:".Length..]);
+                break;
+            case "cad-circle":
+                (ribbon.FindItem("circle") as RibbonSplitButton)?.OpenDropDown();
+                break;
+            case "cad-blocks":
+                (ribbon.FindItem("insertBlock") as RibbonGallery)?.OpenDropDown();
+                break;
+            case "cad-view":
+                ribbon.SelectTab("view");
+                break;
+            case "cad-3d":
+                cad.ApplyWorkspace("3D Modeling");
+                break;
         }
     }
 

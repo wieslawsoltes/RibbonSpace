@@ -69,6 +69,16 @@ Users can switch layouts from the display-options menu (`IsSimplifiedModeAvailab
 | `AlwaysShow` | tabs and commands |
 | `TabsOnly` (`IsMinimized`) | clicking a tab shows the commands in a temporary popup over the content; Ctrl+F1 or double-clicking a tab toggles it |
 | `FullScreen` | ribbon hidden behind a thin reveal bar (⋯) |
+| `PanelButtons` | one button per panel; clicking opens the panel (AutoCAD) |
+| `PanelTitles` | panel titles only; clicking a title opens the panel (AutoCAD) |
+
+`ReductionStrategy` chooses how groups shrink:
+- `Stepwise` (default, Office): all groups go to Medium, then Small, then collapse.
+- `GroupByGroup` (AutoCAD-like): the least important group collapses completely before the next one shrinks.
+
+`MinimizeBehavior` chooses what Ctrl+F1, a tab double-click and the minimize button do (tabs only, panel titles,
+panel buttons, or AutoCAD's full cycle). `ShowGroupCaptions="False"` hides the panel titles. Expanded (slide-out)
+panels, floating panels and the minimize button are described in [CAD ribbons](cad.md).
 
 ## Density and metrics
 

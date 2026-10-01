@@ -11,7 +11,22 @@ public sealed record RibbonGroupLayoutInfo(IReadOnlyList<double> Widths, int Red
         => Widths is not null && (int)state < Widths.Count ? Widths[(int)state] : double.NaN;
 }
 
-/// <summary>Result of <see cref="RibbonAdaptiveLayout.Compute"/>.</summary>
+/// <summary>How <see cref="RibbonAdaptiveLayout"/> shrinks groups when the tab does not fit.</summary>
+public enum RibbonReductionStrategy
+{
+    /// <summary>
+    /// Office: every group goes to Medium, then every group to Small, then groups collapse (higher
+    /// <see cref="RibbonGroupLayoutInfo.ReductionOrder"/> first within each step).
+    /// </summary>
+    Stepwise,
+    /// <summary>
+    /// AutoCAD-like: the group with the highest reduction order (ties: rightmost) shrinks all the way to Collapsed before
+    /// the next one starts, so important panels stay large as long as possible.
+    /// </summary>
+    GroupByGroup,
+}
+
+/// <summary>Result of <c>RibbonAdaptiveLayout.Compute</c>.</summary>
 /// <param name="States">Chosen state per group.</param>
 /// <param name="TotalWidth">Resulting total width (including spacing).</param>
 /// <param name="Fits">Whether the result fits in the available width.</param>
@@ -30,8 +45,17 @@ public static class RibbonAdaptiveLayout
     /// <param name="availableWidth">Available width.</param>
     /// <param name="spacing">Spacing between groups.</param>
     public static RibbonAdaptiveLayoutResult Compute(IReadOnlyList<RibbonGroupLayoutInfo> groups, double availableWidth, double spacing = 0)
+        => Compute(groups, availableWidth, spacing, RibbonReductionStrategy.Stepwise);
+
+    /// <summary>Computes the group states for the available width with a reduction strategy.</summary>
+    public static RibbonAdaptiveLayoutResult Compute(IReadOnlyList<RibbonGroupLayoutInfo> groups, double availableWidth, double spacing, RibbonReductionStrategy strategy)
     {
         ArgumentNullException.ThrowIfNull(groups);
+        if (strategy == RibbonReductionStrategy.GroupByGroup)
+        {
+            return ComputeGroupByGroup(groups, availableWidth, spacing);
+        }
+
         var states = new RibbonGroupState[groups.Count];
         var total = Total(groups, states, spacing);
         if (total <= availableWidth || groups.Count == 0)
@@ -66,6 +90,48 @@ public static class RibbonAdaptiveLayout
                         states[index] = targetState;
                     }
 
+                    continue;
+                }
+
+                total -= current - next;
+                states[index] = targetState;
+                if (total <= availableWidth)
+                {
+                    return new RibbonAdaptiveLayoutResult(states, total, true);
+                }
+            }
+        }
+
+        return new RibbonAdaptiveLayoutResult(states, Total(groups, states, spacing), false);
+    }
+
+    private static RibbonAdaptiveLayoutResult ComputeGroupByGroup(IReadOnlyList<RibbonGroupLayoutInfo> groups, double availableWidth, double spacing)
+    {
+        var states = new RibbonGroupState[groups.Count];
+        var total = Total(groups, states, spacing);
+        if (total <= availableWidth || groups.Count == 0)
+        {
+            return new RibbonAdaptiveLayoutResult(states, total, true);
+        }
+
+        var order = Enumerable.Range(0, groups.Count)
+            .OrderByDescending(i => groups[i].ReductionOrder)
+            .ThenByDescending(i => i)
+            .ToArray();
+        foreach (var index in order)
+        {
+            var info = groups[index];
+            foreach (var targetState in new[] { RibbonGroupState.Medium, RibbonGroupState.Small, RibbonGroupState.Collapsed })
+            {
+                if (targetState == RibbonGroupState.Collapsed && !info.CanCollapse)
+                {
+                    continue;
+                }
+
+                var current = info.GetWidth(states[index]);
+                var next = info.GetWidth(targetState);
+                if (double.IsNaN(next) || next > current)
+                {
                     continue;
                 }
 

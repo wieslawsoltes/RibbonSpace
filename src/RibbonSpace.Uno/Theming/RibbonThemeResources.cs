@@ -28,11 +28,24 @@ public sealed partial class RibbonThemeResources : ResourceDictionary
         "RibbonGalleryItemBorderBrush", "RibbonGalleryItemSelectedBorderBrush", "RibbonScreenTipBackgroundBrush", "RibbonScreenTipBorderBrush",
         "RibbonFocusBrush", "RibbonWindowBackgroundBrush", "RibbonStatusBarBackgroundBrush", "RibbonStatusBarForegroundBrush", "RibbonToolBarBackgroundBrush",
         "RibbonSearchBackgroundBrush", "RibbonSearchBorderBrush", "RibbonSwatchBorderBrush", "RibbonShadowBrush", "RibbonScrollButtonBackgroundBrush",
+        "RibbonGroupCaptionBackgroundBrush", "RibbonGroupCaptionForegroundBrush", "RibbonTabSelectedBackgroundBrush", "RibbonFloatingPanelBarBrush",
+    ];
+
+    /// <summary>
+    /// Shape resources (corner radii, margins, thickness) that differ between <see cref="RibbonThemeStyle"/> values.
+    /// They are read when a control is templated, so a style change applies to controls created afterwards (brushes
+    /// update live).
+    /// </summary>
+    public static IReadOnlyList<string> ShapeKeys { get; } =
+    [
+        "RibbonControlCornerRadius", "RibbonCommandBarCornerRadius", "RibbonPopupCornerRadius", "RibbonTabCornerRadius", "RibbonGroupCaptionCornerRadius",
+        "RibbonCommandBarMargin", "RibbonCommandBarBorderThickness", "RibbonTabMargin", "RibbonTabRowPadding", "RibbonGroupCaptionMargin",
     ];
 
     private readonly Dictionary<string, SolidColorBrush> _light = [];
     private readonly Dictionary<string, SolidColorBrush> _dark = [];
     private readonly Dictionary<string, SolidColorBrush> _highContrast = [];
+    private readonly ResourceDictionary[] _themeDictionaries;
 
     /// <summary>Creates the resources with the Word palette and neutral chrome.</summary>
     public RibbonThemeResources()
@@ -49,11 +62,11 @@ public sealed partial class RibbonThemeResources : ResourceDictionary
 
         foreach (var dictionary in new[] { light, dark, highContrast })
         {
-            dictionary["RibbonControlCornerRadius"] = new CornerRadius(4);
-            dictionary["RibbonCommandBarCornerRadius"] = new CornerRadius(8);
-            dictionary["RibbonPopupCornerRadius"] = new CornerRadius(6);
             dictionary["RibbonFontFamily"] = FontFamily.XamlAutoFontFamily;
         }
+
+        _themeDictionaries = [light, dark, highContrast];
+        ApplyShapes(RibbonThemeStyle.Office);
 
         MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("ms-appx:///RibbonSpace.Uno/Themes/Shared.xaml") });
         ThemeDictionaries["Light"] = light;
@@ -68,6 +81,9 @@ public sealed partial class RibbonThemeResources : ResourceDictionary
 
     /// <summary>Current chrome style.</summary>
     public RibbonChromeStyle ChromeStyle { get; private set; }
+
+    /// <summary>Current surface style (Office or CAD).</summary>
+    public RibbonThemeStyle Style { get; private set; }
 
     /// <summary>Returns the brush instance of a key for a theme ("Light", "Dark", "HighContrast").</summary>
     public SolidColorBrush? GetBrush(string key, string theme = "Light")
@@ -85,14 +101,47 @@ public sealed partial class RibbonThemeResources : ResourceDictionary
         }
     }
 
-    /// <summary>Applies a palette and chrome style (in place; all controls update immediately).</summary>
-    public void Apply(RibbonThemePalette palette, RibbonChromeStyle chromeStyle)
+    /// <summary>Applies a palette and chrome style keeping the current surface style (in place; all controls update immediately).</summary>
+    public void Apply(RibbonThemePalette palette, RibbonChromeStyle chromeStyle) => Apply(palette, chromeStyle, Style);
+
+    /// <summary>Applies a palette, chrome style and surface style. Brushes update in place.</summary>
+    public void Apply(RibbonThemePalette palette, RibbonChromeStyle chromeStyle, RibbonThemeStyle style)
     {
         Palette = palette ?? throw new ArgumentNullException(nameof(palette));
         ChromeStyle = chromeStyle;
+        if (Style != style)
+        {
+            Style = style;
+            ApplyShapes(style);
+        }
+
         ApplyLight(palette, chromeStyle);
         ApplyDark(palette, chromeStyle);
+        if (style == RibbonThemeStyle.Cad)
+        {
+            ApplyCadLight(palette, chromeStyle);
+            ApplyCadDark(palette, chromeStyle);
+        }
+
         ApplyHighContrast();
+    }
+
+    private void ApplyShapes(RibbonThemeStyle style)
+    {
+        var cad = style == RibbonThemeStyle.Cad;
+        foreach (var dictionary in _themeDictionaries)
+        {
+            dictionary["RibbonControlCornerRadius"] = new CornerRadius(cad ? 2 : 4);
+            dictionary["RibbonCommandBarCornerRadius"] = new CornerRadius(cad ? 0 : 8);
+            dictionary["RibbonPopupCornerRadius"] = new CornerRadius(cad ? 2 : 6);
+            dictionary["RibbonTabCornerRadius"] = cad ? new CornerRadius(2, 2, 0, 0) : new CornerRadius(4);
+            dictionary["RibbonGroupCaptionCornerRadius"] = new CornerRadius(cad ? 1 : 0);
+            dictionary["RibbonCommandBarMargin"] = cad ? new Thickness(0) : new Thickness(6, 1, 6, 6);
+            dictionary["RibbonCommandBarBorderThickness"] = cad ? new Thickness(0, 0, 0, 1) : new Thickness(1);
+            dictionary["RibbonTabMargin"] = cad ? new Thickness(0, 3, 1, 0) : new Thickness(1, 3, 1, 1);
+            dictionary["RibbonTabRowPadding"] = cad ? new Thickness(4, 0, 4, 0) : new Thickness(6, 0, 6, 0);
+            dictionary["RibbonGroupCaptionMargin"] = cad ? new Thickness(1, 1, 1, 1) : new Thickness(0);
+        }
     }
 
     private static Color C(RibbonColor c) => Color.FromArgb(c.A, c.R, c.G, c.B);
@@ -162,6 +211,10 @@ public sealed partial class RibbonThemeResources : ResourceDictionary
         Set(m, "RibbonSwatchBorderBrush", C("#33000000"));
         Set(m, "RibbonShadowBrush", C("#1A000000"));
         Set(m, "RibbonScrollButtonBackgroundBrush", C("#F2FFFFFF"));
+        Set(m, "RibbonGroupCaptionBackgroundBrush", C("#00FFFFFF"));
+        Set(m, "RibbonGroupCaptionForegroundBrush", C("#616161"));
+        Set(m, "RibbonTabSelectedBackgroundBrush", C("#00FFFFFF"));
+        Set(m, "RibbonFloatingPanelBarBrush", C("#F0F0F0"));
     }
 
     private void ApplyDark(RibbonThemePalette palette, RibbonChromeStyle chrome)
@@ -226,6 +279,110 @@ public sealed partial class RibbonThemeResources : ResourceDictionary
         Set(m, "RibbonSwatchBorderBrush", C("#44FFFFFF"));
         Set(m, "RibbonShadowBrush", C("#66000000"));
         Set(m, "RibbonScrollButtonBackgroundBrush", C("#F2292929"));
+        Set(m, "RibbonGroupCaptionBackgroundBrush", C("#00000000"));
+        Set(m, "RibbonGroupCaptionForegroundBrush", C("#C7C7C7"));
+        Set(m, "RibbonTabSelectedBackgroundBrush", C("#00000000"));
+        Set(m, "RibbonFloatingPanelBarBrush", C("#333333"));
+    }
+
+    // CAD style: blue-grey surfaces in the spirit of AutoCAD-class applications. Only surface and neutral colours are
+    // overridden; accent-derived brushes (checked, focus, selection) keep following the palette.
+    private void ApplyCadDark(RibbonThemePalette palette, RibbonChromeStyle chrome)
+    {
+        var m = _dark;
+        var accent = palette.GetAccent(true);
+        var colorful = chrome == RibbonChromeStyle.Colorful;
+        Set(m, "RibbonWindowBackgroundBrush", C("#2B313B"));
+        Set(m, "RibbonChromeBackgroundBrush", colorful ? C(palette.GetAccent(false).Darken(0.35)) : C("#2B313B"));
+        Set(m, "RibbonChromeForegroundBrush", C("#E1E6EC"));
+        Set(m, "RibbonTitleBarBackgroundBrush", colorful ? C(palette.GetAccent(false).Darken(0.35)) : C("#252A33"));
+        Set(m, "RibbonTitleBarForegroundBrush", C("#E1E6EC"));
+        Set(m, "RibbonTitleBarHoverBrush", C("#3B4453"));
+        Set(m, "RibbonCommandBarBackgroundBrush", C("#3B4453"));
+        Set(m, "RibbonCommandBarBorderBrush", C("#252A33"));
+        Set(m, "RibbonForegroundBrush", C("#E1E6EC"));
+        Set(m, "RibbonSecondaryForegroundBrush", C("#AEB8C4"));
+        Set(m, "RibbonDisabledForegroundBrush", C("#6C7787"));
+        Set(m, "RibbonIconBrush", C("#D8DEE6"));
+        Set(m, "RibbonItemHoverBrush", C("#4A5568"));
+        Set(m, "RibbonItemPressedBrush", C("#56637A"));
+        Set(m, "RibbonItemBorderHoverBrush", C("#5F6E86"));
+        Set(m, "RibbonSeparatorBrush", C("#2F3641"));
+        Set(m, "RibbonTabForegroundBrush", C("#C9D1DB"));
+        Set(m, "RibbonTabHoverBrush", C("#343C48"));
+        Set(m, "RibbonTabSelectedForegroundBrush", C("#FFFFFF"));
+        Set(m, "RibbonTabSelectedBackgroundBrush", C("#3B4453"));
+        Set(m, "RibbonTabIndicatorBrush", C("#00000000"));
+        Set(m, "RibbonPopupBackgroundBrush", C("#3B4453"));
+        Set(m, "RibbonPopupBorderBrush", C("#252A33"));
+        Set(m, "RibbonInputBackgroundBrush", C("#2B313B"));
+        Set(m, "RibbonInputBorderBrush", C("#56637A"));
+        Set(m, "RibbonInputHoverBorderBrush", C("#7A889E"));
+        Set(m, "RibbonInputFocusBorderBrush", C(accent));
+        Set(m, "RibbonKeyTipBackgroundBrush", C("#E8EDF2"));
+        Set(m, "RibbonKeyTipForegroundBrush", C("#1B2027"));
+        Set(m, "RibbonKeyTipBorderBrush", C("#FFFFFF"));
+        Set(m, "RibbonBackstagePaneBackgroundBrush", C("#252A33"));
+        Set(m, "RibbonBackstagePaneHoverBrush", C("#343C48"));
+        Set(m, "RibbonBackstageContentBackgroundBrush", C("#2B313B"));
+        Set(m, "RibbonGalleryItemBorderBrush", C("#4A5568"));
+        Set(m, "RibbonScreenTipBackgroundBrush", C("#3B4453"));
+        Set(m, "RibbonScreenTipBorderBrush", C("#252A33"));
+        Set(m, "RibbonStatusBarBackgroundBrush", C("#2B313B"));
+        Set(m, "RibbonStatusBarForegroundBrush", C("#C9D1DB"));
+        Set(m, "RibbonToolBarBackgroundBrush", C("#3B4453"));
+        Set(m, "RibbonSearchBackgroundBrush", C("#2B313B"));
+        Set(m, "RibbonSearchBorderBrush", C("#4A5568"));
+        Set(m, "RibbonScrollButtonBackgroundBrush", C("#F23B4453"));
+        Set(m, "RibbonGroupCaptionBackgroundBrush", C("#323A47"));
+        Set(m, "RibbonGroupCaptionForegroundBrush", C("#B8C2CE"));
+        Set(m, "RibbonFloatingPanelBarBrush", C("#2F3641"));
+    }
+
+    private void ApplyCadLight(RibbonThemePalette palette, RibbonChromeStyle chrome)
+    {
+        var m = _light;
+        var accent = palette.GetAccent(false);
+        var colorful = chrome == RibbonChromeStyle.Colorful;
+        Set(m, "RibbonWindowBackgroundBrush", C("#D5D8DD"));
+        Set(m, "RibbonChromeBackgroundBrush", colorful ? C(accent) : C("#DADDE2"));
+        Set(m, "RibbonChromeForegroundBrush", colorful ? C(palette.GetOnAccent(false)) : C("#1F242B"));
+        Set(m, "RibbonTitleBarBackgroundBrush", colorful ? C(accent) : C("#CDD1D7"));
+        Set(m, "RibbonTitleBarForegroundBrush", colorful ? C(palette.GetOnAccent(false)) : C("#1F242B"));
+        Set(m, "RibbonTitleBarHoverBrush", colorful ? C(accent.Lighten(0.15)) : C("#BFC5CD"));
+        Set(m, "RibbonCommandBarBackgroundBrush", C("#F0F1F3"));
+        Set(m, "RibbonCommandBarBorderBrush", C("#B7BEC8"));
+        Set(m, "RibbonForegroundBrush", C("#1F242B"));
+        Set(m, "RibbonSecondaryForegroundBrush", C("#4E5866"));
+        Set(m, "RibbonDisabledForegroundBrush", C("#9AA3AF"));
+        Set(m, "RibbonIconBrush", C("#2F3742"));
+        Set(m, "RibbonItemHoverBrush", C("#DDE3EA"));
+        Set(m, "RibbonItemPressedBrush", C("#CBD3DD"));
+        Set(m, "RibbonItemBorderHoverBrush", C("#A9B4C2"));
+        Set(m, "RibbonSeparatorBrush", C("#C7CCD3"));
+        Set(m, "RibbonTabForegroundBrush", colorful ? C(palette.GetOnAccent(false)) : C("#2F3742"));
+        Set(m, "RibbonTabHoverBrush", colorful ? C(accent.Lighten(0.15)) : C("#E3E6EA"));
+        Set(m, "RibbonTabSelectedForegroundBrush", C("#000000"));
+        Set(m, "RibbonTabSelectedBackgroundBrush", C("#F0F1F3"));
+        Set(m, "RibbonTabIndicatorBrush", C("#00000000"));
+        Set(m, "RibbonPopupBackgroundBrush", C("#F7F8F9"));
+        Set(m, "RibbonPopupBorderBrush", C("#A9B4C2"));
+        Set(m, "RibbonInputBorderBrush", C("#B7BEC8"));
+        Set(m, "RibbonInputHoverBorderBrush", C("#8C97A5"));
+        Set(m, "RibbonInputFocusBorderBrush", C(accent));
+        Set(m, "RibbonBackstageContentBackgroundBrush", C("#F0F1F3"));
+        Set(m, "RibbonGalleryItemBorderBrush", C("#C7CCD3"));
+        Set(m, "RibbonScreenTipBackgroundBrush", C("#F7F8F9"));
+        Set(m, "RibbonScreenTipBorderBrush", C("#A9B4C2"));
+        Set(m, "RibbonStatusBarBackgroundBrush", C("#D5D8DD"));
+        Set(m, "RibbonStatusBarForegroundBrush", C("#2F3742"));
+        Set(m, "RibbonToolBarBackgroundBrush", C("#F0F1F3"));
+        Set(m, "RibbonSearchBackgroundBrush", colorful ? C(accent.Lighten(0.2)) : C("#FFFFFF"));
+        Set(m, "RibbonSearchBorderBrush", colorful ? C(accent.Lighten(0.3)) : C("#B7BEC8"));
+        Set(m, "RibbonScrollButtonBackgroundBrush", C("#F2F0F1F3"));
+        Set(m, "RibbonGroupCaptionBackgroundBrush", C("#DCE0E5"));
+        Set(m, "RibbonGroupCaptionForegroundBrush", C("#3F4855"));
+        Set(m, "RibbonFloatingPanelBarBrush", C("#DCE0E5"));
     }
 
     /// <summary>

@@ -27,7 +27,7 @@ RibbonSpace control is created. To control the merge order, merge them explicitl
   <ResourceDictionary>
     <ResourceDictionary.MergedDictionaries>
       <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-      <rs:RibbonThemeResources xmlns:rs="using:RibbonSpace.Controls" />
+      <RibbonThemeResources />
     </ResourceDictionary.MergedDictionaries>
   </ResourceDictionary>
 </Application.Resources>
@@ -35,43 +35,46 @@ RibbonSpace control is created. To control the merge order, merge them explicitl
 
 ## Your first ribbon
 
-```xml
-<Page xmlns:rs="using:RibbonSpace.Controls" Background="{ThemeResource RibbonWindowBackgroundBrush}">
-  <Grid RowDefinitions="Auto,Auto,*">
-    <rs:RibbonTitleBar Title="Document1" AppIcon="&#xE8A5;" Ribbon="{x:Bind Ribbon}" />
-    <rs:Ribbon x:Name="Ribbon" Grid.Row="1">
-      <rs:Ribbon.QuickAccessToolBar>
-        <rs:RibbonQuickAccessToolBar>
-          <rs:RibbonButton Id="save" Label="Save" Icon="&#xE74E;" Command="{x:Bind ViewModel.SaveCommand}" />
-        </rs:RibbonQuickAccessToolBar>
-      </rs:Ribbon.QuickAccessToolBar>
+RibbonSpace types need no prefix or namespace declaration in Uno.Sdk projects (implicit XAML namespaces); see
+[XAML namespaces](xaml.md#xaml-namespaces) for the prefixed forms and for Windows App SDK heads.
 
-      <rs:RibbonTab Id="home" Header="Home">
-        <rs:RibbonGroup Id="clipboard" Header="Clipboard" DialogLauncherCommand="{x:Bind ViewModel.ClipboardCommand}">
-          <rs:RibbonSplitButton Id="paste" Label="Paste" Icon="&#xE77F;" SizeDefinition="Large" Command="{x:Bind ViewModel.PasteCommand}">
+```xml
+<Page Background="{ThemeResource RibbonWindowBackgroundBrush}">
+  <Grid RowDefinitions="Auto,Auto,*">
+    <RibbonTitleBar Title="Document1" AppIcon="&#xE8A5;" Ribbon="{x:Bind Ribbon}" />
+    <Ribbon x:Name="Ribbon" Grid.Row="1">
+      <Ribbon.QuickAccessToolBar>
+        <RibbonQuickAccessToolBar>
+          <RibbonButton Id="save" Label="Save" Icon="&#xE74E;" Command="{x:Bind ViewModel.SaveCommand}" />
+        </RibbonQuickAccessToolBar>
+      </Ribbon.QuickAccessToolBar>
+
+      <RibbonTab Id="home" Header="Home">
+        <RibbonGroup Id="clipboard" Header="Clipboard" DialogLauncherCommand="{x:Bind ViewModel.ClipboardCommand}">
+          <RibbonSplitButton Id="paste" Label="Paste" Icon="&#xE77F;" SizeDefinition="Large" Command="{x:Bind ViewModel.PasteCommand}">
             <MenuFlyout>
               <MenuFlyoutItem Text="Keep Text Only" />
             </MenuFlyout>
-          </rs:RibbonSplitButton>
-          <rs:RibbonButton Id="cut" Label="Cut" Icon="&#xE8C6;" Shortcut="Ctrl+X" />
-          <rs:RibbonButton Id="copy" Label="Copy" Icon="&#xE8C8;" Shortcut="Ctrl+C" />
-        </rs:RibbonGroup>
-        <rs:RibbonGroup Id="font" Header="Font" ItemsLayout="Rows" RowCount="2">
-          <rs:RibbonStackPanel>
-            <rs:RibbonFontComboBox Text="Aptos" />
-            <rs:RibbonFontSizeComboBox Text="11" />
-          </rs:RibbonStackPanel>
-          <rs:RibbonStackPanel>
-            <rs:RibbonButtonGroup>
-              <rs:RibbonToggleButton Id="bold" Label="Bold" Icon="&#xE8DD;" Shortcut="Ctrl+B" IsChecked="{x:Bind ViewModel.IsBold, Mode=TwoWay}" />
-              <rs:RibbonToggleButton Id="italic" Label="Italic" Icon="&#xE8DB;" Shortcut="Ctrl+I" />
-            </rs:RibbonButtonGroup>
-            <rs:RibbonColorPicker Id="fontColor" Label="Font Color" />
-          </rs:RibbonStackPanel>
-        </rs:RibbonGroup>
-      </rs:RibbonTab>
-      <rs:RibbonTab Id="insert" Header="Insert" />
-    </rs:Ribbon>
+          </RibbonSplitButton>
+          <RibbonButton Id="cut" Label="Cut" Icon="&#xE8C6;" Shortcut="Ctrl+X" />
+          <RibbonButton Id="copy" Label="Copy" Icon="&#xE8C8;" Shortcut="Ctrl+C" />
+        </RibbonGroup>
+        <RibbonGroup Id="font" Header="Font" ItemsLayout="Rows" RowCount="2">
+          <RibbonStackPanel>
+            <RibbonFontComboBox Text="Aptos" />
+            <RibbonFontSizeComboBox Text="11" />
+          </RibbonStackPanel>
+          <RibbonStackPanel>
+            <RibbonButtonGroup>
+              <RibbonToggleButton Id="bold" Label="Bold" Icon="&#xE8DD;" Shortcut="Ctrl+B" IsChecked="{x:Bind ViewModel.IsBold, Mode=TwoWay}" />
+              <RibbonToggleButton Id="italic" Label="Italic" Icon="&#xE8DB;" Shortcut="Ctrl+I" />
+            </RibbonButtonGroup>
+            <RibbonColorPicker Id="fontColor" Label="Font Color" />
+          </RibbonStackPanel>
+        </RibbonGroup>
+      </RibbonTab>
+      <RibbonTab Id="insert" Header="Insert" />
+    </Ribbon>
   </Grid>
 </Page>
 ```

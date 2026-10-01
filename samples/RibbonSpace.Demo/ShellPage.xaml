@@ -1,7 +1,6 @@
 <Page x:Class="RibbonSpace.Demo.ShellPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:rs="using:RibbonSpace.Controls"
       Background="{ThemeResource RibbonWindowBackgroundBrush}">
   <Grid>
     <Grid.ColumnDefinitions>
@@ -9,14 +8,14 @@
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
     <!-- Page rail: a vertical RibbonToolBar with radio toggles. -->
-    <rs:RibbonToolBar x:Name="Rail" Orientation="Vertical" ShowLabels="False" CornerRadius="0" BorderThickness="0,0,1,0" Padding="4,8" Background="{ThemeResource RibbonChromeBackgroundBrush}">
-      <rs:RibbonToggleButton x:Name="WordRail" Id="rail.word" Label="Word (XAML)" Icon="&#xE8A5;" GroupName="pages" IsChecked="True" Tag="word" />
-      <rs:RibbonToggleButton Id="rail.excel" Label="Excel (MVVM)" Icon="&#xE80A;" GroupName="pages" Tag="excel" />
-      <rs:RibbonToggleButton Id="rail.powerpoint" Label="PowerPoint (Simplified)" Icon="&#xE7F4;" GroupName="pages" Tag="powerpoint" />
-      <rs:RibbonToggleButton Id="rail.tools" Label="Toolbars &amp; palettes" Icon="&#xE771;" GroupName="pages" Tag="tools" />
-      <rs:RibbonSeparator />
-      <rs:RibbonToggleButton Id="rail.settings" Label="Settings" Icon="&#xE713;" GroupName="pages" Tag="settings" />
-    </rs:RibbonToolBar>
+    <RibbonToolBar x:Name="Rail" Orientation="Vertical" ShowLabels="False" CornerRadius="0" BorderThickness="0,0,1,0" Padding="4,8" Background="{ThemeResource RibbonChromeBackgroundBrush}">
+      <RibbonToggleButton x:Name="WordRail" Id="rail.word" Label="Word (XAML)" Icon="&#xE8A5;" GroupName="pages" IsChecked="True" Tag="word" />
+      <RibbonToggleButton Id="rail.excel" Label="Excel (MVVM)" Icon="&#xE80A;" GroupName="pages" Tag="excel" />
+      <RibbonToggleButton Id="rail.powerpoint" Label="PowerPoint (Simplified)" Icon="&#xE7F4;" GroupName="pages" Tag="powerpoint" />
+      <RibbonToggleButton Id="rail.tools" Label="Toolbars &amp; palettes" Icon="&#xE771;" GroupName="pages" Tag="tools" />
+      <RibbonSeparator />
+      <RibbonToggleButton Id="rail.settings" Label="Settings" Icon="&#xE713;" GroupName="pages" Tag="settings" />
+    </RibbonToolBar>
     <Grid x:Name="PageHost" Grid.Column="1" />
   </Grid>
 </Page>

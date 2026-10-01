@@ -1,7 +1,6 @@
 <UserControl x:Class="RibbonSpace.Demo.Pages.ExcelPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:rs="using:RibbonSpace.Controls">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Grid Background="{ThemeResource RibbonWindowBackgroundBrush}">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -10,9 +9,9 @@
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
-    <rs:RibbonTitleBar x:Name="TitleBar" Title="Budget 2026" Subtitle="• MVVM ribbon" AppIcon="&#xE80A;" />
+    <RibbonTitleBar x:Name="TitleBar" Title="Budget 2026" Subtitle="• MVVM ribbon" AppIcon="&#xE80A;" />
     <!-- The whole ribbon comes from ExcelViewModel.Ribbon (RibbonModel). -->
-    <rs:Ribbon x:Name="Ribbon" Grid.Row="1" Model="{x:Bind ViewModel.Ribbon}" IsShortcutRoutingEnabled="True" />
+    <Ribbon x:Name="Ribbon" Grid.Row="1" Model="{x:Bind ViewModel.Ribbon}" IsShortcutRoutingEnabled="True" />
     <Grid Grid.Row="2" Padding="8,4" ColumnSpacing="8" Background="{ThemeResource RibbonCommandBarBackgroundBrush}">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="80" />
@@ -26,12 +25,12 @@
     <ScrollViewer Grid.Row="3" HorizontalScrollBarVisibility="Auto" Background="White">
       <Grid x:Name="Sheet" />
     </ScrollViewer>
-    <rs:RibbonStatusBar Grid.Row="4">
+    <RibbonStatusBar Grid.Row="4">
       <TextBlock Text="{x:Bind ViewModel.Status, Mode=OneWay}" VerticalAlignment="Center" />
-      <rs:RibbonStatusBar.EndItems>
+      <RibbonStatusBar.EndItems>
         <TextBlock Text="Average: 1,240   Count: 5   Sum: 6,200" VerticalAlignment="Center" Margin="0,0,12,0" />
-        <rs:RibbonZoomControl Value="100" />
-      </rs:RibbonStatusBar.EndItems>
-    </rs:RibbonStatusBar>
+        <RibbonZoomControl Value="100" />
+      </RibbonStatusBar.EndItems>
+    </RibbonStatusBar>
   </Grid>
 </UserControl>

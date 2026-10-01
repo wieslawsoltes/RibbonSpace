@@ -786,7 +786,7 @@ Runtime theming API for RibbonSpace (palette, accent, chrome style, light / dark
 
 *Base:* `ResourceDictionary`
 
-Theme resources (Light, Dark, HighContrast) used by every RibbonSpace control. Merged automatically into `Application.Current.Resources` by `EnsureResources`; you may also merge it explicitly in App.xaml (`&lt;rs:RibbonThemeResources /&gt;`). Brush instances are mutated in place when the palette changes, so accent changes apply live without re-templating.
+Theme resources (Light, Dark, HighContrast) used by every RibbonSpace control. Merged automatically into `Application.Current.Resources` by `EnsureResources`; you may also merge it explicitly in App.xaml (`&lt;RibbonThemeResources /&gt;`). Brush instances are mutated in place when the palette changes, so accent changes apply live without re-templating.
 
 | Member | Kind | Type | Description |
 |---|---|---|---|

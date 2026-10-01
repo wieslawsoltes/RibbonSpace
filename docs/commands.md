@@ -18,7 +18,7 @@ ribbon.CommandCatalog = catalog;               // or RibbonModel.CommandCatalog
 ```
 
 ```xml
-<rs:RibbonToggleButton Label="Bold" Icon="&#xE8DD;" CommandId="bold" />
+<RibbonToggleButton Label="Bold" Icon="&#xE8DD;" CommandId="bold" />
 ```
 
 - `catalog.SetEnabled("bold", false)` / `catalog.SetChecked("bold", true)` update every item bound to the id,

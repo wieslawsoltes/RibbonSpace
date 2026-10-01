@@ -3,14 +3,14 @@
 ## RibbonGallery
 
 ```xml
-<rs:RibbonGallery Id="styles" Label="Styles" Icon="&#xE790;" MaxColumns="6" MinColumns="3" Rows="1"
+<RibbonGallery Id="styles" Label="Styles" Icon="&#xE790;" MaxColumns="6" MinColumns="3" Rows="1"
                   ItemWidth="76" ItemHeight="62" IsFilterEnabled="True"
                   Command="{x:Bind ViewModel.ApplyStyleCommand}" PreviewCommand="{x:Bind ViewModel.PreviewStyleCommand}">
-  <rs:RibbonGalleryItem Label="Heading 1" Value="H1" PreviewText="AaBbCc" PreviewFontSize="17" PreviewForeground="#2F5496" Category="Headings" />
-  <rs:RibbonGallery.FooterItems>
-    <rs:RibbonButton Label="Clear Formatting" Icon="&#xE8E6;" />
-  </rs:RibbonGallery.FooterItems>
-</rs:RibbonGallery>
+  <RibbonGalleryItem Label="Heading 1" Value="H1" PreviewText="AaBbCc" PreviewFontSize="17" PreviewForeground="#2F5496" Category="Headings" />
+  <RibbonGallery.FooterItems>
+    <RibbonButton Label="Clear Formatting" Icon="&#xE8E6;" />
+  </RibbonGallery.FooterItems>
+</RibbonGallery>
 ```
 
 - **In the ribbon:** a window of `Rows` × columns with up/down row scrolling and a *More* button. Columns adapt to
@@ -32,7 +32,7 @@
 ## Colour picker
 
 ```xml
-<rs:RibbonColorPicker Label="Font Color" Icon="&#xE8D3;" SelectedColor="#C00000" ShowAutomatic="True" ShowNoColor="False" ShowMoreColors="True" IsSplit="True" />
+<RibbonColorPicker Label="Font Color" Icon="&#xE8D3;" SelectedColor="#C00000" ShowAutomatic="True" ShowNoColor="False" ShowMoreColors="True" IsSplit="True" />
 ```
 
 - **Button:** a split button with a colour bar under the icon. Clicking the icon applies the current colour; the
@@ -55,11 +55,11 @@
 ## Grid picker (Insert Table)
 
 ```xml
-<rs:RibbonDropDownButton Label="Table" Icon="&#xE80A;" Size="Large">
-  <rs:RibbonDropDownButton.Flyout>
-    <Flyout><rs:RibbonGridPicker Rows="8" Columns="10" Command="{x:Bind ViewModel.InsertTableCommand}" /></Flyout>
-  </rs:RibbonDropDownButton.Flyout>
-</rs:RibbonDropDownButton>
+<RibbonDropDownButton Label="Table" Icon="&#xE80A;" Size="Large">
+  <RibbonDropDownButton.Flyout>
+    <Flyout><RibbonGridPicker Rows="8" Columns="10" Command="{x:Bind ViewModel.InsertTableCommand}" /></Flyout>
+  </RibbonDropDownButton.Flyout>
+</RibbonDropDownButton>
 ```
 
 Hovering highlights cells and updates the caption ("3x4 Table"). Arrow keys and Enter work too. The command
@@ -83,7 +83,7 @@ receives a `RibbonGridSize`.
 ## Spinner
 
 ```xml
-<rs:RibbonSpinner Label="Before:" Value="6" Minimum="0" Maximum="1584" Increment="6" Unit="pt" Format="0" InputWidth="72" />
+<RibbonSpinner Label="Before:" Value="6" Minimum="0" Maximum="1584" Increment="6" Unit="pt" Format="0" InputWidth="72" />
 ```
 
 - **Input:** arrows (repeat buttons), Up/Down, PageUp/PageDown (×10), the mouse wheel, and dragging the label
@@ -96,8 +96,8 @@ receives a `RibbonGridSize`.
 ## Segmented control
 
 ```xml
-<rs:RibbonSegmentedControl SelectedIndex="0">
-  <rs:RibbonSegment Label="Editing" Value="edit" />
-  <rs:RibbonSegment Label="Color" Value="color" />
-</rs:RibbonSegmentedControl>
+<RibbonSegmentedControl SelectedIndex="0">
+  <RibbonSegment Label="Editing" Value="edit" />
+  <RibbonSegment Label="Color" Value="color" />
+</RibbonSegmentedControl>
 ```

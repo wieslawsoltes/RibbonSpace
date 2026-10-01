@@ -7,23 +7,23 @@ Premiere, VS Code and AutoCAD.
 
 ```xml
 <!-- Horizontal command bar with "⋯" overflow (the overflow shows linked copies of the hidden items). -->
-<rs:RibbonToolBar ShowLabels="False" ItemInvoked="OnToolInvoked">
-  <rs:RibbonButton Label="Undo" Icon="&#xE7A7;" />
-  <rs:RibbonSeparator />
-  <rs:RibbonToggleButton Label="Snap" Icon="&#xE8AD;" IsChecked="True" />
-</rs:RibbonToolBar>
+<RibbonToolBar ShowLabels="False" ItemInvoked="OnToolInvoked">
+  <RibbonButton Label="Undo" Icon="&#xE7A7;" />
+  <RibbonSeparator />
+  <RibbonToggleButton Label="Snap" Icon="&#xE8AD;" IsChecked="True" />
+</RibbonToolBar>
 
 <!-- Vertical two-column tool palette with radio tools and a tool split button. -->
-<rs:RibbonToolBar Orientation="Vertical" Columns="2">
-  <rs:RibbonToggleButton Label="Move (V)" Icon="&#xE7C2;" GroupName="tool" />
-  <rs:RibbonToggleButton Label="Brush (B)" Icon="&#xE771;" GroupName="tool" IsChecked="True" />
-  <rs:RibbonSplitButton Label="Rectangle" Icon="&#xE739;" Size="Small" FollowLastChoice="True">
+<RibbonToolBar Orientation="Vertical" Columns="2">
+  <RibbonToggleButton Label="Move (V)" Icon="&#xE7C2;" GroupName="tool" />
+  <RibbonToggleButton Label="Brush (B)" Icon="&#xE771;" GroupName="tool" IsChecked="True" />
+  <RibbonSplitButton Label="Rectangle" Icon="&#xE739;" Size="Small" FollowLastChoice="True">
     <MenuFlyout>
       <MenuFlyoutItem Text="Rectangle" Tag="&#xE739;" />
       <MenuFlyoutItem Text="Ellipse" Tag="&#xEA3A;" />
     </MenuFlyout>
-  </rs:RibbonSplitButton>
-</rs:RibbonToolBar>
+  </RibbonSplitButton>
+</RibbonToolBar>
 ```
 
 - **Properties:**
@@ -41,10 +41,10 @@ Premiere, VS Code and AutoCAD.
 ## RibbonContextualToolBar (tool option bars)
 
 ```xml
-<rs:RibbonContextualToolBar ActiveContext="{x:Bind ViewModel.ActiveTool, Mode=OneWay}">
-  <rs:RibbonToolBar rs:RibbonContextualToolBar.Context="brush"> … size, hardness, mode, opacity … </rs:RibbonToolBar>
-  <rs:RibbonToolBar rs:RibbonContextualToolBar.Context="text"> … font, size, alignment … </rs:RibbonToolBar>
-</rs:RibbonContextualToolBar>
+<RibbonContextualToolBar ActiveContext="{x:Bind ViewModel.ActiveTool, Mode=OneWay}">
+  <RibbonToolBar RibbonContextualToolBar.Context="brush"> … size, hardness, mode, opacity … </RibbonToolBar>
+  <RibbonToolBar RibbonContextualToolBar.Context="text"> … font, size, alignment … </RibbonToolBar>
+</RibbonContextualToolBar>
 ```
 
 Contents are created once and switched instantly, never rebuilt.
@@ -52,12 +52,12 @@ Contents are created once and switched instantly, never rebuilt.
 ## RibbonMenuBar
 
 ```xml
-<rs:RibbonMenuBar>
-  <rs:RibbonMenuBarItem Header="File">
+<RibbonMenuBar>
+  <RibbonMenuBarItem Header="File">
     <MenuFlyoutItem Text="Open..." KeyboardAcceleratorTextOverride="Ctrl+O" />
     <MenuFlyoutSubItem Text="Open Recent"> … </MenuFlyoutSubItem>
-  </rs:RibbonMenuBarItem>
-</rs:RibbonMenuBar>
+  </RibbonMenuBarItem>
+</RibbonMenuBar>
 ```
 
 - **Mouse:** hovering switches between open menus.
@@ -68,10 +68,10 @@ Contents are created once and switched instantly, never rebuilt.
 ## RibbonTitleBar
 
 ```xml
-<rs:RibbonTitleBar Ribbon="{x:Bind Ribbon}" Title="Report" Subtitle="• Saved" AppIcon="&#xE8A5;" IsSearchVisible="True">
-  <rs:RibbonTitleBar.StartContent><ToggleSwitch OnContent="AutoSave" OffContent="AutoSave" /></rs:RibbonTitleBar.StartContent>
-  <rs:RibbonTitleBar.EndContent><!-- account, share, … --></rs:RibbonTitleBar.EndContent>
-</rs:RibbonTitleBar>
+<RibbonTitleBar Ribbon="{x:Bind Ribbon}" Title="Report" Subtitle="• Saved" AppIcon="&#xE8A5;" IsSearchVisible="True">
+  <RibbonTitleBar.StartContent><ToggleSwitch OnContent="AutoSave" OffContent="AutoSave" /></RibbonTitleBar.StartContent>
+  <RibbonTitleBar.EndContent><!-- account, share, … --></RibbonTitleBar.EndContent>
+</RibbonTitleBar>
 ```
 
 - **Contents:**
@@ -87,11 +87,11 @@ Contents are created once and switched instantly, never rebuilt.
 ## RibbonStatusBar and RibbonZoomControl
 
 ```xml
-<rs:RibbonStatusBar>
+<RibbonStatusBar>
   <TextBlock Text="Page 1 of 3" />
-  <rs:RibbonStatusBar.EndItems>
-    <rs:RibbonToggleButton Label="Print Layout" Icon="&#xE7C3;" GroupName="view" IsChecked="True" />
-    <rs:RibbonZoomControl Value="100" Minimum="10" Maximum="500" ZoomDialogRequested="OnZoomDialog" />
-  </rs:RibbonStatusBar.EndItems>
-</rs:RibbonStatusBar>
+  <RibbonStatusBar.EndItems>
+    <RibbonToggleButton Label="Print Layout" Icon="&#xE7C3;" GroupName="view" IsChecked="True" />
+    <RibbonZoomControl Value="100" Minimum="10" Maximum="500" ZoomDialogRequested="OnZoomDialog" />
+  </RibbonStatusBar.EndItems>
+</RibbonStatusBar>
 ```

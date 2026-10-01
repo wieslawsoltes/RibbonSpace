@@ -1,0 +1,16 @@
+<UserControl x:Class="RibbonSpace.Uno.RuntimeTests.Xaml.ImplicitXmlnsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!-- No xmlns:rs declaration: the `rs` prefix comes from XmlnsPrefix (Uno implicit XAML namespaces). -->
+  <StackPanel>
+    <rs:Ribbon x:Name="RibbonElement" x:FieldModifier="public">
+      <rs:RibbonTab Id="home" Header="Home">
+        <rs:RibbonGroup Id="font" Header="Font">
+          <rs:RibbonToggleButton Id="bold" Label="Bold" Icon="&#xE8DD;" />
+        </rs:RibbonGroup>
+      </rs:RibbonTab>
+    </rs:Ribbon>
+    <!-- A type from RibbonSpace.Controls.Primitives through the same prefix. -->
+    <rs:RibbonIconPresenter x:Name="IconElement" x:FieldModifier="public" Icon="&#xE8C6;" />
+  </StackPanel>
+</UserControl>

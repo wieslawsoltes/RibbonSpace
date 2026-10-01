@@ -3,8 +3,8 @@
 ## Microsoft Search box
 
 ```xml
-<rs:RibbonTitleBar Ribbon="{x:Bind Ribbon}" IsSearchVisible="True" />   <!-- built in -->
-<rs:RibbonSearchBox Ribbon="{x:Bind Ribbon}" Width="320" />              <!-- or anywhere -->
+<RibbonTitleBar Ribbon="{x:Bind Ribbon}" IsSearchVisible="True" />   <!-- built in -->
+<RibbonSearchBox Ribbon="{x:Bind Ribbon}" Width="320" />              <!-- or anywhere -->
 ```
 
 - **Alt+Q** focuses the box. An empty query shows recently used commands.
@@ -13,7 +13,7 @@
   - acronyms ("fp" → Format Painter)
   - fuzzy subsequences
   - case- and diacritic-insensitive, including letters without a Unicode decomposition (ł, ø, ß, æ)
-  - keywords (`rs:RibbonSearch.Keywords="grid,table"`), paths ("Home › Font") and descriptions
+  - keywords (`RibbonSearch.Keywords="grid,table"`), paths ("Home › Font") and descriptions
   - recently used entries get a boost (persisted in `RibbonState.RecentSearchIds`)
   - disabled commands rank last
 - **What is searched:**

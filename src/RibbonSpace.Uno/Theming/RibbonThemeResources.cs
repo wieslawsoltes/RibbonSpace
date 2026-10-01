@@ -8,7 +8,7 @@ namespace RibbonSpace.Controls;
 /// <summary>
 /// Theme resources (Light, Dark, HighContrast) used by every RibbonSpace control. Merged automatically into
 /// <c>Application.Current.Resources</c> by <see cref="RibbonTheme.EnsureResources"/>; you may also merge it
-/// explicitly in App.xaml (<c>&lt;rs:RibbonThemeResources /&gt;</c>). Brush instances are mutated in place when the
+/// explicitly in App.xaml (<c>&lt;RibbonThemeResources /&gt;</c>). Brush instances are mutated in place when the
 /// palette changes, so accent changes apply live without re-templating.
 /// </summary>
 public sealed partial class RibbonThemeResources : ResourceDictionary

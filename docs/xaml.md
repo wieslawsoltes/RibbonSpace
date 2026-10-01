@@ -1,29 +1,74 @@
 # XAML usage
 
-Add the namespace `xmlns:rs="using:RibbonSpace.Controls"`.
+## XAML namespaces
+
+RibbonSpace registers `RibbonSpace.Controls`, `RibbonSpace.Controls.Primitives` and `RibbonSpace.Controls.Mvvm` in
+Uno's **global XAML namespace**, so with Uno.Sdk (implicit XAML namespaces are on by default) its types work without
+any prefix or declaration, exactly like built-in controls:
 
 ```xml
-<rs:Ribbon x:Name="Ribbon"
+<Page>
+  <Grid RowDefinitions="Auto,*">
+    <RibbonTitleBar Title="Report" Ribbon="{x:Bind Ribbon}" />
+    <Ribbon x:Name="Ribbon" Grid.Row="1">
+      <RibbonTab Header="Home">
+        <RibbonGroup Header="Clipboard">
+          <RibbonButton Label="Cut" Icon="&#xE8C6;" RibbonKeyTip.KeyTip="X" />
+        </RibbonGroup>
+      </RibbonTab>
+    </Ribbon>
+  </Grid>
+</Page>
+```
+
+Elements, property elements (`<Ribbon.QuickAccessToolBar>`) and attached properties (`RibbonKeyTip.KeyTip`,
+`RibbonSearch.Keywords`, `RibbonContextualToolBar.Context`) all resolve unprefixed. The same types are also mapped to
+the XML namespace `https://github.com/wieslawsoltes/RibbonSpace` (`RibbonXmlns.Uri`) with the default prefix `rs`:
+
+| Form | XAML | Works with |
+|---|---|---|
+| No prefix (recommended) | `<Ribbon>`, nothing to declare | Uno.Sdk projects (implicit XAML namespaces) |
+| Implicit prefix | `<rs:Ribbon>`, nothing to declare | Uno.Sdk projects; use it to disambiguate from another library's type with the same name |
+| XML namespace URI | `xmlns:rs="https://github.com/wieslawsoltes/RibbonSpace"` | every Uno target (Skia desktop, WebAssembly, iOS, Android) |
+| CLR namespace | `xmlns:rs="using:RibbonSpace.Controls"` (`using:RibbonSpace.Controls.Primitives` for primitives) | everywhere, including **Windows App SDK** heads |
+
+Two limitations, both from the XAML compilers rather than RibbonSpace:
+- **Type names inside attribute values** (`Style TargetType`, `ControlTemplate TargetType`) only resolve through a
+  `using:` namespace. Declare `xmlns:rs="using:RibbonSpace.Controls"` in files that style RibbonSpace controls:
+  `<Style TargetType="rs:RibbonButton">`.
+- **Windows App SDK heads** (`net10.0-windows…`) use WinUI's own XAML compiler, which supports neither the global
+  namespace nor custom XML namespaces yet ([microsoft-ui-xaml#10616](https://github.com/microsoft/microsoft-ui-xaml/issues/10616)).
+  XAML compiled for such a head keeps `xmlns:rs="using:RibbonSpace.Controls"` and `rs:` prefixes. The Uno Skia
+  desktop head (`net10.0-desktop`) runs on Windows too and supports every form.
+
+WinUI types always win over a RibbonSpace type with the same name (RibbonSpace types all start with `Ribbon`). To turn
+the global namespace off for an app, set `<UnoEnableImplicitXamlNamespaces>false</UnoEnableImplicitXamlNamespaces>`
+and declare a prefix.
+
+## Ribbon
+
+```xml
+<Ribbon x:Name="Ribbon"
            DisplayMode="Classic"
            VisibilityMode="AlwaysShow"
            Density="Comfortable"
            QuickAccessPosition="AboveRibbon"
            IsShortcutRoutingEnabled="True"
            ItemInvoked="OnItemInvoked">
-  <rs:Ribbon.QuickAccessToolBar> <rs:RibbonQuickAccessToolBar> … </rs:RibbonQuickAccessToolBar> </rs:Ribbon.QuickAccessToolBar>
-  <rs:Ribbon.Backstage> <rs:RibbonBackstage> … </rs:RibbonBackstage> </rs:Ribbon.Backstage>
-  <rs:Ribbon.ContextualGroups>
-    <rs:RibbonContextualTabGroup Id="table" Header="Table Tools" Color="#0F7B6C" Activation="SelectOnShow" />
-  </rs:Ribbon.ContextualGroups>
-  <rs:Ribbon.TabStripItems>
-    <rs:RibbonButton Label="Comments" Icon="&#xE90A;" SimplifiedLabel="Show" />
-  </rs:Ribbon.TabStripItems>
+  <Ribbon.QuickAccessToolBar> <RibbonQuickAccessToolBar> … </RibbonQuickAccessToolBar> </Ribbon.QuickAccessToolBar>
+  <Ribbon.Backstage> <RibbonBackstage> … </RibbonBackstage> </Ribbon.Backstage>
+  <Ribbon.ContextualGroups>
+    <RibbonContextualTabGroup Id="table" Header="Table Tools" Color="#0F7B6C" Activation="SelectOnShow" />
+  </Ribbon.ContextualGroups>
+  <Ribbon.TabStripItems>
+    <RibbonButton Label="Comments" Icon="&#xE90A;" SimplifiedLabel="Show" />
+  </Ribbon.TabStripItems>
 
-  <rs:RibbonTab Id="home" Header="Home" KeyTip="H">
-    <rs:RibbonGroup Id="clipboard" Header="Clipboard" Icon="&#xE77F;" IsDialogLauncherVisible="True"> … </rs:RibbonGroup>
-  </rs:RibbonTab>
-  <rs:RibbonTab Id="tableDesign" Header="Table Design" ContextualGroupId="table"> … </rs:RibbonTab>
-</rs:Ribbon>
+  <RibbonTab Id="home" Header="Home" KeyTip="H">
+    <RibbonGroup Id="clipboard" Header="Clipboard" Icon="&#xE77F;" IsDialogLauncherVisible="True"> … </RibbonGroup>
+  </RibbonTab>
+  <RibbonTab Id="tableDesign" Header="Table Design" ContextualGroupId="table"> … </RibbonTab>
+</Ribbon>
 ```
 
 ## Items
@@ -48,7 +93,7 @@ Add the namespace `xmlns:rs="using:RibbonSpace.Controls"`.
 
 Common item properties: `Id`, `Label`, `Icon`, `LargeIcon`, `Size`, `SizeDefinition`, `KeyTip`, `ScreenTip`,
 `Shortcut`, `CommandId`, `Command`, `CommandParameter`, `SimplifiedVisibility`, `SimplifiedLabel`, `ShowLabel`,
-`CanAddToQuickAccess`, plus the attached `rs:RibbonSearch.Keywords`.
+`CanAddToQuickAccess`, plus the attached `RibbonSearch.Keywords`.
 
 ## Icons
 
@@ -68,12 +113,12 @@ provided as vector paths.
 ## ScreenTips
 
 ```xml
-<rs:RibbonButton Label="Paste" Shortcut="Ctrl+V" ScreenTip="Add content from the Clipboard." />
-<rs:RibbonButton Label="Paste">
-  <rs:RibbonButton.ScreenTip>
-    <rs:RibbonScreenTip Title="Paste (Ctrl+V)" Description="…" HelpText="Tell me more" Image="ms-appx:///Assets/paste-help.png" />
-  </rs:RibbonButton.ScreenTip>
-</rs:RibbonButton>
+<RibbonButton Label="Paste" Shortcut="Ctrl+V" ScreenTip="Add content from the Clipboard." />
+<RibbonButton Label="Paste">
+  <RibbonButton.ScreenTip>
+    <RibbonScreenTip Title="Paste (Ctrl+V)" Description="…" HelpText="Tell me more" Image="ms-appx:///Assets/paste-help.png" />
+  </RibbonButton.ScreenTip>
+</RibbonButton>
 ```
 
 A string becomes the description. The title defaults to the label, and the shortcut is shown next to the title.

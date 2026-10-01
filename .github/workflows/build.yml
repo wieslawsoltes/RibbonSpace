@@ -27,13 +27,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
       - name: Unit tests
         run: dotnet test tests/RibbonSpace.Core.Tests/RibbonSpace.Core.Tests.csproj -c Release --logger trx --results-directory artifacts/test-results
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: core-test-results-${{ matrix.os }}
@@ -44,11 +44,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('global.json', '**/*.csproj', 'Directory.Build.props') }}
@@ -80,14 +80,14 @@ jobs:
         run: |
           dotnet pack src/RibbonSpace.Core/RibbonSpace.Core.csproj -c Release --version-suffix ci.${{ github.run_number }} -o artifacts/packages
           dotnet pack src/RibbonSpace.Uno/RibbonSpace.Uno.csproj -c Release --version-suffix ci.${{ github.run_number }} -o artifacts/packages
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: uno-results
           path: |
             artifacts/test-results
             artifacts/screenshots
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ci-packages
           path: artifacts/packages
@@ -97,13 +97,13 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-dotnet@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
       - name: Install workloads
         run: dotnet workload install android ios wasm-tools
       # WinUI class libraries with XAML must be built with Visual Studio's MSBuild, not `dotnet build` (UNOB0008).
-      - uses: microsoft/setup-msbuild@v2
+      - uses: microsoft/setup-msbuild@v3
       - name: Build RibbonSpace.Uno for every target
         run: msbuild src/RibbonSpace.Uno/RibbonSpace.Uno.csproj /restore /m /p:Configuration=Release /p:RibbonSpaceAllTargets=true

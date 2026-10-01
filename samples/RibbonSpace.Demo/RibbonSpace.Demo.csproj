@@ -1,0 +1,24 @@
+<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net10.0-desktop;net10.0-browserwasm</TargetFrameworks>
+    <TargetFrameworks Condition="'$(DemoTargetFrameworks)' != ''">$(DemoTargetFrameworks)</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <UnoSingleProject>true</UnoSingleProject>
+    <UnoFeatures>SkiaRenderer</UnoFeatures>
+    <ApplicationTitle>RibbonSpace Demo</ApplicationTitle>
+    <ApplicationId>com.wieslawsoltes.ribbonspace.demo</ApplicationId>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <IsPackable>false</IsPackable>
+    <WasmShellMonoRuntimeExecutionMode>Interpreter</WasmShellMonoRuntimeExecutionMode>
+    <WasmShellEnableThreading>false</WasmShellEnableThreading>
+    <NoWarn>$(NoWarn);Uno0001</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <UnoIcon Include="Assets\Icons\icon.svg" />
+    <UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#F5F5F5" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/RibbonSpace.Uno/RibbonSpace.Uno.csproj" />
+  </ItemGroup>
+</Project>

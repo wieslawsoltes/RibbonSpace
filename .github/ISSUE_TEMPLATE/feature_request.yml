@@ -1,0 +1,11 @@
+name: Feature request
+description: Suggest a ribbon, toolbar or chrome feature
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like?
+      description: Describe the scenario (reference Office behaviour if relevant).
+    validations:
+      required: true

@@ -1,0 +1,107 @@
+name: Build and test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+
+jobs:
+  core:
+    name: Core tests (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - name: Unit tests
+        run: dotnet test tests/RibbonSpace.Core.Tests/RibbonSpace.Core.Tests.csproj -c Release --logger trx --results-directory artifacts/test-results
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: core-test-results-${{ matrix.os }}
+          path: artifacts/test-results
+
+  uno:
+    name: Uno library, gallery and runtime UI tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('global.json', '**/*.csproj', 'Directory.Build.props') }}
+          restore-keys: ${{ runner.os }}-nuget-
+      - name: Install workloads
+        run: dotnet workload install wasm-tools --skip-manifest-update
+      - name: Install X11 / Xvfb
+        run: sudo apt-get update && sudo apt-get install -y xvfb libx11-6 libxrandr2 libxi6 libxcursor1 libgl1 libfontconfig1 libice6 libsm6
+      - name: Build library (desktop, WebAssembly, reference)
+        run: dotnet build src/RibbonSpace.Uno/RibbonSpace.Uno.csproj -c Release
+      - name: Build gallery (desktop + WebAssembly)
+        run: dotnet build samples/RibbonSpace.Demo/RibbonSpace.Demo.csproj -c Release
+      - name: Runtime UI tests (Xvfb)
+        env:
+          RIBBONSPACE_TEST_RESULTS: ${{ github.workspace }}/artifacts/test-results/runtime-tests.xml
+        run: |
+          dotnet build tests/RibbonSpace.Uno.RuntimeTests/RibbonSpace.Uno.RuntimeTests.csproj -c Release
+          timeout 900 xvfb-run -a -s "-screen 0 1920x1080x24" dotnet tests/RibbonSpace.Uno.RuntimeTests/bin/Release/net10.0-desktop/RibbonSpace.Uno.RuntimeTests.dll
+      - name: Screenshots
+        if: always()
+        continue-on-error: true
+        run: |
+          mkdir -p artifacts/screenshots
+          for page in word excel powerpoint tools; do
+            RIBBONSPACE_CAPTURE=artifacts/screenshots/$page.png RIBBONSPACE_PAGE=$page RIBBONSPACE_WIDTH=1400 RIBBONSPACE_HEIGHT=720 \
+              timeout 120 xvfb-run -a -s "-screen 0 1920x1080x24" dotnet samples/RibbonSpace.Demo/bin/Release/net10.0-desktop/RibbonSpace.Demo.dll || true
+          done
+      - name: Pack CI packages
+        run: |
+          dotnet pack src/RibbonSpace.Core/RibbonSpace.Core.csproj -c Release --version-suffix ci.${{ github.run_number }} -o artifacts/packages
+          dotnet pack src/RibbonSpace.Uno/RibbonSpace.Uno.csproj -c Release --version-suffix ci.${{ github.run_number }} -o artifacts/packages
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: uno-results
+          path: |
+            artifacts/test-results
+            artifacts/screenshots
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-packages
+          path: artifacts/packages
+
+  all-targets:
+    name: All targets (Android, iOS, WinAppSDK)
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - name: Install workloads
+        run: dotnet workload install android ios wasm-tools
+      - name: Build RibbonSpace.Uno for every target
+        run: dotnet build src/RibbonSpace.Uno/RibbonSpace.Uno.csproj -c Release -p:RibbonSpaceAllTargets=true

@@ -1,0 +1,59 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:RibbonSpace.Controls">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="ms-appx:///RibbonSpace.Uno/Themes/Shared.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <Style TargetType="c:RibbonBackstage">
+    <Setter Property="Background" Value="{ThemeResource RibbonBackstageContentBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{ThemeResource RibbonForegroundBrush}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="c:RibbonBackstage">
+          <Grid Background="{TemplateBinding Background}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="{Binding NavigationPaneWidth, RelativeSource={RelativeSource TemplatedParent}}" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid Background="{ThemeResource RibbonBackstagePaneBackgroundBrush}">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <Button x:Name="PART_BackButton"
+                      Style="{StaticResource RibbonChromeButtonStyle}"
+                      Foreground="{ThemeResource RibbonBackstagePaneForegroundBrush}"
+                      HorizontalAlignment="Left"
+                      Width="40"
+                      Height="40"
+                      Margin="12,14,0,6"
+                      CornerRadius="20">
+                <FontIcon Glyph="&#xE72B;" FontSize="16" />
+              </Button>
+              <TextBlock Grid.Row="1" Text="{TemplateBinding Title}" Margin="20,0,12,10" FontSize="18" FontWeight="SemiBold" Foreground="{ThemeResource RibbonBackstagePaneForegroundBrush}" TextTrimming="CharacterEllipsis" />
+              <ContentPresenter Grid.Row="2" Content="{TemplateBinding PaneHeader}" Foreground="{ThemeResource RibbonBackstagePaneForegroundBrush}" />
+              <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel x:Name="PART_TopItems" Spacing="0" />
+              </ScrollViewer>
+              <StackPanel x:Name="PART_BottomItems" Grid.Row="4" Spacing="0" Margin="0,0,0,12" />
+            </Grid>
+            <Grid x:Name="PART_ContentRoot" Grid.Column="1">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              <TextBlock x:Name="PART_PageTitle" Text="{TemplateBinding PageTitle}" FontSize="30" FontWeight="SemiLight" Margin="40,34,40,10" />
+              <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ContentPresenter x:Name="PART_Content" Margin="40,8,40,32" />
+              </ScrollViewer>
+            </Grid>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

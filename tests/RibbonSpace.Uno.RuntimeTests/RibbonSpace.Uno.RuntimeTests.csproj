@@ -1,0 +1,15 @@
+<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net10.0-desktop</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <UnoSingleProject>true</UnoSingleProject>
+    <UnoFeatures>SkiaRenderer</UnoFeatures>
+    <ApplicationTitle>RibbonSpace Runtime Tests</ApplicationTitle>
+    <ApplicationId>com.wieslawsoltes.ribbonspace.runtimetests</ApplicationId>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);Uno0001</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/RibbonSpace.Uno/RibbonSpace.Uno.csproj" />
+  </ItemGroup>
+</Project>

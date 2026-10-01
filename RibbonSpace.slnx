@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RibbonSpace.Core/RibbonSpace.Core.csproj" />
+    <Project Path="src/RibbonSpace.Uno/RibbonSpace.Uno.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/RibbonSpace.Demo/RibbonSpace.Demo.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RibbonSpace.Core.Tests/RibbonSpace.Core.Tests.csproj" />
+    <Project Path="tests/RibbonSpace.Uno.RuntimeTests/RibbonSpace.Uno.RuntimeTests.csproj" />
+  </Folder>
+</Solution>

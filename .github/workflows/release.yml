@@ -1,0 +1,183 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version for a dry run (tags publish; manual runs only build and upload artifacts)
+        required: true
+        default: '1.0.0-preview.1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  DOTNET_NOLOGO: 'true'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+    steps:
+      - id: v
+        name: Resolve release version
+        shell: bash
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
+        run: |
+          VERSION="$INPUT_VERSION"
+          if [ "$REF_TYPE" = tag ]; then VERSION="${REF_NAME#v}"; fi
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid version '$VERSION'" >&2; exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet test tests/RibbonSpace.Core.Tests/RibbonSpace.Core.Tests.csproj -c Release
+      - name: Runtime UI tests
+        run: |
+          sudo apt-get update && sudo apt-get install -y xvfb libx11-6 libxrandr2 libxi6 libxcursor1 libgl1 libfontconfig1 libice6 libsm6
+          dotnet build tests/RibbonSpace.Uno.RuntimeTests/RibbonSpace.Uno.RuntimeTests.csproj -c Release
+          timeout 900 xvfb-run -a -s "-screen 0 1920x1080x24" dotnet tests/RibbonSpace.Uno.RuntimeTests/bin/Release/net10.0-desktop/RibbonSpace.Uno.RuntimeTests.dll
+
+  packages:
+    needs: [version, verify]
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - name: Install workloads
+        run: dotnet workload install android ios wasm-tools
+      - name: Pack (all targets)
+        shell: bash
+        run: |
+          dotnet pack src/RibbonSpace.Core/RibbonSpace.Core.csproj -c Release -p:Version="$VERSION" -o artifacts/packages
+          dotnet pack src/RibbonSpace.Uno/RibbonSpace.Uno.csproj -c Release -p:Version="$VERSION" -p:RibbonSpaceAllTargets=true -o artifacts/packages
+          ls -la artifacts/packages
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: |
+            artifacts/packages/*.nupkg
+            artifacts/packages/*.snupkg
+          if-no-files-found: error
+
+  gallery:
+    needs: [version, verify]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet workload install wasm-tools --skip-manifest-update
+      - name: Publish WebAssembly gallery archive
+        shell: bash
+        run: |
+          dotnet publish samples/RibbonSpace.Demo/RibbonSpace.Demo.csproj -f net10.0-browserwasm -c Release -p:DemoTargetFrameworks=net10.0-browserwasm -p:WasmShellWebAppBasePath=/ -o artifacts/browser
+          (cd artifacts/browser/wwwroot && zip -qr "$GITHUB_WORKSPACE/RibbonSpace-Gallery-$VERSION-browser.zip" .)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gallery
+          path: '*.zip'
+          if-no-files-found: error
+
+  publish:
+    needs: [version, packages, gallery]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: release-assets
+      - uses: actions/download-artifact@v4
+        with:
+          name: gallery
+          path: release-assets
+      - name: Checksums
+        run: (cd release-assets && sha256sum * > SHA256SUMS && cat SHA256SUMS)
+      - name: Create GitHub release
+        if: github.ref_type == 'tag'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          PRE=()
+          case "$VERSION" in *-*) PRE=(--prerelease);; esac
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" release-assets/* --clobber --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$TAG" release-assets/* --verify-tag --generate-notes --title "RibbonSpace $TAG" "${PRE[@]}" --repo "$GITHUB_REPOSITORY"
+          fi
+
+  nuget:
+    name: Publish to NuGet.org (Trusted Publishing)
+    needs: [version, publish]
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: nuget
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: packages
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+      - name: Check NuGet user
+        env:
+          NUGET_USER: ${{ vars.NUGET_USER || secrets.NUGET_USER }}
+        run: test -n "$NUGET_USER" || { echo 'Set the NUGET_USER variable (nuget.org profile name) for this repository or its nuget environment.' >&2; exit 1; }
+      - name: NuGet login (OIDC → short-lived API key)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER || secrets.NUGET_USER }}
+      - name: Push packages
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push "packages/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate

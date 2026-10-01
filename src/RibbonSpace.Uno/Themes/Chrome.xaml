@@ -1,0 +1,132 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="using:RibbonSpace.Controls"
+                    xmlns:p="using:RibbonSpace.Controls.Primitives">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="ms-appx:///RibbonSpace.Uno/Themes/Shared.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <!-- ===================== RibbonTitleBar ===================== -->
+  <Style TargetType="c:RibbonTitleBar">
+    <Setter Property="Background" Value="{ThemeResource RibbonTitleBarBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{ThemeResource RibbonTitleBarForegroundBrush}" />
+    <Setter Property="Height" Value="44" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="c:RibbonTitleBar">
+          <Grid x:Name="PART_Root" Background="{TemplateBinding Background}" Padding="{TemplateBinding CaptionButtonsInset}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <!-- Empty drag area behind the content (AttachToWindow registers it as the OS title bar). -->
+            <Border x:Name="PART_DragRegion" Grid.Column="3" Background="Transparent" />
+            <p:RibbonIconPresenter Icon="{TemplateBinding AppIcon}" IconSize="20" Margin="12,0,6,0" Foreground="{ThemeResource RibbonTitleBarIconBrush}" />
+            <ContentPresenter x:Name="PART_StartContent" Grid.Column="1" Content="{TemplateBinding StartContent}" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" />
+            <Border x:Name="PART_QuickAccessHost" Grid.Column="2" VerticalAlignment="Center" Margin="4,0" />
+            <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">
+              <StackPanel x:Name="PART_Title" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                <TextBlock Text="{TemplateBinding DisplayTitle}" Foreground="{TemplateBinding Foreground}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" MaxWidth="320" VerticalAlignment="Center" />
+                <TextBlock Text="{TemplateBinding Subtitle}" Foreground="{TemplateBinding Foreground}" Opacity="0.7" VerticalAlignment="Center" />
+              </StackPanel>
+              <c:RibbonSearchBox x:Name="PART_SearchBox" />
+            </StackPanel>
+            <ContentPresenter x:Name="PART_EndContent" Grid.Column="4" Content="{TemplateBinding EndContent}" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{TemplateBinding Foreground}" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- ===================== RibbonStatusBar ===================== -->
+  <Style TargetType="c:RibbonStatusBar">
+    <Setter Property="Background" Value="{ThemeResource RibbonStatusBarBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{ThemeResource RibbonStatusBarForegroundBrush}" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="MinHeight" Value="26" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="c:RibbonStatusBar">
+          <Grid Background="{TemplateBinding Background}" Padding="8,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel x:Name="PART_StartItems" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center" />
+            <StackPanel x:Name="PART_EndItems" Grid.Column="1" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- ===================== RibbonZoomControl ===================== -->
+  <Style TargetType="c:RibbonZoomControl">
+    <Setter Property="Foreground" Value="{ThemeResource RibbonStatusBarForegroundBrush}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="c:RibbonZoomControl">
+          <StackPanel Orientation="Horizontal" Spacing="2" VerticalAlignment="Center" Height="24">
+            <Button x:Name="PART_ZoomOut" Style="{StaticResource RibbonChromeButtonStyle}" Width="22" Padding="0" Foreground="{TemplateBinding Foreground}">
+              <FontIcon Glyph="&#xE738;" FontSize="10" />
+            </Button>
+            <Slider x:Name="PART_Slider" Width="110" VerticalAlignment="Center" MinHeight="0" Padding="0" />
+            <Button x:Name="PART_ZoomIn" Style="{StaticResource RibbonChromeButtonStyle}" Width="22" Padding="0" Foreground="{TemplateBinding Foreground}">
+              <FontIcon Glyph="&#xE710;" FontSize="10" />
+            </Button>
+            <Button x:Name="PART_Percent" Style="{StaticResource RibbonChromeButtonStyle}" Content="{TemplateBinding ValueText}" MinWidth="44" Foreground="{TemplateBinding Foreground}" />
+          </StackPanel>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- ===================== RibbonToolBar ===================== -->
+  <Style TargetType="c:RibbonToolBar">
+    <Setter Property="Background" Value="{ThemeResource RibbonToolBarBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{ThemeResource RibbonForegroundBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource RibbonCommandBarBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="3" />
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="c:RibbonToolBar">
+          <Border x:Name="PART_ItemsHost" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- ===================== RibbonContextualToolBar ===================== -->
+  <Style TargetType="c:RibbonContextualToolBar">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="c:RibbonContextualToolBar">
+          <Grid x:Name="PART_Host" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- ===================== RibbonMenuBar ===================== -->
+  <Style TargetType="c:RibbonMenuBar">
+    <Setter Property="Background" Value="{ThemeResource RibbonChromeBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{ThemeResource RibbonForegroundBrush}" />
+    <Setter Property="Height" Value="28" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="c:RibbonMenuBar">
+          <Border Background="{TemplateBinding Background}" Padding="4,2">
+            <StackPanel x:Name="PART_ItemsHost" Orientation="Horizontal" Spacing="0" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

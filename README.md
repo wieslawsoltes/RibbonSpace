@@ -51,7 +51,7 @@ share every control, feature and fix.
 | **CAD ribbons** | AutoCAD-class features ([guide](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/cad.md)): CAD theme style, expanded panels with pushpin, minimize to panel titles / buttons or cycle, floating panels, Show Tabs / Panels menus, progressive tooltips, application menu with search and recent documents, layer and property drop-downs, line-art icons. |
 | **WinUI 3** | `RibbonSpace.WinUI` brings the same controls to plain Windows App SDK apps. It is compiled from the same sources, and the gallery and runtime UI tests run on both ([guide](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/winui.md)). |
 | **Theming** | Lookless templates; Light / Dark / HighContrast; Office or CAD surface style; 12 application palettes plus custom accents, applied live; Colorful or Neutral chrome; Compact / Comfortable / Touch density; fully custom metrics. |
-| **Quality** | Accessibility peers and stable automation ids, localization (en, de, fr, es, pl), RTL, 95 unit tests and 84 runtime UI tests (run on Uno and on WinUI), trimming / AOT friendly. |
+| **Quality** | Accessibility peers and stable automation ids, localization (en, de, fr, es, pl), RTL, 95 unit tests and 85 runtime UI tests (run on Uno and on WinUI), trimming / AOT friendly. |
 
 <table>
 <tr>
@@ -208,7 +208,7 @@ See [MVVM](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/mvvm.md).
 
 ## Documentation
 
-[Getting started](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/getting-started.md) · [WinUI 3](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/winui.md) · [Architecture](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/architecture.md) · [XAML](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/xaml.md) ·
+[Getting started](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/getting-started.md) · [WinUI 3](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/winui.md) · [WinUI and Uno differences](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/winui-differences.md) · [Architecture](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/architecture.md) · [XAML](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/xaml.md) ·
 [MVVM](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/mvvm.md) · [Commands and keyboard](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/commands.md) · [Controls reference](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/controls.md) ·
 [Layout](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/layout.md) · [Tabs](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/tabs.md) · [QAT](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/quick-access-toolbar.md) ·
 [Backstage](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/backstage.md) · [KeyTips](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/keytips.md) · [Search](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/search.md) ·

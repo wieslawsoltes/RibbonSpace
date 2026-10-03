@@ -69,10 +69,27 @@ internal static class Capture
 
             try
             {
+                // WinUI renders a FlyoutPresenter itself as an empty bitmap; its template root and content render.
                 var popupBitmap = new RenderTargetBitmap();
-                await popupBitmap.RenderAsync(child);
+                var target = child;
+                foreach (var candidate in new[] { child, VisualTreeHelper.GetChildrenCount(child) > 0 ? VisualTreeHelper.GetChild(child, 0) as FrameworkElement : null, (child as ContentControl)?.Content as FrameworkElement })
+                {
+                    if (candidate is null)
+                    {
+                        continue;
+                    }
+
+                    await popupBitmap.RenderAsync(candidate);
+                    target = candidate;
+                    if (popupBitmap.PixelWidth > 0)
+                    {
+                        break;
+                    }
+                }
+
+                Console.WriteLine($"[capture] popup {child.GetType().Name} rendered {popupBitmap.PixelWidth}x{popupBitmap.PixelHeight}");
                 var popupPixels = (await popupBitmap.GetPixelsAsync()).ToArray();
-                var origin = child.TransformToVisual(root).TransformPoint(new Windows.Foundation.Point(0, 0));
+                var origin = target.TransformToVisual(root).TransformPoint(new Windows.Foundation.Point(0, 0));
                 Blend(pixels, rtb.PixelWidth, rtb.PixelHeight, popupPixels, popupBitmap.PixelWidth, popupBitmap.PixelHeight, (int)Math.Round(origin.X * pixelScale), (int)Math.Round(origin.Y * pixelScale));
             }
             catch (Exception ex)

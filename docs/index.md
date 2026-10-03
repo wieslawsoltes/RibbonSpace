@@ -8,6 +8,7 @@ RibbonSpace provides a modern, Office-style ribbon, plus toolbars, a title bar, 
 |---|---|
 | [Getting started](getting-started.md) | Installing, the first ribbon, running the gallery |
 | [WinUI 3](winui.md) | `RibbonSpace.WinUI` for Windows App SDK apps, how the port shares the Uno sources |
+| [WinUI and Uno differences](winui-differences.md) | Platform differences and porting issues, with status |
 | [Architecture](architecture.md) | Packages, layers, layout pipeline, design decisions |
 | [XAML usage](xaml.md) | Declaring tabs, groups and items in XAML |
 | [MVVM](mvvm.md) | `RibbonModel`, generated elements, two-way sync, custom factories |

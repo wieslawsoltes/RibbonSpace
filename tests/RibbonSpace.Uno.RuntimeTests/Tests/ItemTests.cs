@@ -68,6 +68,18 @@ public sealed class ItemTests : RuntimeTestBase
     }
 
     [RibbonTest]
+    public async Task Color_picker_palette_stays_open_with_a_selected_color()
+    {
+        var picker = new RibbonColorPicker { Label = "Font Color", SelectedColor = Windows.UI.Color.FromArgb(255, 0xC0, 0, 0) };
+        await Mount(picker);
+        picker.OpenDropDown();
+        await Settle(600);
+        Assert.True(picker.IsDropDownOpen, "The palette stays open after focusing the selected colour");
+        picker.CloseDropDown();
+        await Settle();
+    }
+
+    [RibbonTest]
     public async Task Gallery_element_items_survive_rebuilds()
     {
         var element = new Border { Width = 20, Height = 20 };

@@ -90,7 +90,8 @@ The package contains the assembly, its PRI index and the compiled theme layout (
 
 ## Writing code that works on both
 
-Shared code compiles for both platforms. `#if WINDOWS` selects Windows App SDK-only APIs, such as `AppWindow` title
+[WinUI and Uno differences](winui-differences.md) tracks every difference and issue found so far, with symptoms and
+fixes. Shared code compiles for both platforms. `#if WINDOWS` selects Windows App SDK-only APIs, such as `AppWindow` title
 bar insets. WinUI is stricter than Uno in a few places, and the runtime UI tests catch these on both:
 - **Content properties** must be declared with `[ContentProperty(Name = nameof(Items))]`. Uno infers them.
 - **ThemeDictionaries** need one `ResourceDictionary` instance per key. Sharing one instance between `Light` and

@@ -33,7 +33,7 @@
           <x:String>Classic</x:String>
           <x:String>Simplified</x:String>
         </ComboBox>
-        <ComboBox x:Name="Language" Header="Ribbon UI language" Width="280" SelectedIndex="0">
+        <ComboBox x:Name="LanguageBox" Header="Ribbon UI language" Width="280" SelectedIndex="0">
           <x:String>en</x:String>
           <x:String>de</x:String>
           <x:String>fr</x:String>

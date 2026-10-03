@@ -1,0 +1,76 @@
+<Project>
+  <!--
+    Shared by the WinUI (Windows App SDK) projects, which compile the RibbonSpace.Uno sources through links: the Uno
+    projects stay the single source of truth for the library, the gallery and the runtime UI tests.
+
+    The linked XAML is adapted for the WinUI XAML compiler before the build (see RibbonSpaceAdaptXaml.cs): RibbonSpace
+    types written without a prefix, with the XML namespace URI or with the undeclared `rs` prefix move to `using:`
+    namespaces, and RibbonSpaceResourceRootFrom / RibbonSpaceResourceRootTo rewrite resource URIs.
+  -->
+  <PropertyGroup>
+    <RibbonSpaceUnoDir>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..', '..', 'src', 'RibbonSpace.Uno'))</RibbonSpaceUnoDir>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <UseWinUI>true</UseWinUI>
+    <!-- The Windows App SDK's own MSIX / PRI tooling, so `dotnet build` works without Visual Studio's AppxPackage tasks. -->
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <!-- Replaced by RibbonSpacePackLayout: the Windows App SDK packs XAML by item path, which breaks for linked files. -->
+    <IncludeXamlFilesInNugetPackage>false</IncludeXamlFilesInNugetPackage>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);RibbonSpacePackLayout</TargetsForTfmSpecificBuildOutput>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.xbf;.xaml</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <!-- The versions Uno.Sdk (global.json) uses for its WinAppSDK target. -->
+    <RibbonSpaceWinAppSdkVersion>1.7.250909003</RibbonSpaceWinAppSdkVersion>
+    <RibbonSpaceWindowsSdkBuildToolsVersion>10.0.28000.2705</RibbonSpaceWindowsSdkBuildToolsVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="$(RibbonSpaceWinAppSdkVersion)" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="$(RibbonSpaceWindowsSdkBuildToolsVersion)" />
+  </ItemGroup>
+
+  <UsingTask TaskName="RibbonSpaceAdaptXaml" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <TypeSources ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <OutputDirectory ParameterType="System.String" Required="true" />
+      <ResourceRootFrom ParameterType="System.String" />
+      <ResourceRootTo ParameterType="System.String" />
+      <AdaptedItems ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Class" Language="cs" Source="$(MSBuildThisFileDirectory)RibbonSpaceAdaptXaml.cs" />
+    </Task>
+  </UsingTask>
+
+  <Target Name="RibbonSpaceAdaptXaml" BeforeTargets="PrepareForBuild" Condition="'@(Page)@(ApplicationDefinition)' != ''">
+    <ItemGroup>
+      <_RibbonSpaceTypeSource Include="$(RibbonSpaceUnoDir)**\*.cs" Exclude="$(RibbonSpaceUnoDir)bin\**;$(RibbonSpaceUnoDir)obj\**" />
+    </ItemGroup>
+    <RibbonSpaceAdaptXaml Items="@(Page)" TypeSources="@(_RibbonSpaceTypeSource)" OutputDirectory="$(MSBuildProjectDirectory)\$(IntermediateOutputPath)RibbonSpaceXaml" ResourceRootFrom="$(RibbonSpaceResourceRootFrom)" ResourceRootTo="$(RibbonSpaceResourceRootTo)">
+      <Output TaskParameter="AdaptedItems" ItemName="_RibbonSpaceAdaptedPage" />
+    </RibbonSpaceAdaptXaml>
+    <RibbonSpaceAdaptXaml Items="@(ApplicationDefinition)" TypeSources="@(_RibbonSpaceTypeSource)" OutputDirectory="$(MSBuildProjectDirectory)\$(IntermediateOutputPath)RibbonSpaceXaml" ResourceRootFrom="$(RibbonSpaceResourceRootFrom)" ResourceRootTo="$(RibbonSpaceResourceRootTo)" Condition="'@(ApplicationDefinition)' != ''">
+      <Output TaskParameter="AdaptedItems" ItemName="_RibbonSpaceAdaptedApplicationDefinition" />
+    </RibbonSpaceAdaptXaml>
+    <ItemGroup>
+      <Page Remove="@(Page)" />
+      <Page Include="@(_RibbonSpaceAdaptedPage)" />
+      <ApplicationDefinition Remove="@(ApplicationDefinition)" />
+      <ApplicationDefinition Include="@(_RibbonSpaceAdaptedApplicationDefinition)" />
+      <FileWrites Include="@(_RibbonSpaceAdaptedPage);@(_RibbonSpaceAdaptedApplicationDefinition)" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    Packs the WinUI class library layout next to the assembly: the PRI index and the compiled XAML
+    (<AssemblyName>/Themes/*.xbf with the adapted *.xaml), so that apps consuming the package find the theme resources.
+  -->
+  <Target Name="RibbonSpacePackLayout">
+    <ItemGroup>
+      <_RibbonSpaceLayoutFile Include="$(TargetDir)$(TargetName)\**\*" />
+      <BuildOutputInPackage Include="$(TargetDir)$(TargetName).pri" />
+      <BuildOutputInPackage Include="@(_RibbonSpaceLayoutFile)" TargetPath="$(TargetName)\%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
+  </Target>
+</Project>

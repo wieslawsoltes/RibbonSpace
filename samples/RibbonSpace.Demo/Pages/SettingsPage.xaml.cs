@@ -36,7 +36,7 @@ public sealed partial class SettingsPage : UserControl
         Surface.SelectionChanged += (_, _) => DemoSettings.SetSurfaceStyle(Surface.SelectedIndex == 1 ? RibbonThemeStyle.Cad : RibbonThemeStyle.Office);
         Density.SelectionChanged += (_, _) => ApplyLayout();
         Layout.SelectionChanged += (_, _) => ApplyLayout();
-        Language.SelectionChanged += (_, _) => RibbonStrings.Current = RibbonStrings.ForCulture(new CultureInfo((string)Language.SelectedItem));
+        LanguageBox.SelectionChanged += (_, _) => RibbonStrings.Current = RibbonStrings.ForCulture(new CultureInfo((string)LanguageBox.SelectedItem));
         ShowState.Click += (_, _) => StateJson.Text = DemoSettings.WordRibbon?.SaveStateToJson() ?? "Open the Word page first.";
         ResetCustomization.Click += (_, _) => DemoSettings.WordRibbon?.ResetCustomization();
         Customize.Click += (_, _) => DemoSettings.WordRibbon?.ShowCustomizeDialog(RibbonCustomizePage.Ribbon);

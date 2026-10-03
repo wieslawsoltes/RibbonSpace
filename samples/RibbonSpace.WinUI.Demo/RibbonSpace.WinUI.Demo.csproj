@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    The RibbonSpace gallery as a WinUI 3 (Windows App SDK) app. Pages, view models and the CAD showcase are the
+    RibbonSpace.Demo sources, linked; only the Uno hosts (Platforms/) are left out.
+  -->
+  <Import Project="../../build/WinUI/RibbonSpace.WinUI.targets" />
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>RibbonSpace.Demo</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <IsPackable>false</IsPackable>
+    <RibbonSpaceDemoDir>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..', 'RibbonSpace.Demo'))</RibbonSpaceDemoDir>
+  </PropertyGroup>
+  <Import Project="../../build/WinUI/RibbonSpace.WinUI.App.props" />
+  <ItemGroup>
+    <Compile Include="$(RibbonSpaceDemoDir)**\*.cs" Exclude="$(RibbonSpaceDemoDir)bin\**;$(RibbonSpaceDemoDir)obj\**;$(RibbonSpaceDemoDir)Platforms\**" Link="%(RecursiveDir)%(Filename)%(Extension)" />
+    <Page Include="$(RibbonSpaceDemoDir)**\*.xaml" Exclude="$(RibbonSpaceDemoDir)bin\**;$(RibbonSpaceDemoDir)obj\**;$(RibbonSpaceDemoDir)App.xaml" Link="%(RecursiveDir)%(Filename)%(Extension)" />
+    <ApplicationDefinition Include="$(RibbonSpaceDemoDir)App.xaml" Link="App.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The CAD sample rasterizes menu icons with SkiaSharp (Uno's Skia renderer brings it on the other heads). -->
+    <PackageReference Include="SkiaSharp" Version="3.119.2" />
+    <ProjectReference Include="../../src/RibbonSpace.WinUI/RibbonSpace.WinUI.csproj" />
+  </ItemGroup>
+</Project>

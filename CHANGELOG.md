@@ -5,6 +5,29 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.1.0-preview.1] - 2026-10-03
+
+### Added
+- `RibbonSpace.WinUI`: RibbonSpace for WinUI 3 (Windows App SDK) apps without Uno Platform, compiled from the
+  `RibbonSpace.Uno` sources through links. It ships a WinUI gallery (`samples/RibbonSpace.WinUI.Demo`) and the runtime
+  UI tests on WinUI (`tests/RibbonSpace.WinUI.RuntimeTests`), both also linked.
+- A build-time XAML adapter for the WinUI projects (`build/WinUI`), so the shared sample and test XAML keeps
+  unprefixed RibbonSpace types.
+- A WinUI job in CI, and the `RibbonSpace.WinUI` package in releases.
+- Keyed default styles `DefaultRibbonButtonStyle`, `DefaultRibbonSplitButtonStyle` and `DefaultRibbonComboBoxStyle`.
+- `docs/winui-differences.md`, which tracks the differences between Uno and WinUI and the issues found during the port.
+- The runtime test runner retries a test once when the window lost activation during it (light-dismiss popups close
+  when another window takes the foreground).
+- Gallery screenshots on WinUI include flyouts.
+
+### Fixed
+- Theme resources failed on WinUI: one `ResourceDictionary` was shared by the `Light` and `Default` theme keys.
+- `RibbonColorPicker`, `RibbonDropDownButton`, `RibbonFontComboBox` and `RibbonFontSizeComboBox` now have their own
+  default style keys. WinUI did not apply the base control's style to them.
+- `RibbonComboBox` declares `Items` as its XAML content property.
+- Plain-character glyph icons (`"$"`, `"%"`) are drawn as text instead of missing symbol-font glyphs.
+- The `Shared.xaml` URI of `RibbonThemeResources` follows the assembly name.
+
 ## [1.0.0] - 2026-10-01
 
 ### Added
@@ -79,5 +102,6 @@ All notable changes to this project are documented here. The format follows
   - screenshot automation
   - CI, Pages and Trusted Publishing release workflows
 
-[Unreleased]: https://github.com/wieslawsoltes/RibbonSpace/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/wieslawsoltes/RibbonSpace/compare/v1.1.0-preview.1...HEAD
+[1.1.0-preview.1]: https://github.com/wieslawsoltes/RibbonSpace/compare/v1.0.0...v1.1.0-preview.1
 [1.0.0]: https://github.com/wieslawsoltes/RibbonSpace/releases/tag/v1.0.0

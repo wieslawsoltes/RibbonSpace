@@ -4,9 +4,12 @@
 |---|---|---|
 | `tests/RibbonSpace.Core.Tests` | Adaptive layout, item arrangement, simplified overflow, KeyTips, search ranking, gestures, catalog, models, merging, state JSON, colours and palettes, localization | `dotnet test tests/RibbonSpace.Core.Tests` |
 | `tests/RibbonSpace.Uno.RuntimeTests` | Real controls in a real Uno window: resizing, collapse popups, simplified overflow, density, visibility modes, selection, contextual tabs, radio toggles, catalog commands, shortcuts, QAT linked copies, state round-trips, customization, KeyTip levels, search, backstage, MVVM two-way sync, inputs, galleries, colour picker, theming, localization, toolbars, title bar | `dotnet run --project tests/RibbonSpace.Uno.RuntimeTests -f net10.0-desktop` (on Linux CI: `xvfb-run -a …`) |
+| `tests/RibbonSpace.WinUI.RuntimeTests` | The same runtime tests (linked sources) against `RibbonSpace.WinUI` in a WinUI 3 window | `dotnet run --project tests/RibbonSpace.WinUI.RuntimeTests` (Windows) |
 
 The runtime runner prints `PASS`/`FAIL` lines. It writes JUnit XML to the path in `RIBBONSPACE_TEST_RESULTS`,
-exits with the number of failures, and accepts `RIBBONSPACE_TEST_FILTER=substring`.
+exits with the number of failures, and accepts `RIBBONSPACE_TEST_FILTER=substring`. A test that fails after the window
+lost activation (another window took the foreground, which closes light-dismiss popups) runs once more, marked
+`RETRY`.
 
 ## Screenshot automation
 
@@ -25,3 +28,5 @@ RIBBONSPACE_CAPTURE=word.png RIBBONSPACE_PAGE=word RIBBONSPACE_WIDTH=1400 RIBBON
 `cad-tooltip`, `cad-layers`, `cad-contextual`, `cad-hatch`, `cad-circle`, `cad-blocks`, `cad-view`, `cad-3d`, `cad-light` and
 `cad-cmd:<command>` (runs a command-line entry such as `cad-cmd:circle`). `RIBBONSPACE_THEME=Dark` switches to the dark theme. Open
 popups (KeyTips, flyouts, backstage) are composited into the capture.
+
+The WinUI gallery takes the same variables on Windows (`dotnet run --project samples/RibbonSpace.WinUI.Demo`).

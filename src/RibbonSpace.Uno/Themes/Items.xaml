@@ -7,7 +7,7 @@
   </ResourceDictionary.MergedDictionaries>
 
   <!-- ===================== RibbonButton / RibbonDropDownButton ===================== -->
-  <Style TargetType="c:RibbonButton">
+  <Style x:Key="DefaultRibbonButtonStyle" TargetType="c:RibbonButton">
     <Setter Property="Background" Value="Transparent" />
     <Setter Property="Foreground" Value="{ThemeResource RibbonForegroundBrush}" />
     <Setter Property="BorderBrush" Value="Transparent" />
@@ -62,6 +62,8 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <Style TargetType="c:RibbonButton" BasedOn="{StaticResource DefaultRibbonButtonStyle}" />
+  <Style TargetType="c:RibbonDropDownButton" BasedOn="{StaticResource DefaultRibbonButtonStyle}" />
 
   <!-- ===================== RibbonToggleButton ===================== -->
   <Style TargetType="c:RibbonToggleButton">
@@ -165,7 +167,7 @@
   </Style>
 
   <!-- ===================== RibbonSplitButton ===================== -->
-  <Style TargetType="c:RibbonSplitButton">
+  <Style x:Key="DefaultRibbonSplitButtonStyle" TargetType="c:RibbonSplitButton">
     <Setter Property="Foreground" Value="{ThemeResource RibbonForegroundBrush}" />
     <Setter Property="FontSize" Value="12" />
     <Setter Property="IsTabStop" Value="False" />
@@ -218,6 +220,8 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <Style TargetType="c:RibbonSplitButton" BasedOn="{StaticResource DefaultRibbonSplitButtonStyle}" />
+  <Style TargetType="c:RibbonColorPicker" BasedOn="{StaticResource DefaultRibbonSplitButtonStyle}" />
 
   <!-- ===================== RibbonCheckBox ===================== -->
   <Style TargetType="c:RibbonCheckBox">

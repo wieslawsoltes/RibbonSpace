@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    The runtime UI tests on WinUI 3 (Windows App SDK): the RibbonSpace.Uno.RuntimeTests sources (runner, fixtures and
+    XAML views), linked, run against RibbonSpace.WinUI in a real window. A console app, so results print to stdout;
+    the exit code is the number of failures (see App.xaml.cs).
+  -->
+  <Import Project="../../build/WinUI/RibbonSpace.WinUI.targets" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RibbonSpace.Uno.RuntimeTests</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <IsPackable>false</IsPackable>
+    <RibbonSpaceTestsDir>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)', '..', 'RibbonSpace.Uno.RuntimeTests'))</RibbonSpaceTestsDir>
+  </PropertyGroup>
+  <Import Project="../../build/WinUI/RibbonSpace.WinUI.App.props" />
+  <ItemGroup>
+    <Compile Include="$(RibbonSpaceTestsDir)**\*.cs" Exclude="$(RibbonSpaceTestsDir)bin\**;$(RibbonSpaceTestsDir)obj\**;$(RibbonSpaceTestsDir)Platforms\**" Link="%(RecursiveDir)%(Filename)%(Extension)" />
+    <Page Include="$(RibbonSpaceTestsDir)**\*.xaml" Exclude="$(RibbonSpaceTestsDir)bin\**;$(RibbonSpaceTestsDir)obj\**;$(RibbonSpaceTestsDir)App.xaml" Link="%(RecursiveDir)%(Filename)%(Extension)" />
+    <ApplicationDefinition Include="$(RibbonSpaceTestsDir)App.xaml" Link="App.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/RibbonSpace.WinUI/RibbonSpace.WinUI.csproj" />
+  </ItemGroup>
+</Project>

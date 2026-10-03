@@ -5,7 +5,7 @@
 <h1 align="center">RibbonSpace</h1>
 
 <p align="center">
-  <b>A modern, Office-style Ribbon for Uno Platform.</b><br/>
+  <b>A modern, Office-style Ribbon for Uno Platform and WinUI 3.</b><br/>
   Classic and simplified layouts, adaptive resizing, contextual tabs, backstage, Quick Access Toolbar, KeyTips,
   galleries with live preview, Office color pickers, ScreenTips, command search, customization, toolbars and full MVVM.
 </p>
@@ -13,6 +13,7 @@
 <p align="center">
   <a href="https://github.com/wieslawsoltes/RibbonSpace/actions/workflows/build.yml"><img src="https://github.com/wieslawsoltes/RibbonSpace/actions/workflows/build.yml/badge.svg" alt="Build" /></a>
   <a href="https://www.nuget.org/packages/RibbonSpace.Uno"><img src="https://img.shields.io/nuget/v/RibbonSpace.Uno.svg?label=RibbonSpace.Uno" alt="NuGet" /></a>
+  <a href="https://www.nuget.org/packages/RibbonSpace.WinUI"><img src="https://img.shields.io/nuget/v/RibbonSpace.WinUI.svg?label=RibbonSpace.WinUI" alt="NuGet" /></a>
   <a href="https://www.nuget.org/packages/RibbonSpace.Core"><img src="https://img.shields.io/nuget/v/RibbonSpace.Core.svg?label=RibbonSpace.Core" alt="NuGet" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT" /></a>
   <a href="https://wieslawsoltes.github.io/RibbonSpace/"><img src="https://img.shields.io/badge/demo-WebAssembly-5B5FC7.svg" alt="Live demo" /></a>
@@ -23,6 +24,10 @@
 RibbonSpace is the shared command UI for the Uno "Space" applications (TextSpace, GridSpace, PresentationSpace, NoteSpace,
 DataSpace, CadSpace, and ImageSpace, VectorSpace and the other toolbar-based apps). It was designed after studying all seventeen
 of them and modern Word, Excel and PowerPoint ([research](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/research/feature-inventory.md)).
+
+It runs on every [Uno Platform](https://platform.uno) target: Windows, macOS, Linux, WebAssembly, iOS and Android. It
+also runs natively in **WinUI 3** (Windows App SDK) apps that don't use Uno. Both packages compile the same sources, so they
+share every control, feature and fix.
 
 ## Highlights
 
@@ -44,8 +49,9 @@ of them and modern Word, Excel and PowerPoint ([research](https://github.com/wie
 | **MVVM** | Bind a `RibbonModel`. Everything is generated and **two-way synchronized**; string-id routing via `ItemInvoked`, `ICommand`, or a command catalog. |
 | **Customization and state** | Office "Customize the Ribbon / QAT" dialog, hide / rename / reorder, custom tabs and groups, import / export, versioned AOT-safe JSON state, plugin merging. |
 | **CAD ribbons** | AutoCAD-class features ([guide](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/cad.md)): CAD theme style, expanded panels with pushpin, minimize to panel titles / buttons or cycle, floating panels, Show Tabs / Panels menus, progressive tooltips, application menu with search and recent documents, layer and property drop-downs, line-art icons. |
+| **WinUI 3** | `RibbonSpace.WinUI` brings the same controls to plain Windows App SDK apps. It is compiled from the same sources, and the gallery and runtime UI tests run on both ([guide](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/winui.md)). |
 | **Theming** | Lookless templates; Light / Dark / HighContrast; Office or CAD surface style; 12 application palettes plus custom accents, applied live; Colorful or Neutral chrome; Compact / Comfortable / Touch density; fully custom metrics. |
-| **Quality** | Accessibility peers and stable automation ids, localization (en, de, fr, es, pl), RTL, 95 unit tests and 83 runtime UI tests, trimming / AOT friendly. |
+| **Quality** | Accessibility peers and stable automation ids, localization (en, de, fr, es, pl), RTL, 95 unit tests and 85 runtime UI tests (run on Uno and on WinUI), trimming / AOT friendly. |
 
 <table>
 <tr>
@@ -81,24 +87,38 @@ of them and modern Word, Excel and PowerPoint ([research](https://github.com/wie
 </tr>
 </table>
 
-## Install
+## Packages
+
+| Package | NuGet | Use it for |
+|---|---|---|
+| [`RibbonSpace.Uno`](https://www.nuget.org/packages/RibbonSpace.Uno) | [![NuGet](https://img.shields.io/nuget/vpre/RibbonSpace.Uno.svg)](https://www.nuget.org/packages/RibbonSpace.Uno) | Uno Platform 6 apps, on every head |
+| [`RibbonSpace.WinUI`](https://www.nuget.org/packages/RibbonSpace.WinUI) | [![NuGet](https://img.shields.io/nuget/vpre/RibbonSpace.WinUI.svg)](https://www.nuget.org/packages/RibbonSpace.WinUI) | WinUI 3 (Windows App SDK) apps without Uno ([guide](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/winui.md)) |
+| [`RibbonSpace.Core`](https://www.nuget.org/packages/RibbonSpace.Core) | [![NuGet](https://img.shields.io/nuget/vpre/RibbonSpace.Core.svg)](https://www.nuget.org/packages/RibbonSpace.Core) | UI-agnostic models, commands, layout algorithms, KeyTips, search, state, palettes and strings, for view models that must not depend on a UI framework (`net10.0`, `net9.0`) |
 
 ```bash
-dotnet add package RibbonSpace.Uno
+dotnet add package RibbonSpace.Uno     # Uno Platform apps
+dotnet add package RibbonSpace.WinUI   # WinUI 3 apps
 ```
 
-| Package | Contents |
-|---|---|
-| `RibbonSpace.Uno` | Controls for Uno Platform 6: desktop (Windows, macOS, Linux), WebAssembly, iOS, Android, WinAppSDK |
-| `RibbonSpace.Core` | UI-agnostic models, commands, layout algorithms, KeyTips, search, state, palettes, strings (`net10.0`, `net9.0`) |
+`RibbonSpace.Uno` and `RibbonSpace.WinUI` both depend on `RibbonSpace.Core`.
 
-## Quick start (XAML)
+## Supported platforms
+
+| Platform | Package | Target framework | Rendering |
+|---|---|---|---|
+| Windows, macOS, Linux (X11 / framebuffer) | `RibbonSpace.Uno` | `net10.0-desktop` | Uno Skia |
+| WebAssembly | `RibbonSpace.Uno` | `net10.0-browserwasm` | Uno Skia |
+| iOS, Android | `RibbonSpace.Uno` | `net10.0-ios`, `net10.0-android` | Uno Skia |
+| Windows App SDK head of an Uno app | `RibbonSpace.Uno` | `net10.0-windows10.0.26100` | WinUI 3 |
+| **WinUI 3 app** (Windows 10 1809+, Windows App SDK 1.7+) | `RibbonSpace.WinUI` | `net10.0-windows10.0.19041.0` or later | WinUI 3 |
+
+## Quick start (Uno Platform XAML)
 
 No namespace declaration or prefix is needed: RibbonSpace registers its types in Uno.Sdk's global XAML namespace
 (implicit XAML namespaces are on by default), so `<Ribbon>` works like any built-in control. The prefixed forms
 (`rs:` without declaration, `xmlns:rs="https://github.com/wieslawsoltes/RibbonSpace"` or
-`xmlns:rs="using:RibbonSpace.Controls"`) remain available, and XAML compiled by a Windows App SDK head needs the
-`using:` form (see [XAML namespaces](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/xaml.md#xaml-namespaces)).
+`xmlns:rs="using:RibbonSpace.Controls"`) remain available, and XAML compiled by WinUI's XAML compiler (WinUI 3 apps,
+Windows App SDK heads) needs the `using:` form (see [XAML namespaces](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/xaml.md#xaml-namespaces)).
 
 ```xml
 <Grid RowDefinitions="Auto,Auto,*">
@@ -130,6 +150,34 @@ No namespace declaration or prefix is needed: RibbonSpace registers its types in
 </Grid>
 ```
 
+## Quick start (WinUI 3)
+
+WinUI's XAML compiler resolves `using:` namespaces only, so WinUI 3 apps declare a prefix. Everything else (MVVM,
+commands, KeyTips, QAT, backstage, theming, state) works as on Uno:
+
+```xml
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:rs="using:RibbonSpace.Controls">
+  <Grid RowDefinitions="Auto,Auto,*">
+    <rs:RibbonTitleBar Title="Report" Ribbon="{x:Bind Ribbon}" />
+    <rs:Ribbon x:Name="Ribbon" Grid.Row="1" ItemInvoked="OnItemInvoked">
+      <rs:RibbonTab Id="home" Header="Home">
+        <rs:RibbonGroup Id="clipboard" Header="Clipboard">
+          <rs:RibbonButton Id="paste" Label="Paste" Icon="&#xE77F;" Size="Large" />
+          <rs:RibbonButton Id="cut" Label="Cut" Icon="&#xE8C6;" />
+        </rs:RibbonGroup>
+      </rs:RibbonTab>
+    </rs:Ribbon>
+  </Grid>
+</Window>
+```
+
+![The gallery running as a WinUI 3 app](https://raw.githubusercontent.com/wieslawsoltes/RibbonSpace/main/docs/images/winui.png)
+
+The [WinUI guide](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/winui.md) covers requirements, theme resources, title bar integration and how the port shares
+the Uno sources.
+
 ## Quick start (MVVM)
 
 ```csharp
@@ -160,7 +208,7 @@ See [MVVM](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/mvvm.md).
 
 ## Documentation
 
-[Getting started](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/getting-started.md) · [Architecture](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/architecture.md) · [XAML](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/xaml.md) ·
+[Getting started](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/getting-started.md) · [WinUI 3](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/winui.md) · [WinUI and Uno differences](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/winui-differences.md) · [Architecture](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/architecture.md) · [XAML](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/xaml.md) ·
 [MVVM](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/mvvm.md) · [Commands and keyboard](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/commands.md) · [Controls reference](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/controls.md) ·
 [Layout](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/layout.md) · [Tabs](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/tabs.md) · [QAT](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/quick-access-toolbar.md) ·
 [Backstage](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/backstage.md) · [KeyTips](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/keytips.md) · [Search](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/search.md) ·
@@ -175,9 +223,10 @@ See [MVVM](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/mvvm.md).
 dotnet run --project samples/RibbonSpace.Demo -f net10.0-desktop
 ```
 
-It has Word (XAML), Excel (MVVM), PowerPoint (simplified), toolbars and palettes, and settings (theme, palette,
+It has Word (XAML), Excel (MVVM), PowerPoint (simplified), toolbars and palettes, CAD, and settings (theme, palette,
 chrome, density, layout, language, state JSON, event log). It also runs in the browser:
-[wieslawsoltes.github.io/RibbonSpace](https://wieslawsoltes.github.io/RibbonSpace/).
+[wieslawsoltes.github.io/RibbonSpace](https://wieslawsoltes.github.io/RibbonSpace/), and as a WinUI 3 app
+(`dotnet run --project samples/RibbonSpace.WinUI.Demo` on Windows).
 
 ## Build and test
 
@@ -191,6 +240,14 @@ Requirements: .NET 10 SDK, and Uno.Sdk 6.7 (resolved from `global.json`). Buildi
 `wasm-tools` workload, and building every target needs `android` and `ios` too (`-p:RibbonSpaceAllTargets=true`).
 On Windows that also adds the WinAppSDK target, which must be built with Visual Studio's `msbuild /restore`
 rather than `dotnet build`.
+
+WinUI 3 (on Windows; plain `dotnet build` works):
+
+```bash
+dotnet build RibbonSpace.WinUI.slnx
+dotnet run --project samples/RibbonSpace.WinUI.Demo
+dotnet run --project tests/RibbonSpace.WinUI.RuntimeTests
+```
 
 ## License
 

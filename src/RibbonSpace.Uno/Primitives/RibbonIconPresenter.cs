@@ -152,6 +152,9 @@ public partial class RibbonIconPresenter : Grid
 
                 return ri.Kind switch
                 {
+                    // Strings convert to glyph icons implicitly; plain characters ("$", "%") are not in the symbol
+                    // font, and WinUI does not fall back to a text font for FontIcon.
+                    RibbonIconKind.Glyph when ri.FontFamily is null && Classify(ri.Value) == RibbonIconKind.Text => CreateText(ri.Value, size, fixedBrush),
                     RibbonIconKind.Glyph => WithBrush(new FontIcon { Glyph = ri.Value, FontSize = size, FontFamily = ri.FontFamily is null ? SymbolFont() : new FontFamily(ri.FontFamily) }, fixedBrush),
                     RibbonIconKind.Path => CreatePath(ri.Value, ri.ViewBoxSize, size, fixedBrush),
                     RibbonIconKind.Image => new Image { Source = CreateImageSource(ri.Value), Width = size, Height = size, Stretch = Stretch.Uniform },

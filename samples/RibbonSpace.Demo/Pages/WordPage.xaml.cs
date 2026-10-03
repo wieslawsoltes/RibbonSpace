@@ -27,8 +27,8 @@ public sealed partial class WordPage : UserControl
         Ribbon.QuickAccessCandidateIds.Add("newComment");
         Ribbon.ItemInvoked += OnItemInvoked;
         Ribbon.SelectedTabChanged += (_, e) => Log($"Tab: {e.NewTab?.Header}");
-        FontFamily.Committed += (_, e) => DocText.FontFamily = new FontFamily(e.Text ?? "Segoe UI");
-        FontSize.Committed += (_, e) =>
+        FontFamilyBox.Committed += (_, e) => DocText.FontFamily = new FontFamily(e.Text ?? "Segoe UI");
+        FontSizeBox.Committed += (_, e) =>
         {
             if (double.TryParse(e.Text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var size) && size is > 1 and < 400)
             {
@@ -105,11 +105,11 @@ public sealed partial class WordPage : UserControl
                 break;
             case "growFont":
                 DocText.FontSize = Math.Min(96, DocText.FontSize + 2);
-                FontSize.Text = DocText.FontSize.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                FontSizeBox.Text = DocText.FontSize.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 break;
             case "shrinkFont":
                 DocText.FontSize = Math.Max(8, DocText.FontSize - 2);
-                FontSize.Text = DocText.FontSize.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                FontSizeBox.Text = DocText.FontSize.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 break;
             case "clearFormatting":
                 Bold.IsChecked = Italic.IsChecked = Underline.IsChecked = Strike.IsChecked = false;

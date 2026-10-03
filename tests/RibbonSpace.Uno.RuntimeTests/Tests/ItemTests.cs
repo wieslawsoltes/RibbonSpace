@@ -68,6 +68,18 @@ public sealed class ItemTests : RuntimeTestBase
     }
 
     [RibbonTest]
+    public async Task Color_picker_palette_stays_open_with_a_selected_color()
+    {
+        var picker = new RibbonColorPicker { Label = "Font Color", SelectedColor = Windows.UI.Color.FromArgb(255, 0xC0, 0, 0) };
+        await Mount(picker);
+        picker.OpenDropDown();
+        await Settle(600);
+        Assert.True(picker.IsDropDownOpen, "The palette stays open after focusing the selected colour");
+        picker.CloseDropDown();
+        await Settle();
+    }
+
+    [RibbonTest]
     public async Task Gallery_element_items_survive_rebuilds()
     {
         var element = new Border { Width = 20, Height = 20 };
@@ -91,6 +103,18 @@ public sealed class ItemTests : RuntimeTestBase
         presenter.IconSize = 24;
         await Settle();
         Assert.True(HasAncestor<RibbonIconPresenter>(shared), "An element icon is re-hosted when the presenter rebuilds");
+    }
+
+    [RibbonTest]
+    public async Task Plain_character_glyph_icons_render_as_text()
+    {
+        // Strings convert to glyph icons implicitly (RibbonButtonModel("percent", "Percent Style", "%")).
+        var presenter = await Mount(new RibbonIconPresenter { Icon = (RibbonSpace.Model.RibbonIcon)"%" });
+        Assert.True(presenter.Children.FirstOrDefault() is TextBlock { Text: "%" }, "A character outside the symbol font is drawn as text");
+
+        presenter.Icon = (RibbonSpace.Model.RibbonIcon)"";
+        await Settle();
+        Assert.True(presenter.Children.FirstOrDefault() is FontIcon, "Symbol font code points stay glyphs");
     }
 
     [RibbonTest]

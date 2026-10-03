@@ -18,6 +18,9 @@ RibbonSpace.Uno   (Uno Platform 6, all targets)
 ├── Dialogs/      RibbonCustomizeDialog
 ├── Theming/      RibbonThemeResources (Light / Dark / HighContrast), RibbonTheme API
 └── Themes/       Generic.xaml, Shared.xaml, Items.xaml, Ribbon.xaml, Inputs.xaml, Backstage.xaml, Chrome.xaml
+
+RibbonSpace.WinUI (WinUI 3 / Windows App SDK, net10.0-windows10.0.19041.0)
+└── the RibbonSpace.Uno sources, linked; XAML adapted at build time (build/WinUI, see winui.md)
 ```
 
 ## Design principles

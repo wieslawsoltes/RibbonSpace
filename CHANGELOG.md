@@ -5,7 +5,7 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-## [1.1.0-preview.1] - 2026-10-03
+## [1.1.0] - 2026-10-03
 
 ### Added
 - `RibbonSpace.WinUI`: RibbonSpace for WinUI 3 (Windows App SDK) apps without Uno Platform, compiled from the
@@ -27,6 +27,10 @@ All notable changes to this project are documented here. The format follows
 - `RibbonComboBox` declares `Items` as its XAML content property.
 - Plain-character glyph icons (`"$"`, `"%"`) are drawn as text instead of missing symbol-font glyphs.
 - The `Shared.xaml` URI of `RibbonThemeResources` follows the assembly name.
+
+## [1.1.0-preview.1] - 2026-10-03
+
+Preview of 1.1.0, with the same changes.
 
 ## [1.0.0] - 2026-10-01
 
@@ -102,6 +106,7 @@ All notable changes to this project are documented here. The format follows
   - screenshot automation
   - CI, Pages and Trusted Publishing release workflows
 
-[Unreleased]: https://github.com/wieslawsoltes/RibbonSpace/compare/v1.1.0-preview.1...HEAD
+[Unreleased]: https://github.com/wieslawsoltes/RibbonSpace/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/wieslawsoltes/RibbonSpace/compare/v1.0.0...v1.1.0
 [1.1.0-preview.1]: https://github.com/wieslawsoltes/RibbonSpace/compare/v1.0.0...v1.1.0-preview.1
 [1.0.0]: https://github.com/wieslawsoltes/RibbonSpace/releases/tag/v1.0.0

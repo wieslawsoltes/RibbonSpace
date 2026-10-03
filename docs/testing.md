@@ -7,7 +7,9 @@
 | `tests/RibbonSpace.WinUI.RuntimeTests` | The same runtime tests (linked sources) against `RibbonSpace.WinUI` in a WinUI 3 window | `dotnet run --project tests/RibbonSpace.WinUI.RuntimeTests` (Windows) |
 
 The runtime runner prints `PASS`/`FAIL` lines. It writes JUnit XML to the path in `RIBBONSPACE_TEST_RESULTS`,
-exits with the number of failures, and accepts `RIBBONSPACE_TEST_FILTER=substring`.
+exits with the number of failures, and accepts `RIBBONSPACE_TEST_FILTER=substring`. A test that fails after the window
+lost activation (another window took the foreground, which closes light-dismiss popups) runs once more, marked
+`RETRY`.
 
 ## Screenshot automation
 

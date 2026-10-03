@@ -11,6 +11,10 @@ namespace RibbonSpace.Uno.RuntimeTests;
 /// Uno window. Results are printed and written as JUnit XML (RIBBONSPACE_TEST_RESULTS); the exit code is the number
 /// of failures. Filter with RIBBONSPACE_TEST_FILTER=substring.
 /// </summary>
+/// <remarks>
+/// A test that fails after the window lost activation (another window took the foreground, which closes light-dismiss
+/// popups) runs once more with the window activated again.
+/// </remarks>
 public partial class App : Application
 {
     public App()
@@ -20,11 +24,24 @@ public partial class App : Application
 
     public static Window? MainWindow { get; private set; }
 
+    private static int _deactivations;
+
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         MainWindow = new Window { Title = "RibbonSpace Runtime Tests" };
         var host = new Grid();
         MainWindow.Content = host;
+        MainWindow.Activated += (_, e) =>
+        {
+#if HAS_UNO
+            if (e.WindowActivationState == Windows.UI.Core.CoreWindowActivationState.Deactivated)
+#else
+            if (e.WindowActivationState == WindowActivationState.Deactivated)
+#endif
+            {
+                _deactivations++;
+            }
+        };
         MainWindow.Activate();
         _ = RunAsync(host);
     }
@@ -50,26 +67,14 @@ public partial class App : Application
         {
             var name = $"{type.Name}.{method.Name}";
             var watch = Stopwatch.StartNew();
-            string? error = null;
-            try
+            var deactivations = _deactivations;
+            var error = await RunTestAsync(host, type, method);
+            if (error is not null && _deactivations != deactivations)
             {
-                host.Children.Clear();
-                var fixture = (RuntimeTestBase)Activator.CreateInstance(type)!;
-                fixture.Host = host;
-                if (method.Invoke(fixture, null) is Task task)
-                {
-                    var completed = await Task.WhenAny(task, Task.Delay(20000));
-                    if (completed != task)
-                    {
-                        throw new TimeoutException("Test timed out after 20 s.");
-                    }
-
-                    await task;
-                }
-            }
-            catch (Exception ex)
-            {
-                error = (ex is TargetInvocationException tie ? tie.InnerException ?? ex : ex).ToString();
+                Console.WriteLine($"RETRY {name}  (the window lost activation)");
+                MainWindow?.Activate();
+                await Task.Delay(500);
+                error = await RunTestAsync(host, type, method);
             }
 
             results.Add((name, watch.Elapsed.TotalSeconds, error));
@@ -99,6 +104,32 @@ public partial class App : Application
         }
 
         Environment.Exit(failures);
+    }
+
+    private static async Task<string?> RunTestAsync(Grid host, Type type, MethodInfo method)
+    {
+        try
+        {
+            host.Children.Clear();
+            var fixture = (RuntimeTestBase)Activator.CreateInstance(type)!;
+            fixture.Host = host;
+            if (method.Invoke(fixture, null) is Task task)
+            {
+                var completed = await Task.WhenAny(task, Task.Delay(20000));
+                if (completed != task)
+                {
+                    throw new TimeoutException("Test timed out after 20 s.");
+                }
+
+                await task;
+            }
+
+            return null;
+        }
+        catch (Exception ex)
+        {
+            return (ex is TargetInvocationException tie ? tie.InnerException ?? ex : ex).ToString();
+        }
     }
 }
 

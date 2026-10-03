@@ -334,6 +334,7 @@ public partial class RibbonColorPicker : RibbonSplitButton
     /// <summary>Creates a color picker.</summary>
     public RibbonColorPicker()
     {
+        DefaultStyleKey = typeof(RibbonColorPicker);
         Size = RibbonItemSize.Small;
         Icon ??= "";
         _flyout = new Flyout { Content = _palette, Placement = FlyoutPlacementMode.BottomEdgeAlignedLeft };

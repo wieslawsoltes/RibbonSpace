@@ -97,6 +97,12 @@ attribute values). An app style adds to the built-in default style, so the templ
 </ResourceDictionary>
 ```
 
+Controls that share a template keep it in a keyed style, and each control has an implicit style based on it:
+`DefaultRibbonButtonStyle` (`RibbonButton`, `RibbonDropDownButton`), `DefaultRibbonSplitButtonStyle`
+(`RibbonSplitButton`, `RibbonColorPicker`) and `DefaultRibbonComboBoxStyle` (`RibbonComboBox`, `RibbonFontComboBox`,
+`RibbonFontSizeComboBox`). A control you derive from one of them needs its own `DefaultStyleKey` and a style
+`BasedOn` the keyed style. WinUI only applies a style to types its XAML type information knows.
+
 ## Density and metrics
 
 See [Layout](layout.md#density-and-metrics).

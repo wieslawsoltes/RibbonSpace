@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.System;
@@ -135,6 +136,7 @@ public abstract partial class RibbonInputBase : RibbonControlBase
 }
 
 /// <summary>Editable / read-only ribbon combo box (font family, font size, number format, zoom).</summary>
+[ContentProperty(Name = nameof(Items))]
 public partial class RibbonComboBox : RibbonInputBase
 {
     /// <summary>Identifies <see cref="ItemsSource"/>.</summary>
@@ -697,6 +699,7 @@ public partial class RibbonFontComboBox : RibbonComboBox
     /// <summary>Creates a font picker.</summary>
     public RibbonFontComboBox()
     {
+        DefaultStyleKey = typeof(RibbonFontComboBox);
         IsEditable = true;
         IsFontPreview = true;
         InputWidth = 132;
@@ -717,6 +720,7 @@ public partial class RibbonFontSizeComboBox : RibbonComboBox
     /// <summary>Creates a font size picker.</summary>
     public RibbonFontSizeComboBox()
     {
+        DefaultStyleKey = typeof(RibbonFontSizeComboBox);
         IsEditable = true;
         InputWidth = 46;
         Label = "Font Size";

@@ -5,6 +5,23 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+- `RibbonSpace.WinUI`: RibbonSpace for WinUI 3 (Windows App SDK) apps without Uno Platform, compiled from the
+  `RibbonSpace.Uno` sources through links. It ships a WinUI gallery (`samples/RibbonSpace.WinUI.Demo`) and the runtime
+  UI tests on WinUI (`tests/RibbonSpace.WinUI.RuntimeTests`), both also linked.
+- A build-time XAML adapter for the WinUI projects (`build/WinUI`), so the shared sample and test XAML keeps
+  unprefixed RibbonSpace types.
+- A WinUI job in CI, and the `RibbonSpace.WinUI` package in releases.
+- Keyed default styles `DefaultRibbonButtonStyle`, `DefaultRibbonSplitButtonStyle` and `DefaultRibbonComboBoxStyle`.
+
+### Fixed
+- Theme resources failed on WinUI: one `ResourceDictionary` was shared by the `Light` and `Default` theme keys.
+- `RibbonColorPicker`, `RibbonDropDownButton`, `RibbonFontComboBox` and `RibbonFontSizeComboBox` now have their own
+  default style keys. WinUI did not apply the base control's style to them.
+- `RibbonComboBox` declares `Items` as its XAML content property.
+- Plain-character glyph icons (`"$"`, `"%"`) are drawn as text instead of missing symbol-font glyphs.
+- The `Shared.xaml` URI of `RibbonThemeResources` follows the assembly name.
+
 ## [1.0.0] - 2026-10-01
 
 ### Added

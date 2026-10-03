@@ -38,8 +38,9 @@ Two limitations, both from the XAML compilers rather than RibbonSpace:
   `<Style TargetType="rs:RibbonButton">`.
 - **Windows App SDK heads** (`net10.0-windows…`) use WinUI's own XAML compiler, which supports neither the global
   namespace nor custom XML namespaces yet ([microsoft-ui-xaml#10616](https://github.com/microsoft/microsoft-ui-xaml/issues/10616)).
-  XAML compiled for such a head keeps `xmlns:rs="using:RibbonSpace.Controls"` and `rs:` prefixes. The Uno Skia
-  desktop head (`net10.0-desktop`) runs on Windows too and supports every form.
+  XAML compiled for such a head, or for a WinUI 3 app using `RibbonSpace.WinUI`, keeps
+  `xmlns:rs="using:RibbonSpace.Controls"` and `rs:` prefixes. The Uno Skia desktop head (`net10.0-desktop`) runs on
+  Windows too and supports every form.
 
 WinUI types always win over a RibbonSpace type with the same name (RibbonSpace types all start with `Ribbon`). To turn
 the global namespace off for an app, set `<UnoEnableImplicitXamlNamespaces>false</UnoEnableImplicitXamlNamespaces>`

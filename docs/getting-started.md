@@ -6,6 +6,8 @@
 dotnet add package RibbonSpace.Uno
 ```
 
+For a WinUI 3 (Windows App SDK) app without Uno, install `RibbonSpace.WinUI` instead; see [WinUI 3](winui.md).
+
 `RibbonSpace.Uno` depends on `RibbonSpace.Core`, which is a plain .NET library of models and algorithms with no UI
 dependency. You can reference Core from view-model projects that must not depend on Uno.
 

@@ -134,8 +134,8 @@
 
         <RibbonGroup Header="Font" Id="font" Icon="&#xE8D2;" ItemsLayout="Rows" RowCount="2" IsDialogLauncherVisible="True">
           <RibbonStackPanel>
-            <RibbonFontComboBox x:Name="FontFamily" Id="fontFamily" Text="Segoe UI" KeyTip="FF" />
-            <RibbonFontSizeComboBox x:Name="FontSize" Id="fontSize" Text="16" KeyTip="FS" />
+            <RibbonFontComboBox x:Name="FontFamilyBox" Id="fontFamily" Text="Segoe UI" KeyTip="FF" />
+            <RibbonFontSizeComboBox x:Name="FontSizeBox" Id="fontSize" Text="16" KeyTip="FS" />
             <RibbonButtonGroup>
               <RibbonButton Id="growFont" Label="Increase Font Size" Icon="&#xE8E8;" Shortcut="Ctrl+]" KeyTip="FG" />
               <RibbonButton Id="shrinkFont" Label="Decrease Font Size" Icon="&#xE8E7;" Shortcut="Ctrl+[" KeyTip="FK" />

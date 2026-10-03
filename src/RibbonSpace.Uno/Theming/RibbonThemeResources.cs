@@ -53,24 +53,29 @@ public sealed partial class RibbonThemeResources : ResourceDictionary
         var light = new ResourceDictionary();
         var dark = new ResourceDictionary();
         var highContrast = new ResourceDictionary();
+
+        // "Default" (the fallback theme) shares the Light brush instances. It needs a dictionary of its own: WinUI
+        // rejects one ResourceDictionary under two ThemeDictionaries keys.
+        var fallback = new ResourceDictionary();
         foreach (var key in BrushKeys)
         {
-            light[key] = _light[key] = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+            light[key] = fallback[key] = _light[key] = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
             dark[key] = _dark[key] = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
             highContrast[key] = _highContrast[key] = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
         }
 
-        foreach (var dictionary in new[] { light, dark, highContrast })
+        _themeDictionaries = [light, fallback, dark, highContrast];
+        foreach (var dictionary in _themeDictionaries)
         {
             dictionary["RibbonFontFamily"] = FontFamily.XamlAutoFontFamily;
         }
 
-        _themeDictionaries = [light, dark, highContrast];
         ApplyShapes(RibbonThemeStyle.Office);
 
-        MergedDictionaries.Add(new ResourceDictionary { Source = new Uri("ms-appx:///RibbonSpace.Uno/Themes/Shared.xaml") });
+        // Resource URIs carry the assembly name: RibbonSpace.Uno, or RibbonSpace.WinUI for the Windows App SDK build.
+        MergedDictionaries.Add(new ResourceDictionary { Source = new Uri($"ms-appx:///{typeof(RibbonThemeResources).Assembly.GetName().Name}/Themes/Shared.xaml") });
         ThemeDictionaries["Light"] = light;
-        ThemeDictionaries["Default"] = light;
+        ThemeDictionaries["Default"] = fallback;
         ThemeDictionaries["Dark"] = dark;
         ThemeDictionaries["HighContrast"] = highContrast;
         Apply(RibbonThemePalette.Word, RibbonChromeStyle.Neutral);

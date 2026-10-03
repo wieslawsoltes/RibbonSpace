@@ -6,7 +6,7 @@
     <ResourceDictionary Source="ms-appx:///RibbonSpace.Uno/Themes/Shared.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
-  <Style TargetType="c:RibbonComboBox">
+  <Style x:Key="DefaultRibbonComboBoxStyle" TargetType="c:RibbonComboBox">
     <Setter Property="Foreground" Value="{ThemeResource RibbonForegroundBrush}" />
     <Setter Property="FontSize" Value="12" />
     <Setter Property="VerticalAlignment" Value="Center" />
@@ -77,146 +77,9 @@
       </Setter.Value>
     </Setter>
   </Style>
-
-  <Style TargetType="c:RibbonFontComboBox">
-    <Setter Property="Foreground" Value="{ThemeResource RibbonForegroundBrush}" />
-    <Setter Property="FontSize" Value="12" />
-    <Setter Property="VerticalAlignment" Value="Center" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="c:RibbonFontComboBox">
-          <Grid Height="{TemplateBinding InputHeight}">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="Auto" />
-              <ColumnDefinition Width="Auto" />
-              <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <VisualStateManager.VisualStateGroups>
-              <!-- One group (driven by RibbonInputBase): focus wins over hover, disabled over both. -->
-              <VisualStateGroup x:Name="InputStates">
-                <VisualState x:Name="InputNormal" />
-                <VisualState x:Name="InputPointerOver">
-                  <VisualState.Setters>
-                    <Setter Target="PART_InputBorder.BorderBrush" Value="{ThemeResource RibbonInputHoverBorderBrush}" />
-                  </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="InputFocused">
-                  <VisualState.Setters>
-                    <Setter Target="PART_InputBorder.BorderBrush" Value="{ThemeResource RibbonInputFocusBorderBrush}" />
-                  </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="InputDisabled">
-                  <VisualState.Setters>
-                    <Setter Target="PART_Label.Foreground" Value="{ThemeResource RibbonDisabledForegroundBrush}" />
-                    <Setter Target="PART_InputBorder.Opacity" Value="0.6" />
-                  </VisualState.Setters>
-                </VisualState>
-              </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
-            <p:RibbonIconPresenter Icon="{TemplateBinding Icon}" IconSize="16" Foreground="{ThemeResource RibbonIconBrush}" Visibility="{TemplateBinding IconVisibility}" Margin="3,0,4,0" />
-            <TextBlock x:Name="PART_Label" Grid.Column="1" Text="{TemplateBinding Label}" Visibility="{TemplateBinding LabelVisibility}" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{TemplateBinding Foreground}" />
-            <Border x:Name="PART_InputBorder" Grid.Column="2" Width="{TemplateBinding InputWidth}" Background="{ThemeResource RibbonInputBackgroundBrush}" BorderBrush="{ThemeResource RibbonInputBorderBrush}" BorderThickness="1" CornerRadius="{ThemeResource RibbonControlCornerRadius}">
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBox x:Name="PART_TextBox" VerticalAlignment="Center" FontSize="{TemplateBinding FontSize}" PlaceholderText="{TemplateBinding PlaceholderText}" MinWidth="0" MinHeight="0">
-              <TextBox.Resources>
-                <x:Double x:Key="TextControlThemeMinHeight">18</x:Double>
-                <x:Double x:Key="TextControlThemeMinWidth">20</x:Double>
-                <Thickness x:Key="TextControlThemePadding">5,1,4,1</Thickness>
-                <Thickness x:Key="TextControlBorderThemeThickness">0</Thickness>
-                <Thickness x:Key="TextControlBorderThemeThicknessFocused">0</Thickness>
-                <SolidColorBrush x:Key="TextControlBackground" Color="Transparent" />
-                <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="Transparent" />
-                <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="Transparent" />
-                <SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="Transparent" />
-                <SolidColorBrush x:Key="TextControlBorderBrush" Color="Transparent" />
-                <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="Transparent" />
-                <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="Transparent" />
-              </TextBox.Resources>
-                </TextBox>
-                <Button x:Name="PART_DropDownButton" Grid.Column="1" Style="{StaticResource RibbonChromeButtonStyle}" Width="18" Padding="0" CornerRadius="0,3,3,0" IsTabStop="False">
-                  <FontIcon Glyph="&#xE70D;" FontSize="8" />
-                </Button>
-              </Grid>
-            </Border>
-          </Grid>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-
-  <Style TargetType="c:RibbonFontSizeComboBox">
-    <Setter Property="Foreground" Value="{ThemeResource RibbonForegroundBrush}" />
-    <Setter Property="FontSize" Value="12" />
-    <Setter Property="VerticalAlignment" Value="Center" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="c:RibbonFontSizeComboBox">
-          <Grid Height="{TemplateBinding InputHeight}">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="Auto" />
-              <ColumnDefinition Width="Auto" />
-              <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <VisualStateManager.VisualStateGroups>
-              <!-- One group (driven by RibbonInputBase): focus wins over hover, disabled over both. -->
-              <VisualStateGroup x:Name="InputStates">
-                <VisualState x:Name="InputNormal" />
-                <VisualState x:Name="InputPointerOver">
-                  <VisualState.Setters>
-                    <Setter Target="PART_InputBorder.BorderBrush" Value="{ThemeResource RibbonInputHoverBorderBrush}" />
-                  </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="InputFocused">
-                  <VisualState.Setters>
-                    <Setter Target="PART_InputBorder.BorderBrush" Value="{ThemeResource RibbonInputFocusBorderBrush}" />
-                  </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="InputDisabled">
-                  <VisualState.Setters>
-                    <Setter Target="PART_Label.Foreground" Value="{ThemeResource RibbonDisabledForegroundBrush}" />
-                    <Setter Target="PART_InputBorder.Opacity" Value="0.6" />
-                  </VisualState.Setters>
-                </VisualState>
-              </VisualStateGroup>
-            </VisualStateManager.VisualStateGroups>
-            <p:RibbonIconPresenter Icon="{TemplateBinding Icon}" IconSize="16" Foreground="{ThemeResource RibbonIconBrush}" Visibility="{TemplateBinding IconVisibility}" Margin="3,0,4,0" />
-            <TextBlock x:Name="PART_Label" Grid.Column="1" Text="{TemplateBinding Label}" Visibility="{TemplateBinding LabelVisibility}" VerticalAlignment="Center" Margin="0,0,6,0" Foreground="{TemplateBinding Foreground}" />
-            <Border x:Name="PART_InputBorder" Grid.Column="2" Width="{TemplateBinding InputWidth}" Background="{ThemeResource RibbonInputBackgroundBrush}" BorderBrush="{ThemeResource RibbonInputBorderBrush}" BorderThickness="1" CornerRadius="{ThemeResource RibbonControlCornerRadius}">
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBox x:Name="PART_TextBox" VerticalAlignment="Center" FontSize="{TemplateBinding FontSize}" PlaceholderText="{TemplateBinding PlaceholderText}" MinWidth="0" MinHeight="0">
-              <TextBox.Resources>
-                <x:Double x:Key="TextControlThemeMinHeight">18</x:Double>
-                <x:Double x:Key="TextControlThemeMinWidth">20</x:Double>
-                <Thickness x:Key="TextControlThemePadding">5,1,4,1</Thickness>
-                <Thickness x:Key="TextControlBorderThemeThickness">0</Thickness>
-                <Thickness x:Key="TextControlBorderThemeThicknessFocused">0</Thickness>
-                <SolidColorBrush x:Key="TextControlBackground" Color="Transparent" />
-                <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="Transparent" />
-                <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="Transparent" />
-                <SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="Transparent" />
-                <SolidColorBrush x:Key="TextControlBorderBrush" Color="Transparent" />
-                <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="Transparent" />
-                <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="Transparent" />
-              </TextBox.Resources>
-                </TextBox>
-                <Button x:Name="PART_DropDownButton" Grid.Column="1" Style="{StaticResource RibbonChromeButtonStyle}" Width="18" Padding="0" CornerRadius="0,3,3,0" IsTabStop="False">
-                  <FontIcon Glyph="&#xE70D;" FontSize="8" />
-                </Button>
-              </Grid>
-            </Border>
-          </Grid>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
+  <Style TargetType="c:RibbonComboBox" BasedOn="{StaticResource DefaultRibbonComboBoxStyle}" />
+  <Style TargetType="c:RibbonFontComboBox" BasedOn="{StaticResource DefaultRibbonComboBoxStyle}" />
+  <Style TargetType="c:RibbonFontSizeComboBox" BasedOn="{StaticResource DefaultRibbonComboBoxStyle}" />
 
   <Style TargetType="c:RibbonSpinner">
     <Setter Property="Foreground" Value="{ThemeResource RibbonForegroundBrush}" />

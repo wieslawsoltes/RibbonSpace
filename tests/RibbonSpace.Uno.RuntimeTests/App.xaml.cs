@@ -86,7 +86,7 @@ public partial class App : Application
         {
             var xml = new StringBuilder();
             xml.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-            xml.AppendLine($"<testsuite name=\"RibbonSpace.Uno.RuntimeTests\" tests=\"{results.Count}\" failures=\"{failures}\">");
+            xml.AppendLine($"<testsuite name=\"{typeof(App).Assembly.GetName().Name}\" tests=\"{results.Count}\" failures=\"{failures}\">");
             foreach (var (name, seconds, error) in results)
             {
                 xml.Append($"  <testcase classname=\"{name[..name.IndexOf('.')]}\" name=\"{name[(name.IndexOf('.') + 1)..]}\" time=\"{seconds:0.###}\"");

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    RibbonSpace for WinUI 3 (Windows App SDK), without Uno Platform. Every control, primitive, MVVM helper and theme is
+    compiled from the RibbonSpace.Uno sources through links; this project only adds the WinUI build settings.
+  -->
+  <Import Project="../../build/WinUI/RibbonSpace.WinUI.targets" />
+  <PropertyGroup>
+    <RootNamespace>RibbonSpace</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- Merged dictionary URIs name the assembly. -->
+    <RibbonSpaceResourceRootFrom>ms-appx:///RibbonSpace.Uno/</RibbonSpaceResourceRootFrom>
+    <RibbonSpaceResourceRootTo>ms-appx:///RibbonSpace.WinUI/</RibbonSpaceResourceRootTo>
+    <Description>Professional Office-style Ribbon for WinUI 3 (Windows App SDK): classic and simplified layouts, adaptive group resizing, contextual tabs, backstage, Quick Access Toolbar, KeyTips, galleries, color pickers, ScreenTips, command search, customization, toolbars and full MVVM support. Themeable and lookless.</Description>
+    <PackageTags>ribbon;fluent;office;toolbar;commandbar;backstage;quick-access-toolbar;keytips;mvvm;winui;winui3;windows-app-sdk;windows</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(RibbonSpaceUnoDir)**\*.cs" Exclude="$(RibbonSpaceUnoDir)bin\**;$(RibbonSpaceUnoDir)obj\**" Link="%(RecursiveDir)%(Filename)%(Extension)" />
+    <Page Include="$(RibbonSpaceUnoDir)Themes\*.xaml" Link="Themes\%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../RibbonSpace.Core/RibbonSpace.Core.csproj" />
+  </ItemGroup>
+</Project>

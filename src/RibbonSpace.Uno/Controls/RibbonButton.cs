@@ -133,7 +133,7 @@ public partial class RibbonDropDownButton : RibbonButton
     /// <summary>Creates a drop-down button.</summary>
     public RibbonDropDownButton()
     {
-        DefaultStyleKey = typeof(RibbonButton);
+        DefaultStyleKey = typeof(RibbonDropDownButton);
         ShowChevron = true;
     }
 

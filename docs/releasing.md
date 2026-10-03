@@ -9,9 +9,9 @@ tags (`v1.2.3`, `v1.3.0-preview.1`) set the exact version.
 
 | Workflow | Trigger | Does |
 |---|---|---|
-| `build.yml` | push, PR | Core unit tests (Linux, Windows, macOS); library, gallery and runtime-test builds; runtime UI tests under Xvfb; CI packages |
+| `build.yml` | push, PR | Core unit tests (Linux, Windows, macOS); library, gallery and runtime-test builds; runtime UI tests under Xvfb (Uno) and on Windows (WinUI); CI packages |
 | `pages.yml` | push to `main` | Publishes the WebAssembly gallery to GitHub Pages |
-| `release.yml` | tag `v*` or manual | Verifies, packs `RibbonSpace.Core` and `RibbonSpace.Uno` for **all** targets on Windows (desktop, WebAssembly, Android, iOS, WinAppSDK), creates the GitHub release with checksums, and publishes to NuGet with **Trusted Publishing** |
+| `release.yml` | tag `v*` or manual | Verifies, packs `RibbonSpace.Core`, `RibbonSpace.Uno` for **all** targets on Windows (desktop, WebAssembly, Android, iOS, WinAppSDK) and `RibbonSpace.WinUI`, creates the GitHub release with checksums, and publishes to NuGet with **Trusted Publishing** |
 
 ## Repository setup (one-time)
 

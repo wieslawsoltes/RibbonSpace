@@ -94,6 +94,18 @@ public sealed class ItemTests : RuntimeTestBase
     }
 
     [RibbonTest]
+    public async Task Plain_character_glyph_icons_render_as_text()
+    {
+        // Strings convert to glyph icons implicitly (RibbonButtonModel("percent", "Percent Style", "%")).
+        var presenter = await Mount(new RibbonIconPresenter { Icon = (RibbonSpace.Model.RibbonIcon)"%" });
+        Assert.True(presenter.Children.FirstOrDefault() is TextBlock { Text: "%" }, "A character outside the symbol font is drawn as text");
+
+        presenter.Icon = (RibbonSpace.Model.RibbonIcon)"";
+        await Settle();
+        Assert.True(presenter.Children.FirstOrDefault() is FontIcon, "Symbol font code points stay glyphs");
+    }
+
+    [RibbonTest]
     public async Task Control_command_can_execute_combines_with_is_enabled()
     {
         var canExecute = false;

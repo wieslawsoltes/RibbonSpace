@@ -86,6 +86,9 @@ jobs:
           msbuild src/RibbonSpace.Uno/RibbonSpace.Uno.csproj -t:Pack -restore -m -p:Configuration=Release "-p:Version=$env:VERSION" -p:RibbonSpaceAllTargets=true "-p:PackageOutputPath=$env:GITHUB_WORKSPACE/artifacts/packages"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Get-ChildItem artifacts/packages
+      - name: Pack RibbonSpace.WinUI
+        shell: bash
+        run: dotnet pack src/RibbonSpace.WinUI/RibbonSpace.WinUI.csproj -c Release -p:Version="$VERSION" -o artifacts/packages
       - uses: actions/upload-artifact@v7
         with:
           name: nuget-packages

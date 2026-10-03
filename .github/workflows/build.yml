@@ -107,3 +107,48 @@ jobs:
       - uses: microsoft/setup-msbuild@v3
       - name: Build RibbonSpace.Uno for every target
         run: msbuild src/RibbonSpace.Uno/RibbonSpace.Uno.csproj /restore /m /p:Configuration=Release /p:RibbonSpaceAllTargets=true
+
+  winui:
+    name: WinUI library, gallery and runtime UI tests
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      # The WinUI projects link the RibbonSpace.Uno sources (see docs/winui.md); plain `dotnet build` works for them.
+      - name: Build library, gallery and runtime tests
+        run: dotnet build RibbonSpace.WinUI.slnx -c Release
+      - name: Runtime UI tests
+        env:
+          RIBBONSPACE_TEST_RESULTS: ${{ github.workspace }}/artifacts/test-results/winui-runtime-tests.xml
+        run: |
+          & tests/RibbonSpace.WinUI.RuntimeTests/bin/Release/net10.0-windows10.0.19041.0/win-x64/RibbonSpace.WinUI.RuntimeTests.exe
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Screenshots
+        if: always()
+        continue-on-error: true
+        run: |
+          New-Item -ItemType Directory -Force artifacts/screenshots | Out-Null
+          foreach ($page in 'word', 'excel', 'powerpoint', 'tools', 'cad') {
+            $env:RIBBONSPACE_CAPTURE = "$PWD/artifacts/screenshots/winui-$page.png"
+            $env:RIBBONSPACE_PAGE = $page
+            $env:RIBBONSPACE_WIDTH = '1400'
+            $env:RIBBONSPACE_HEIGHT = '720'
+            $app = Start-Process samples/RibbonSpace.WinUI.Demo/bin/Release/net10.0-windows10.0.19041.0/win-x64/RibbonSpace.WinUI.Demo.exe -PassThru
+            if (-not $app.WaitForExit(120000)) { $app.Kill() }
+          }
+      - name: Pack CI package
+        run: dotnet pack src/RibbonSpace.WinUI/RibbonSpace.WinUI.csproj -c Release --version-suffix ci.${{ github.run_number }} -o artifacts/packages
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: winui-results
+          path: |
+            artifacts/test-results
+            artifacts/screenshots
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ci-packages-winui
+          path: artifacts/packages

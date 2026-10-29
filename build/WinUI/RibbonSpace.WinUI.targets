@@ -20,7 +20,7 @@
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);RibbonSpacePackLayout</TargetsForTfmSpecificBuildOutput>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.xbf;.xaml</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <!-- The versions Uno.Sdk (global.json) uses for its WinAppSDK target. -->
-    <RibbonSpaceWinAppSdkVersion>1.7.250909003</RibbonSpaceWinAppSdkVersion>
+    <RibbonSpaceWinAppSdkVersion>2.6.4</RibbonSpaceWinAppSdkVersion>
     <RibbonSpaceWindowsSdkBuildToolsVersion>10.0.28000.2705</RibbonSpaceWindowsSdkBuildToolsVersion>
   </PropertyGroup>
 

@@ -19,7 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- The CAD sample rasterizes menu icons with SkiaSharp (Uno's Skia renderer brings it on the other heads). -->
-    <PackageReference Include="SkiaSharp" Version="3.119.2" />
+    <PackageReference Include="SkiaSharp" Version="4.156.0" />
     <ProjectReference Include="../../src/RibbonSpace.WinUI/RibbonSpace.WinUI.csproj" />
   </ItemGroup>
 </Project>

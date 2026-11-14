@@ -11,7 +11,7 @@ For a WinUI 3 (Windows App SDK) app without Uno, install `RibbonSpace.WinUI` ins
 `RibbonSpace.Uno` depends on `RibbonSpace.Core`, which is a plain .NET library of models and algorithms with no UI
 dependency. You can reference Core from view-model projects that must not depend on Uno.
 
-The package targets Uno Platform 6 (Uno.Sdk 6.7+) and .NET 10:
+The package targets Uno Platform 7 (Uno.Sdk 7.0+) and .NET 10. Apps on Uno Platform 6 use RibbonSpace.Uno 1.1.0:
 
 | Target | Notes |
 |---|---|

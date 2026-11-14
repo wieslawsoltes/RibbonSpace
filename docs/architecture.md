@@ -11,7 +11,7 @@ RibbonSpace.Core  (net10.0 / net9.0, no UI dependency, AOT & trimming safe)
 ├── Theming/      RibbonColor, RibbonColorPalette (Office shades), RibbonThemePalette presets
 └── Localization/ RibbonStrings
 
-RibbonSpace.Uno   (Uno Platform 6, all targets)
+RibbonSpace.Uno   (Uno Platform 7, all targets)
 ├── Controls/     Ribbon, RibbonTab, RibbonGroup, items, QAT, backstage, search, title/status bars, toolbars, menu bar
 ├── Primitives/   RibbonItemContent, RibbonIconPresenter, panels (groups, items, scroll, toolbar, uniform grid), metrics
 ├── Mvvm/         RibbonElementFactory, RibbonModelBindings (reflection-free two-way sync)

@@ -4,7 +4,6 @@
     <TargetFrameworks Condition="'$(DemoTargetFrameworks)' != ''">$(DemoTargetFrameworks)</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
-    <UnoFeatures>SkiaRenderer</UnoFeatures>
     <ApplicationTitle>RibbonSpace Demo</ApplicationTitle>
     <ApplicationId>com.wieslawsoltes.ribbonspace.demo</ApplicationId>
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>

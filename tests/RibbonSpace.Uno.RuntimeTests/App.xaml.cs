@@ -33,11 +33,7 @@ public partial class App : Application
         MainWindow.Content = host;
         MainWindow.Activated += (_, e) =>
         {
-#if HAS_UNO
-            if (e.WindowActivationState == Windows.UI.Core.CoreWindowActivationState.Deactivated)
-#else
             if (e.WindowActivationState == WindowActivationState.Deactivated)
-#endif
             {
                 _deactivations++;
             }

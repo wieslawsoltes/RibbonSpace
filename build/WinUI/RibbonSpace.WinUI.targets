@@ -19,7 +19,10 @@
     <IncludeXamlFilesInNugetPackage>false</IncludeXamlFilesInNugetPackage>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);RibbonSpacePackLayout</TargetsForTfmSpecificBuildOutput>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.xbf;.xaml</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <!-- The versions Uno.Sdk (global.json) uses for its WinAppSDK target. -->
+    <!--
+      The versions Uno.Sdk 6.7 used for its WinAppSDK target. Uno.Sdk 7 (global.json) moved to Windows App SDK 2.5.1;
+      the WinUI port stays on 1.7 until it is built and tested on Windows with 2.x.
+    -->
     <RibbonSpaceWinAppSdkVersion>1.7.250909003</RibbonSpaceWinAppSdkVersion>
     <RibbonSpaceWindowsSdkBuildToolsVersion>10.0.28000.2705</RibbonSpaceWindowsSdkBuildToolsVersion>
   </PropertyGroup>

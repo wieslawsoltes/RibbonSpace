@@ -7,12 +7,6 @@
     <UnoSingleProject>true</UnoSingleProject>
     <OutputType>Library</OutputType>
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
-    <!--
-      Skia renderer (the Uno 6 default). Without it the WebAssembly target references the native DOM runtime
-      (Uno.WinUI.Runtime.WebAssembly), which Skia-rendered apps reject (UNOB0017). Desktop targets always include the
-      Skia packages regardless of this setting.
-    -->
-    <UnoFeatures>SkiaRenderer</UnoFeatures>
     <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
     <IsPackable>true</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

@@ -5,6 +5,21 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+- `RibbonSpace.Uno` targets Uno Platform 7 (Uno.Sdk 7.0.5). Uno 7 libraries are not binary compatible with Uno 6,
+  so apps on Uno Platform 6 stay on RibbonSpace.Uno 1.1.0.
+- The package no longer depends on `Uno.WinUI.Lottie` or `SkiaSharp.Views.Uno.WinUI`. RibbonSpace never used either:
+  Uno.Sdk 6 added them for the `SkiaRenderer` feature, which Uno 7 removed (Skia is the only renderer, and apps choose
+  it, not libraries).
+- The galleries use SkiaSharp 4 (the version Uno 7 ships), also in the WinUI gallery.
+
+### Fixed
+- The runtime UI tests compare the window activation state with `WindowActivationState`, as on WinUI (Uno 7 changed the
+  type of `WindowActivatedEventArgs.WindowActivationState`).
+- The gallery's splash screen uses `BackgroundColor` (Uno.Resizetizer 2 ignores `Color`).
+- KeyTip badges keep their 1.1.0 size on Uno 7. The badge text used `TextLineBounds="Tight"`, which Uno 6 ignored on
+  Skia and Uno 7 applies, so the badges became about 6 px shorter.
+
 ## [1.1.0] - 2026-10-03
 
 ### Added

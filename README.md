@@ -91,7 +91,7 @@ share every control, feature and fix.
 
 | Package | NuGet | Use it for |
 |---|---|---|
-| [`RibbonSpace.Uno`](https://www.nuget.org/packages/RibbonSpace.Uno) | [![NuGet](https://img.shields.io/nuget/vpre/RibbonSpace.Uno.svg)](https://www.nuget.org/packages/RibbonSpace.Uno) | Uno Platform 6 apps, on every head |
+| [`RibbonSpace.Uno`](https://www.nuget.org/packages/RibbonSpace.Uno) | [![NuGet](https://img.shields.io/nuget/vpre/RibbonSpace.Uno.svg)](https://www.nuget.org/packages/RibbonSpace.Uno) | Uno Platform 7 apps, on every head |
 | [`RibbonSpace.WinUI`](https://www.nuget.org/packages/RibbonSpace.WinUI) | [![NuGet](https://img.shields.io/nuget/vpre/RibbonSpace.WinUI.svg)](https://www.nuget.org/packages/RibbonSpace.WinUI) | WinUI 3 (Windows App SDK) apps without Uno ([guide](https://github.com/wieslawsoltes/RibbonSpace/blob/main/docs/winui.md)) |
 | [`RibbonSpace.Core`](https://www.nuget.org/packages/RibbonSpace.Core) | [![NuGet](https://img.shields.io/nuget/vpre/RibbonSpace.Core.svg)](https://www.nuget.org/packages/RibbonSpace.Core) | UI-agnostic models, commands, layout algorithms, KeyTips, search, state, palettes and strings, for view models that must not depend on a UI framework (`net10.0`, `net9.0`) |
 
@@ -236,7 +236,7 @@ dotnet test tests/RibbonSpace.Core.Tests
 dotnet run --project tests/RibbonSpace.Uno.RuntimeTests -f net10.0-desktop   # runtime UI tests in a real window
 ```
 
-Requirements: .NET 10 SDK, and Uno.Sdk 6.7 (resolved from `global.json`). Building for WebAssembly needs the
+Requirements: .NET 10 SDK, and Uno.Sdk 7.0 (resolved from `global.json`). Building for WebAssembly needs the
 `wasm-tools` workload, and building every target needs `android` and `ios` too (`-p:RibbonSpaceAllTargets=true`).
 On Windows that also adds the WinAppSDK target, which must be built with Visual Studio's `msbuild /restore`
 rather than `dotnet build`.

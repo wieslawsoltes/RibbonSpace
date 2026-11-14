@@ -17,6 +17,8 @@ All notable changes to this project are documented here. The format follows
 - The runtime UI tests compare the window activation state with `WindowActivationState`, as on WinUI (Uno 7 changed the
   type of `WindowActivatedEventArgs.WindowActivationState`).
 - The gallery's splash screen uses `BackgroundColor` (Uno.Resizetizer 2 ignores `Color`).
+- KeyTip badges keep their 1.1.0 size on Uno 7. The badge text used `TextLineBounds="Tight"`, which Uno 6 ignored on
+  Skia and Uno 7 applies, so the badges became about 6 px shorter.
 
 ## [1.1.0] - 2026-10-03
 

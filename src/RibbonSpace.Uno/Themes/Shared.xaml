@@ -311,7 +311,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="c:RibbonKeyTip">
           <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="3" Padding="4,1,4,2" MinWidth="16">
-            <TextBlock Text="{TemplateBinding Text}" Foreground="{TemplateBinding Foreground}" FontWeight="SemiBold" HorizontalAlignment="Center" TextLineBounds="Tight" Margin="0,2,0,1" />
+            <TextBlock Text="{TemplateBinding Text}" Foreground="{TemplateBinding Foreground}" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,2,0,1" />
           </Border>
         </ControlTemplate>
       </Setter.Value>

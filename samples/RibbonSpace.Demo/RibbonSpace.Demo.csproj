@@ -15,7 +15,7 @@
   </PropertyGroup>
   <ItemGroup>
     <UnoIcon Include="Assets\Icons\icon.svg" />
-    <UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#F5F5F5" />
+    <UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" BackgroundColor="#F5F5F5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/RibbonSpace.Uno/RibbonSpace.Uno.csproj" />
